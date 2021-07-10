@@ -1,0 +1,3 @@
+<mvc:View controllerName="dksh.connectclient.itemblockorder.controller.App" xmlns:mvc="sap.ui.core.mvc" displayBlock="true" xmlns="sap.m">
+	<App id="app" height="100%"/>
+</mvc:View>

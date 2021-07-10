@@ -1,0 +1,7 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:ui="sap.ui.table" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core">
+	<SelectDialog title="{i18n>divisionFragTitle}" liveChange="onLiveChange($event, 'Description', 'Division')"
+		confirm="handleAdd($event, '/selectedDivision', '/SoldToPartDivision', 'Division')" cancel="handleCancel($event, 'Division')"
+		items="{ValueHelpSet>/results}" class="sapUiSizeCompact">
+		<StandardListItem title="{ValueHelpSet>Description}" type="Active"/>
+	</SelectDialog>
+</core:FragmentDefinition>

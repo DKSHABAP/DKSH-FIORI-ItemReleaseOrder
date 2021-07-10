@@ -1,0 +1,75 @@
+<edmx:Edmx xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"
+	xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:sap="http://www.sap.com/Protocols/SAPData" Version="1.0">
+	<edmx:DataServices m:DataServiceVersion="2.0">
+		<Schema xmlns="http://schemas.microsoft.com/ado/2008/09/edm" Namespace="ZDKSH_CC_HDR_ITEM_RELEASE_SRV" xml:lang="en" sap:schema-version="1">
+			<EntityType Name="SearchHelp_StorageLocation" sap:content-version="1">
+				<Key><PropertyRef Name="StorageLocation"/></Key><Property Name="StorageLocation" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="Storage Location"
+					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Description" Type="Edm.String" Nullable="false" MaxLength="500" sap:unicode="false" sap:label="Description"
+					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/></EntityType>
+			<EntityType Name="SearchHelp_BatchNo" sap:content-version="1">
+				<Key><PropertyRef Name="Material"/></Key><Property Name="Material" Type="Edm.String" Nullable="false" MaxLength="18" sap:unicode="false" sap:label="Material No"
+					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="MaterialGroup4" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:label="Material Group 4"
+					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="MaterialGroup" Type="Edm.String" Nullable="false" MaxLength="9" sap:unicode="false" sap:label="Material Group"
+					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Sloc" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="Storage Location"
+					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="BatchNo" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Batch No" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Description" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="Description" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/></EntityType>
+			<EntityType Name="SearchHelp_RejectReason" sap:content-version="1">
+				<Key><PropertyRef Name="RejCode"/></Key><Property Name="Language" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="Language" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="RejCode" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="RejectionReason"
+					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="RejDesc" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:label="Description" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/></EntityType>
+			<EntityType Name="ItemSimulation" sap:content-version="1">
+				<Key><PropertyRef Name="test1"/><PropertyRef Name="test2"/></Key><Property Name="test1" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="test1" sap:creatable="false" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/><Property Name="test2" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="test2" sap:creatable="false" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/></EntityType>
+			<EntityType Name="SearchHelp_SalesOrg" sap:content-version="1">
+				<Key><PropertyRef Name="Salesorg"/></Key><Property Name="Salesorg" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="Sales Org." sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Description" Type="Edm.String" Nullable="false" MaxLength="20" sap:unicode="false" sap:label="Description"
+					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Language" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="Language" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="isHeader" Type="Edm.Boolean" Nullable="false" sap:unicode="false" sap:label="isHeader" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/></EntityType>
+			<EntityType Name="SearchHelp_HeaderDeliveryBlock" sap:content-version="1">
+				<Key><PropertyRef Name="DeliveryBlock"/></Key><Property Name="Language" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="Language" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="DeliveryBlock" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="Delivery Block" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Description" Type="Edm.String" Nullable="false" MaxLength="20" sap:unicode="false" sap:label="Name" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/></EntityType>
+			<EntityType Name="SearchHelp_ItemDeliveryBlock" sap:content-version="1">
+				<Key><PropertyRef Name="DeliveryBlock"/></Key><Property Name="Language" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="Language" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="DeliveryBlock" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="Delivery block" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Description" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="Description" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/></EntityType>
+			<EntityType Name="SearchHelp_MaterialGroup" sap:content-version="1">
+				<Key><PropertyRef Name="MaterialGroup"/></Key><Property Name="MaterialGroup" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="Material Group" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Description" Type="Edm.String" Nullable="false" MaxLength="20" sap:unicode="false" sap:label="Matl Grp Desc."
+					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Language" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="Language" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/></EntityType>
+			<EntityType Name="SearchHelp_Division" sap:content-version="1">
+				<Key><PropertyRef Name="Division"/></Key><Property Name="Language" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="Language" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Division" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="Division" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Description" Type="Edm.String" Nullable="false" MaxLength="20" sap:unicode="false" sap:label="Name" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/></EntityType>
+			<EntityType Name="SearchHelp_DistChnl" sap:content-version="1">
+				<Key><PropertyRef Name="Distchl"/></Key><Property Name="Language" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="Language" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Distchl" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="Distr. Channel" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Description" Type="Edm.String" Nullable="false" MaxLength="20" sap:unicode="false" sap:label="Description"
+					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/></EntityType>
+			<EntityType Name="SearchHelp_MaterialGroup4" sap:content-version="1">
+				<Key><PropertyRef Name="MaterialGroup4"/></Key><Property Name="MaterialGroup4" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="MaterialGroup 4" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Description" Type="Edm.String" Nullable="false" MaxLength="25" sap:unicode="false" sap:label="Name" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Language" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="Language" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/></EntityType>
+			<EntityContainer Name="ZDKSH_CC_HDR_ITEM_RELEASE_SRV_Entities" m:IsDefaultEntityContainer="true" sap:supported-formats="atom json xlsx"><EntitySet Name="SearchHelp_StorageLocationSet" EntityType="ZDKSH_CC_HDR_ITEM_RELEASE_SRV.SearchHelp_StorageLocation" sap:creatable="false"
+				sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/><EntitySet Name="SearchHelp_BatchNoSet" EntityType="ZDKSH_CC_HDR_ITEM_RELEASE_SRV.SearchHelp_BatchNo" sap:creatable="false"
+				sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/><EntitySet Name="SearchHelp_RejectReasonSet" EntityType="ZDKSH_CC_HDR_ITEM_RELEASE_SRV.SearchHelp_RejectReason" sap:creatable="false"
+				sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/><EntitySet Name="ItemSimulationSet" EntityType="ZDKSH_CC_HDR_ITEM_RELEASE_SRV.ItemSimulation" sap:creatable="false" sap:updatable="false"
+				sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/><EntitySet Name="SearchHelp_SalesOrgSet" EntityType="ZDKSH_CC_HDR_ITEM_RELEASE_SRV.SearchHelp_SalesOrg" sap:creatable="false"
+				sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/><EntitySet Name="SearchHelp_HeaderDeliveryBlockSet" EntityType="ZDKSH_CC_HDR_ITEM_RELEASE_SRV.SearchHelp_HeaderDeliveryBlock"
+				sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/><EntitySet Name="SearchHelp_ItemDeliveryBlockSet" EntityType="ZDKSH_CC_HDR_ITEM_RELEASE_SRV.SearchHelp_ItemDeliveryBlock"
+				sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/><EntitySet Name="SearchHelp_MaterialGroupSet" EntityType="ZDKSH_CC_HDR_ITEM_RELEASE_SRV.SearchHelp_MaterialGroup" sap:creatable="false"
+				sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/><EntitySet Name="SearchHelp_DivisionSet" EntityType="ZDKSH_CC_HDR_ITEM_RELEASE_SRV.SearchHelp_Division" sap:creatable="false"
+				sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/><EntitySet Name="SearchHelp_DistChnlSet" EntityType="ZDKSH_CC_HDR_ITEM_RELEASE_SRV.SearchHelp_DistChnl" sap:creatable="false"
+				sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/><EntitySet Name="SearchHelp_MaterialGroup4Set" EntityType="ZDKSH_CC_HDR_ITEM_RELEASE_SRV.SearchHelp_MaterialGroup4" sap:creatable="false"
+				sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/></EntityContainer><atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="self" href="./sap/ZDKSH_CC_HDR_ITEM_RELEASE_SRV/$metadata"/><atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="latest-version" href="./sap/ZDKSH_CC_HDR_ITEM_RELEASE_SRV/$metadata"/></Schema>
+	</edmx:DataServices>
+</edmx:Edmx>

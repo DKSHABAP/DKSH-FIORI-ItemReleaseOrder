@@ -1,0 +1,167 @@
+{
+	"_version": "1.12.0",
+	"sap.app": {
+		"id": "dksh.connectclient.itemblockorder",
+		"type": "application",
+		"i18n": "i18n/i18n.properties",
+		"applicationVersion": {
+			"version": "1.0.0"
+		},
+		"title": "{{appTitle}}",
+		"description": "{{appDescription}}",
+		"sourceTemplate": {
+			"id": "servicecatalog.connectivityComponentForManifest",
+			"version": "0.0.0"
+		},
+		"dataSources": {
+			"ZDKSH_CC_DAC_SOLDTOPARTY_SRV": {
+				"uri": "/sap/opu/odata/sap/ZDKSH_CC_DAC_SOLDTOPARTY_SRV/",
+				"type": "OData",
+				"settings": {
+					"localUri": "localService/ZDKSH_CC_DAC_SOLDTOPARTY_SRV/metadata.xml"
+				}
+			},
+			"ZDKSH_CC_HDR_ITEM_RELEASE_SRV": {
+				"uri": "/sap/opu/odata/sap/ZDKSH_CC_HDR_ITEM_RELEASE_SRV/",
+				"type": "OData",
+				"settings": {
+					"localUri": "localService/ZDKSH_CC_HDR_ITEM_RELEASE_SRV/metadata.xml"
+				}
+			}
+		},
+		"crossNavigation": {
+			"inbounds": {}
+		}
+	},
+	"sap.ui": {
+		"technology": "UI5",
+		"fullWidth": true,
+		"icons": {
+			"icon": "",
+			"favIcon": "",
+			"phone": "",
+			"phone@2": "",
+			"tablet": "",
+			"tablet@2": ""
+		},
+		"deviceTypes": {
+			"desktop": true,
+			"tablet": true,
+			"phone": true
+		}
+	},
+	"sap.ui5": {
+		"flexEnabled": false,
+		"rootView": {
+			"viewName": "dksh.connectclient.itemblockorder.view.App",
+			"type": "XML",
+			"async": true,
+			"id": "App"
+		},
+		"dependencies": {
+			"minUI5Version": "1.30",
+			"libs": {
+				"sap.m": {
+					"lazy": false
+				},
+				"sap.ui.comp": {
+					"lazy": false
+				},
+				"sap.ui.core": {
+					"lazy": false
+				}
+			}
+		},
+		"contentDensities": {
+			"compact": true,
+			"cozy": true
+		},
+		"models": {
+			"i18n": {
+				"type": "sap.ui.model.resource.ResourceModel",
+				"settings": {
+					"bundleName": "dksh.connectclient.itemblockorder.i18n.i18n"
+				}
+			},
+			"MockData": {
+				"type": "sap.ui.model.json.JSONModel",
+				"settings": {},
+				"uri": "model/mockData.json",
+				"preload": true
+			},
+			"@i18n": {
+				"type": "sap.ui.model.resource.ResourceModel",
+				"uri": "i18n/i18n.properties"
+			},
+			"ValueHelp_SoldToParty": {
+				"type": "sap.ui.model.odata.v2.ODataModel",
+				"settings": {
+					"defaultOperationMode": "Server",
+					"defaultBindingMode": "TwoWay",
+					"defaultCountMode": "None",
+					"useBatch": false
+				},
+				"dataSource": "ZDKSH_CC_DAC_SOLDTOPARTY_SRV",
+				"preload": true
+			},
+			"ValueHelp": {
+				"type": "sap.ui.model.odata.v2.ODataModel",
+				"settings": {
+					"defaultOperationMode": "Server",
+					"defaultBindingMode": "OneWay",
+					"defaultCountMode": "None",
+					"useBatch": false
+				},
+				"dataSource": "ZDKSH_CC_HDR_ITEM_RELEASE_SRV",
+				"preload": true
+			}
+		},
+		"resources": {
+			"css": [
+				{
+					"uri": "css/style.css"
+				}
+			]
+		},
+		"routing": {
+			"config": {
+				"routerClass": "sap.m.routing.Router",
+				"viewType": "XML",
+				"async": true,
+				"viewPath": "dksh.connectclient.itemblockorder.view",
+				"controlAggregation": "pages",
+				"controlId": "app",
+				"clearControlAggregation": false,
+				"bypassed": {
+					"target": []
+				}
+			},
+			"routes": [
+				{
+					"name": "MainView",
+					"pattern": "",
+					"target": [
+						"MainView"
+					]
+				}
+			],
+			"targets": {
+				"MainView": {
+					"viewType": "XML",
+					"viewName": "MainView",
+					"transition": "fade",
+					"viewLevel": 1,
+					"title": "",
+					"viewId": "MainView",
+					"controlAggregation": "pages",
+					"controlId": "app",
+					"viewPath": "dksh.connectclient.itemblockorder.view"
+				}
+			}
+		}
+	},
+	"sap.platform.hcp": {
+		"uri": "webapp",
+		"_version": "1.1.0"
+	}
+}

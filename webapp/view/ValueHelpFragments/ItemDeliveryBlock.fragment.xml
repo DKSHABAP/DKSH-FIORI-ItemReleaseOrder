@@ -1,0 +1,12 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:ui="sap.ui.table" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core">
+	<!--	<SelectDialog title="{i18n>itemDeliveryBlockTitl}" liveChange="onLiveChangeItemDeliveryBlock" confirm="handleAddItemDeliveryBlock"  cancel="handleCancelItemDeliveryBlock"
+		items="{ItemDeliveryBlockSet>/results}" class="sapUiSizeCompact">
+		<StandardListItem title="{parts: ['ItemDeliveryBlockSet>DeliveryBlock','ItemDeliveryBlockSet>Text'], formatter:'.formatter.keyValueformat'}" type="Active"
+			tooltip="{parts: ['ItemDeliveryBlockSet>DeliveryBlock','ItemDeliveryBlockSet>Text'], formatter:'.formatter.keyValueformat'}"/>
+	</SelectDialog>-->
+	<SelectDialog title="{i18n>itemDeliveryBlockTitl}" liveChange="onLiveChange($event, 'Description', 'DeliveryBlock')"
+		confirm="handleAdd($event, '/selectedDeliveryBlock', '', 'DeliveryBlock')" cancel="handleCancel($event, 'ItemDeliveryBlock')"
+		items="{ValueHelpSet>/results}" class="sapUiSizeCompact">
+		<StandardListItem title="{ValueHelpSet>Description}" type="Active"/>
+	</SelectDialog>
+</core:FragmentDefinition>

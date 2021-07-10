@@ -1,0 +1,130 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:ui="sap.ui.table" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core" xmlns:l="sap.ui.layout"
+	xmlns:smartTable="sap.ui.comp.smarttable">
+	<Dialog title="{i18n>soldToPartyFragTitle}" contentWidth="65%">
+		<f:SimpleForm layout="ResponsiveGridLayout" labelSpanL="4" editable="true" labelSpanM="3" emptySpanL="1" emptySpanM="0" columnsL="2"
+			columnsM="2">
+			<f:content>
+				<core:Title/>
+				<Label text="{i18n>soldtopartyid}" design="Bold" tooltip="{i18n>soldtopartyid}"/>
+				<Input id="idSoldToPartCustID" tooltip="{filterModel>/SoldToPartId}" value="{filterModel>/SoldToPartId}" liveChange="soldToPartyLiveChange"
+					change="custIdLiveChange" maxLength="10" showValueHelp="false" placeholder="{i18n>plchCustID}" showValueStateMessage="false"
+					valueHelpOnly="true"/>
+				<Label text="{i18n>soldtopartyname}" design="Bold" tooltip="{i18n>soldtopartyname}"/>
+				<Input id="idSoldToPartDesc" tooltip="{filterModel>/SoldToPartName}" value="{filterModel>/SoldToPartName}"
+					liveChange="soldToPartyLiveChange" maxLength="35" showValueHelp="false" placeholder="{i18n>plchCustName}"/>
+				<Label text="{i18n>divisionCustIdFragLabel}" design="Bold" tooltip="{i18n>divisionCustIdFragLabel}"/>
+				<Input id="idSoldToPartDivision" tooltip="{filterModel>/SoldToPartDivision}" value="{filterModel>/SoldToPartDivision}"
+					liveChange="soldToPartyLiveChange" showValueHelp="true"
+					valueHelpRequest="valueHelpRequest($event, 'Division', '/SearchHelp_DivisionSet', 'ATR03', 'Division')" placeholder="{i18n>plchDiv}"
+					valueHelpOnly="true"/>
+				<core:Title/>
+				<Label text="{i18n>salesOrgCustIdFragLabel}" design="Bold" tooltip="{i18n>tltpSalesOrg}"/>
+				<Input id="idSoldToPartSaleOrh" tooltip="{filterModel>/SoldToPartSaleOrg}" value="{filterModel>/SoldToPartSaleOrg}"
+					liveChange="soldToPartyLiveChange" showValueHelp="true"
+					valueHelpRequest="valueHelpRequest($event, 'SalesOrg', '/SearchHelp_SalesOrgSet', 'ATR01', 'Salesorg')" placeholder="{i18n>plcSalesOrg}"
+					valueHelpOnly="true"/>
+				<Label text="{i18n>distChanlCustIdFragLabel}" design="Bold" tooltip="{i18n>tltpDistChan}"/>
+				<Input id="idSoldToPartDistChn" tooltip="{filterModel>/SoldToPartDistChannel}" value="{filterModel>/SoldToPartDistChannel}"
+					liveChange="soldToPartyLiveChange" showValueHelp="true"
+					valueHelpRequest="valueHelpRequest($event, 'DistChan', '/SearchHelp_DistChnlSet', 'ATR02', 'Distchl')" placeholder="{i18n>plchDistChan}"
+					valueHelpOnly="true"/>
+				<Label/>
+				<Button icon="sap-icon://search" text="{i18n>Search}" tooltip="{i18n>Search}" type="Accept" press="onSearchSoldToParty">
+					<layoutData>
+						<l:GridData span="XL3 L3 M4 S6"/>
+					</layoutData>
+				</Button>
+				<Button icon="sap-icon://refresh" text="{i18n>Reset}" tooltip="{i18n>Reset}" type="Reject" press="onResetSoldToParty">
+					<layoutData>
+						<l:GridData span="XL3 L3 M4 S6"/>
+					</layoutData>
+				</Button>
+			</f:content>
+		</f:SimpleForm>
+		<!--		<Table inset="false" id="idSoldtoPartyTable" growing="true" growingThreshold="15" fixedLayout="true" items="{SoldToPartyListSet>/results}"
+			mode="SingleSelectMaster" selectionChange="onSTPSelectionChange" updateFinished="updateCountSoldtoPartyF4">
+			<headerToolbar>
+			</headerToolbar>
+			<columns>
+				<Column hAlign="Left">
+					<Label design="Bold" text="{i18n>customerId}"/>
+				</Column>
+				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left" popinDisplay="Inline">
+					<Label design="Bold" text="{i18n>customerName}"/>
+				</Column>
+				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left" popinDisplay="Inline">
+					<Label design="Bold" text="{i18n>divisionCustIdFragLabel}"/>
+				</Column>
+				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left" popinDisplay="Inline">
+					<Label design="Bold" text="{i18n>distChanlCustIdFragLabel}" tooltip="{i18n>tltpDistChan}"/>
+				</Column>
+				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left" popinDisplay="Inline">
+					<Label design="Bold" text="{i18n>salesOrgCustIdFragLabel}" tooltip="{i18n>tltpSalesOrg}"/>
+				</Column>
+			</columns>
+			<items>
+				<ColumnListItem>
+					<Text text="{SoldToPartyListSet>CustCode}" textAlign="Left"/>
+					<Text text="{SoldToPartyListSet>Name1}" textAlign="Left"/>
+					<Text text="{SoldToPartyListSet>DName}" textAlign="Left"/>
+					<Text text="{SoldToPartyListSet>DCName}" textAlign="Left"/>
+					<Text text="{SoldToPartyListSet>SOrgName}" textAlign="Left"/>
+				</ColumnListItem>
+			</items>
+		</Table>-->
+		<smartTable:SmartTable id="idSoldToPartSmartTable" entitySet="ZSoldToPartySH" tableType="ResponsiveTable" useExportToExcel="false"
+			useVariantManagement="false" useTablePersonalisation="false" header="Customers" showRowCount="true" initiallyVisibleFields="CustCode"
+			beforeRebindTable="onBeforeRebindTable" persistencyKey="SmartTableAnalytical_Explored" enableAutoBinding="false" demandPopin="true"
+			class="sapUiResponsiveContentPadding">
+			<Table inset="false" id="idSoldtoPartyTable" growing="true" growingThreshold="8" fixedLayout="true" mode="SingleSelectMaster"
+				selectionChange="onSTPSelectionChange" updateFinished="updateCountSoldtoPartyF4">
+				<columns>
+					<Column hAlign="Left">
+						<customData>
+							<core:CustomData key="p13nData" value='\{"columnKey": "CustCode", "leadingProperty": "CustCode"}'/>
+						</customData>
+						<Label design="Bold" text="{i18n>customerId}"/>
+					</Column>
+					<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left" popinDisplay="Inline">
+						<customData>
+							<core:CustomData key="p13nData" value='\{"columnKey": "Name1", "leadingProperty": "Name1"}'/>
+						</customData>
+						<Label design="Bold" text="{i18n>customerName}"/>
+					</Column>
+					<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left" popinDisplay="Inline">
+						<customData>
+							<core:CustomData key="p13nData" value='\{"columnKey": "DName", "leadingProperty": "DName"}'/>
+						</customData>
+						<Label design="Bold" text="{i18n>divisionCustIdFragLabel}"/>
+					</Column>
+					<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left" popinDisplay="Inline">
+						<customData>
+							<core:CustomData key="p13nData" value='\{"columnKey": "DCName", "leadingProperty": "DCName"}'/>
+						</customData>
+						<Label design="Bold" text="{i18n>distChanlCustIdFragLabel}"/>
+					</Column>
+					<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left" popinDisplay="Inline">
+						<customData>
+							<core:CustomData key="p13nData" value='\{"columnKey": "SOrgName", "leadingProperty": "SOrgName"}'/>
+						</customData>
+						<Label design="Bold" text="{i18n>salesOrgCustIdFragLabel}"/>
+					</Column>
+				</columns>
+				<items>
+					<ColumnListItem>
+						<Text text="{CustCode}" textAlign="Left"/>
+						<Text text="{Name1}" textAlign="Left"/>
+						<Text text="{DName}" textAlign="Left"/>
+						<Text text="{DCName}" textAlign="Left"/>
+						<Text text="{SOrgName}" textAlign="Left"/>
+					</ColumnListItem>
+				</items>
+			</Table>
+		</smartTable:SmartTable>
+		<buttons>
+			<Button text="{i18n>ok}" press="onSubmitSoldtoParty"/>
+			<!--			<Button text="{i18n>cancel}" press="onCancelSoldtoParty"/>-->
+			<Button text="{i18n>cancel}" press="handleCancel($event, 'SoldToParty')"/>
+		</buttons>
+	</Dialog>
+</core:FragmentDefinition>
