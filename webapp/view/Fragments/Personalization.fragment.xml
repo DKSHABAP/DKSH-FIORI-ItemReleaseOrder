@@ -1,0 +1,43 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form" xmlns:l="sap.ui.layout">
+	<Dialog title="{i18n>personalization}" class="sapUiSizeCompact custBox" contentWidth="30%">
+		<content>
+			<VBox >
+				<Table headerText="Header Level" id="idProductsTable" inset="false" items="{PersonalizationModel>/header}">
+					<columns>
+						<Column ></Column>
+					</columns>
+					<items>
+						<ColumnListItem>
+							<cells>
+								<HBox>
+									<CheckBox selected="{PersonalizationModel>status}"/>
+									<Text text="{PersonalizationModel>label}"/>
+								</HBox>
+							</cells>
+						</ColumnListItem>
+					</items>
+				</Table>
+				<Table headerText="Item Level" inset="false" items="{PersonalizationModel>/item}">
+					<columns>
+						<Column ></Column>
+					</columns>
+					<items>
+						<ColumnListItem visible="{path: 'PersonalizationModel>key', formatter:'.formatter.hideMultipleFilter'}">
+							<cells>
+								<HBox>
+									<CheckBox selected="{PersonalizationModel>status}" select="onChangeFieldCheckbox"/>
+									<Text text="{PersonalizationModel>label}"/>
+								</HBox>
+							</cells>
+						</ColumnListItem>
+					</items>
+				</Table>
+			</VBox>
+		</content>
+		<buttons>
+			<Button text="{i18n>ok}" press="onPersonalizationOK" tooltip="OK"/>
+			<Button text="{i18n>reset2DefaultBtn}" press="onPersonalizationReset" tooltip="Reset" type="Default"/>
+			<Button text="{i18n>cancel}" press="handleCloseValueHelp($event, 'Personalization')" tooltip="Cancel" type="Default"/>
+		</buttons>
+	</Dialog>
+</core:FragmentDefinition>

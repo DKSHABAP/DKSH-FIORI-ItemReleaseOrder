@@ -1,0 +1,7 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+	<ResponsivePopover title="{i18n>CreditBlockReasonFragTitle}" placement="Auto">
+		<SelectList items="{CreditBlockReasonsModel>/results}">
+			<core:Item key="{CreditBlockReasonsModel>Description}" text="{CreditBlockReasonsModel>Description}"/>
+		</SelectList>
+	</ResponsivePopover>
+</core:FragmentDefinition>

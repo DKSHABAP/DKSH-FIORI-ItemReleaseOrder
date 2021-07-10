@@ -1,0 +1,88 @@
+{
+  "welcomeFile": "/index.html",
+  "routes": [
+    {
+      "path": "/resources",
+      "target": {
+        "type": "service",
+        "name": "sapui5",
+        "entryPath": "/resources"
+      },
+      "description": "SAPUI5 Resources"
+    },
+    {
+      "path": "/services/userapi",
+      "target": {
+        "type": "service",
+        "name": "userapi"
+      }
+    },
+    {
+      "path": "/test-resources",
+      "target": {
+        "type": "service",
+        "name": "sapui5",
+        "entryPath": "/test-resources"
+      },
+      "description": "SAPUI5 Resources"
+    },
+    {
+      "path": "/resources",
+      "target": {
+        "type": "service",
+        "name": "sapui5",
+        "entryPath": "/resources"
+      },
+      "description": "SAPUI5 Resources"
+    },
+    {
+      "path": "/test-resources",
+      "target": {
+        "type": "service",
+        "name": "sapui5",
+        "entryPath": "/test-resources"
+      },
+      "description": "SAPUI5 Test Resources"
+    },
+    {
+      "path": "/sap/opu/odata",
+      "target": {
+        "type": "destination",
+        "name": "DKSHODataService",
+        "entryPath": "/sap/opu/odata"
+      },
+      "description": "OData Service for DKSH"
+    },
+    {
+      "path": "/DKSHJavaService",
+      "target": {
+        "type": "destination",
+        "name": "DKSHJavaServiceAppToSSO"
+      },
+      "description": "DKSH Java Services"
+    },
+    {
+      "path": "/DKSHJavaService2",
+      "target": {
+        "type": "destination",
+        "name": "DKSHJavaServiceAppToSSO2"
+      },
+      "description": "DKSH Java Services"
+    },
+    {
+      "path": "/WorkboxServices",
+      "target": {
+        "type": "destination",
+        "name": "WorkboxServices"
+      }
+    },
+    {
+      "path": "/UserManagement",
+      "target": {
+        "type": "destination",
+        "name": "UserManagement_Dest"
+      }
+    }
+  ],
+  "sendWelcomeFileRedirect": true
+}

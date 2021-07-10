@@ -1,0 +1,201 @@
+.sapMDialog>header.sapMDialogTitle .sapMTitle {
+    color: #000 !important
+}
+
+.sapUiSizeCompact .sapUiFormContainerTitle>.sapUiFormTitle {
+    height: 0 !important;
+    line-height: 2rem
+}
+
+.sapMSplitContainerHideMode>.sapMSplitContainerDetail .sapUiResponsiveMargin,
+.sapUiResponsiveMargin {
+    margin: 0 0 0 1rem !important
+}
+
+.sapUiFormM:not(.sapUiFormEdit) .sapUiFormResGridCont {
+    margin-top: -.25rem;
+    padding-bottom: 0 !important
+}
+
+.sapUiTinyMarginTop {
+    margin-top: 1rem !important
+}
+
+.custBox .sapMVBox {
+    -webkit-box-orient: vertical;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    padding: 15px !important
+}
+
+.sapMListTbl .sapMLabel,
+.sapMListTbl .sapMText {
+    font-size: .875rem;
+    color: #333;
+    font-weight: 400;
+    margin-top: .6rem
+}
+
+.sapUiFormResGrid>div {
+    padding: 0 .75rem
+}
+
+.sapUiFormM:not(.sapUiFormEdit) .sapUiRespGridMedia-Std-Desktop.sapUiFormResGridCont>div:first-child.sapUiFormElementLbl.sapUiRespGridSpanL12,
+.sapUiSizeCompact .sapUiFormM:not(.sapUiFormEdit) .sapUiFormContainerTitle>.sapUiRGLContainerCont>.sapUiRespGridMedia-Std-Desktop.sapUiFormResGridCont>div:first-child.sapUiFormElementLbl.sapUiRespGridSpanL12 {
+    padding: 0
+}
+
+.sapMTB-Transparent-CTX>.sapMTitleTB.sapMTitleStyleAuto {
+    font-size: 1rem
+}
+
+.hideContent .sapMPanelContent,
+.sapUiSizeCompact .sapUxAPObjectPageLayout-Std-Desktop .sapUxAPBlockContainer {
+    padding: 0 !important
+}
+
+.sapMSuggestionsPopover .sapMListUl>.sapMLIB {
+    height: 1.5rem
+}
+
+.customTitle .sapMTitleStyleAuto {
+    font-size: 1.2rem !important
+}
+
+.noDataTextHBoxStyle {
+    border-bottom: 1px solid #ccc
+}
+
+.dkshAcceptFragStyle {
+    padding-top: 1rem;
+    padding-bottom: 1rem
+}
+
+.dkshAcceptFragTextStyle {
+    padding-bottom: 1rem;
+    font-size: 1rem;
+    color: #979A9A
+}
+
+.pageNumberDivClass {
+    height: 3rem;
+    background: #fff;
+    border-top: 1px solid #dff1ff
+}
+
+.pageNumberStyleClass {
+    font-weight: 600;
+    color: #313131;
+    font-size: .85rem;
+    margin-top: 1.5rem
+}
+
+.paginationNumbers {
+    width: 1.5rem;
+    padding-top: 1rem;
+    padding-left: 1rem
+}
+
+.pageLinkClass {
+    top: -1rem
+}
+
+.navigateButtonClass {
+    padding-top: .7rem !important
+}
+
+.highlight {
+    background-color: #ff6
+}
+
+.materialDetailItbStyle .sapUiMedia-Std-Desktop .sapMITH.sapUiResponsiveContentPadding .sapMITBScrollContainer,
+.sapUiMedia-Std-Desktop .sapMITB.sapUiResponsiveContentPadding .sapMITBScrollContainer {
+    margin: 0 .75rem
+}
+
+.sapMITBHead {
+    margin: 0 .75rem 0 .25rem
+}
+
+tr[data-mydata=itemStockBlock] {
+    background: #F9EBEA !important
+}
+
+.marginLabel .sapMLabel {
+    margin-top: 25px !important
+}
+
+html.sap-desktop .sapMLnk:focus:not(.sapMLnkDsbl) {
+    border: none !important
+}
+
+.dkshApprovalTypeStyle .sapUiSizeCompact .sapMInputBaseHasEndIcons .sapMInputBaseContentWrapper {
+    width: 20rem !important
+}
+
+.sapUiRespGridMedia-Std-Desktop.sapUiFormResGridMain>div:not(.sapUiRespGridBreakL):not(.sapUiRespGridSpanL12) {
+    padding-left: .1rem;
+    padding-right: .4rem
+}
+
+tr[data-stockBlock=ACTIVE] {
+    background: #fcc !important;
+    -webkit-filter: blur(8px)
+}
+
+.sapMListTblSubCntSpr {
+    display: inline-block;
+    vertical-align: middle;
+    margin-top: .6rem !important
+}
+
+.sapMOTAPopover.sapMOTAPButtonsWithIcons .sapMOTAPButtonNoIcon>.sapMBtnInner>span.sapMBtnContent {
+    margin-left: 0
+}
+
+.sapUiCompFilterBar {
+    background-color: transparent !important;
+    border-bottom: none
+}
+
+.sapUiCompFilterBarNonPhone.sapUiRespGrid.sapUiRespGridHSpace0 {
+    padding: 0 0 1rem 1rem
+}
+
+.sapUiCompFilterBar .sapUiAFLayout .sapUiCompFilterLabel.sapMLabel::after {
+    visibility: hidden;
+    display: none !important
+}
+
+.fbFilterLevel .sapMLabel {
+    font-weight: 700
+}
+
+.fbFilterLevel.sapUiCompFilterBar .sapUiAFLayoutItem,
+.sapUiCompFilterBar .sapUiAFLayoutEnd {
+    margin-top: 1rem
+}
+
+.fbHeaderLevel.sapUiCompFilterBarNonPhone.sapUiRespGrid.sapUiRespGridHSpace0 {
+    padding-right: 11rem !important;
+    padding-left: 7rem !important;
+    padding-bottom: 0 !important
+}
+
+.fbHeaderLevel .sapMLabel {
+    white-space: text
+}
+
+.fbHeaderLevel .sapMTextBreakWord {
+    word-break: break-all;
+    word-break: normal
+}
+
+.fbHeaderLevel.sapUiCompFilterBar .sapUiAFLayoutItem,
+.sapUiCompFilterBar .sapUiAFLayoutEnd {
+    margin-top: 0
+}
+
+.sapMPanelExpandablePart {
+    padding-top: 0 !important
+}
