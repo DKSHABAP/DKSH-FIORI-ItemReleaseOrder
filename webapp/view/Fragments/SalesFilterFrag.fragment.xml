@@ -58,8 +58,8 @@
 				<fb:FilterGroupItem groupName="G1" name="H" label="{i18n>soldToPartyTitle}" partOfCurrentVariant="true" visibleInFilterBar="true">
 					<fb:control>
 						<Input showValueHelp="true" valueHelpOnly="true" value="{filterModel>/selectedSoldToParty}" tooltip="{filterModel>/selectedSoldToParty}"
-							valueHelpRequest="valueHelpRequestSoldToParty" id="soFragFilter1" visible="true" placeholder="{i18n>plchSoldtp}"
-							showValueStateMessage="true" valueStateText="abc"/>
+							valueHelpRequest="valueHelpRequestSoldToParty($event, 'SoldToParty', 'idSoldtoPartyTable')" id="soFragFilter1" visible="true"
+							placeholder="{i18n>plchSoldtp}" showValueStateMessage="true" valueStateText="abc"/>
 					</fb:control>
 				</fb:FilterGroupItem>
 				<fb:FilterGroupItem groupName="G1" name="I" label="{i18n>distChannel}" partOfCurrentVariant="true" visibleInFilterBar="true">
