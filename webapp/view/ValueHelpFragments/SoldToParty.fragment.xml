@@ -29,7 +29,8 @@
 					valueHelpRequest="valueHelpRequest($event, 'DistChan', '/SearchHelp_DistChnlSet', 'ATR02', 'Distchl')" placeholder="{i18n>plchDistChan}"
 					valueHelpOnly="true"/>
 				<Label/>
-				<Button icon="sap-icon://search" text="{i18n>Search}" tooltip="{i18n>Search}" type="Accept" press="onSearchSoldToParty">
+				<Button icon="sap-icon://search" text="{i18n>Search}" tooltip="{i18n>Search}" type="Accept"
+					press="onSearchSoldToParty($event, 'SoldToParty', '/ZSoldToPartySH', 'idSoldtoPartyTable')">
 					<layoutData>
 						<l:GridData span="XL3 L3 M4 S6"/>
 					</layoutData>
@@ -41,9 +42,16 @@
 				</Button>
 			</f:content>
 		</f:SimpleForm>
-		<!--		<Table inset="false" id="idSoldtoPartyTable" growing="true" growingThreshold="15" fixedLayout="true" items="{SoldToPartyListSet>/results}"
+		<Table inset="false" id="idSoldtoPartyTable" growing="true" growingThreshold="10" fixedLayout="true" items="{SoldToPartyModel>/results}"
 			mode="SingleSelectMaster" selectionChange="onSTPSelectionChange" updateFinished="updateCountSoldtoPartyF4">
 			<headerToolbar>
+				<Toolbar>
+					<Label text="{i18n>customerList} ({=${SoldToPartyModel>/totalRecords}})" design="Bold"/>
+					<ToolbarSpacer></ToolbarSpacer>
+					<Button icon="sap-icon://sort" type="Transparent" tooltip="{i18n>Sort}"
+						press="onSortPress($event, 'idSoldtoPartyTable', '/SoldToPartySort', 'CustCode')"/>
+					<SearchField width="32%" id="idSearchSoldToParty" liveChange="onLiveSearchSoldToParty($event, 'idSoldtoPartyTable')"></SearchField>
+				</Toolbar>
 			</headerToolbar>
 			<columns>
 				<Column hAlign="Left">
@@ -64,15 +72,15 @@
 			</columns>
 			<items>
 				<ColumnListItem>
-					<Text text="{SoldToPartyListSet>CustCode}" textAlign="Left"/>
-					<Text text="{SoldToPartyListSet>Name1}" textAlign="Left"/>
-					<Text text="{SoldToPartyListSet>DName}" textAlign="Left"/>
-					<Text text="{SoldToPartyListSet>DCName}" textAlign="Left"/>
-					<Text text="{SoldToPartyListSet>SOrgName}" textAlign="Left"/>
+					<Text text="{SoldToPartyModel>CustCode}" textAlign="Left"/>
+					<Text text="{SoldToPartyModel>Name1}" textAlign="Left"/>
+					<Text text="{SoldToPartyModel>DName}" textAlign="Left"/>
+					<Text text="{SoldToPartyModel>DCName}" textAlign="Left"/>
+					<Text text="{SoldToPartyModel>SOrgName}" textAlign="Left"/>
 				</ColumnListItem>
 			</items>
-		</Table>-->
-		<smartTable:SmartTable id="idSoldToPartSmartTable" entitySet="ZSoldToPartySH" tableType="ResponsiveTable" useExportToExcel="false"
+		</Table>
+		<!--		<smartTable:SmartTable id="idSoldToPartSmartTable" entitySet="ZSoldToPartySH" tableType="ResponsiveTable" useExportToExcel="false"
 			useVariantManagement="false" useTablePersonalisation="false" header="Customers" showRowCount="true" initiallyVisibleFields="CustCode"
 			beforeRebindTable="onBeforeRebindTable" persistencyKey="SmartTableAnalytical_Explored" enableAutoBinding="false" demandPopin="true"
 			class="sapUiResponsiveContentPadding">
@@ -120,10 +128,9 @@
 					</ColumnListItem>
 				</items>
 			</Table>
-		</smartTable:SmartTable>
+		</smartTable:SmartTable>-->
 		<buttons>
 			<Button text="{i18n>ok}" press="onSubmitSoldtoParty"/>
-			<!--			<Button text="{i18n>cancel}" press="onCancelSoldtoParty"/>-->
 			<Button text="{i18n>cancel}" press="handleCancel($event, 'SoldToParty')"/>
 		</buttons>
 	</Dialog>

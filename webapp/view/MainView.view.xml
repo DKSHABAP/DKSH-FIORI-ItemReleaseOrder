@@ -68,7 +68,7 @@
 			<OverflowToolbar id="otb1" class="dkshToolbarStyle customTitle">
 				<Title text="{i18n>pendingRequests} ({=${ItemBlockModel>/count} ? ${ItemBlockModel>/count} : 0})" class="sapUiSmallMarginBegin"/>
 				<ToolbarSpacer/>
-				<Button icon="sap-icon://sort" type="Transparent" tooltip="{i18n>Sort}" press="onSortPress"/>
+				<Button icon="sap-icon://sort" type="Transparent" tooltip="{i18n>Sort}" press="onSortPress($event, 'idList', '/panelSort', 'postingDate')"/>
 				<Button type="Transparent" text="{i18n>ExpandAll}" press="onExpandAll" enabled="{oButtonModel>/expandButtonShow}"/>
 				<Button type="Transparent" text="{i18n>CollapseAll}" press="onCollapseAll" enabled="{oButtonModel>/expandButtonShow}"/>
 				<SearchField width="30%" liveChange="onSearchValueForHeader" search="onSearchValueForHeader" placeholder="{i18n>Search}"></SearchField>
