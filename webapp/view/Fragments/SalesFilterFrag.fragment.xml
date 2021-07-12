@@ -102,7 +102,7 @@
 							placeholder="{i18n>EnterSalesTerritory}" maxLength="10" liveChange="salesDocValidationHandle"/>
 					</fb:control>
 				</fb:FilterGroupItem>
-				<fb:FilterGroupItem groupName="G1" name="O" label="{i18n>SalesTerritory}" partOfCurrentVariant="true" visibleInFilterBar="true">
+				<fb:FilterGroupItem groupName="G1" name="O" label="{i18n>SalesTeam}" partOfCurrentVariant="true" visibleInFilterBar="true">
 					<fb:control>
 						<Input value="{filterModel>/selectedSalesTeam}" tooltip="{filterModel>/selectedSalesTeam}" placeholder="{i18n>EnterSalesTeam}"
 							maxLength="10" liveChange="salesDocValidationHandle"/>
