@@ -2,7 +2,7 @@
 	<Dialog icon="sap-icon://hint" title="Status" draggable="true" contentWidth="40%" class="custBox ">
 		<VBox>
 			<Table inset="false" fixedLayout="true" items="{path: 'SavedMessageModel>/results', sorter: {path: 'salesItemOrderNo'}}"
-				class="sapUiSizeCompact">
+				backgroundDesign="Solid" class="sapUiSizeCompact">
 				<columns>
 					<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left" width="140px">
 						<Label design="Bold" text="Message"/>
@@ -10,7 +10,11 @@
 				</columns>
 				<items>
 					<ColumnListItem>
-						<Text text="{SavedMessageModel>Message}" textAlign="Left"/>
+						<cells>
+							<!--						<Text text="{SavedMessageModel>Message}" textAlign="Left"/>-->
+							<ObjectStatus class="sapUiSmallMarginBottom" text="{SavedMessageModel>Message}"
+								icon="{ path : 'SavedMessageModel>isValid', formatter: '.formatter.messageStatus' }"/>
+						</cells>
 					</ColumnListItem>
 				</items>
 			</Table>

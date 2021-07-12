@@ -48,18 +48,16 @@ sap.ui.define([
 						var oUserInfoModel = oView.getModel("UserInfo"),
 							oUserAccessModel = oView.getModel("UserAccess");
 
-						oView.getModel("UserManagement").loadData("/UserManagement/service/scim/Users/" + oUserInfoModel.getProperty(
-							"/name")).then(function (oUserMgtRes) {}.bind(this));
 						// resolved only when user access has been retrieved
 						oUserAccessModel.loadData("/DKSHJavaService2/userDetails/findAllRightsForUserInDomain/" + oUserInfoModel.getData().name +
 								"&cc")
-							.then(function (oUserAccessResp) {
-								resolve(oUserAccessResp);
-							}).catch(function (oErr) {
+							.then(function (oUserAccessResp) {}).catch(function (oErr) {
 								reject(oErr);
 							});
 						oView.getModel("UserManagement").loadData("/UserManagement/service/scim/Users/" + oUserInfoModel.getProperty(
-							"/name")).then(function (oUserMgtRes) {}.bind(this)).catch(function (oErr) {
+							"/name")).then(function (oUserMgtRes) {
+							resolve(oUserMgtRes);
+						}.bind(this)).catch(function (oErr) {
 							reject(oErr);
 						});
 					}.bind(this)).catch(function (oErr) {
@@ -71,6 +69,7 @@ sap.ui.define([
 		fetchSaleOrder: function () {
 			var oView = this.getView(),
 				oUserInfoModel = oView.getModel("UserInfo"),
+				oUserMangement = oView.getModel("UserManagement"),
 				oSettingModel = oView.getModel("settings"),
 				oFilterModel = oView.getModel("filterModel"),
 				salesOrderFilterDto = {},
@@ -80,6 +79,7 @@ sap.ui.define([
 			/*			if (Object.keys(oFilterModel.getProperty("/")).length > 0) {*/
 			salesOrderFilterDto["customerCode"] = "";
 			salesOrderFilterDto["salesDocNumInitial"] = "5700001321";
+			/*			salesOrderFilterDto["salesDocNumInitial"] = "";*/
 			salesOrderFilterDto["salesDocNumEnd"] = "";
 			salesOrderFilterDto["salesOrg"] = "";
 			salesOrderFilterDto["SalesOrgDesc"] = "";
@@ -96,18 +96,42 @@ sap.ui.define([
 			salesOrderFilterDto["headerDlvBlock"] = "";
 			salesOrderFilterDto["sapMaterialNum"] = "";
 			/*			}*/
-
+			/*			if (!this.searchPayload) {
+							this.searchPayload = {
+								"customerCode": "",
+								"salesDocNumInitial": "",
+								"salesDocNumEnd": "",
+								"salesOrg": "",
+								"SalesOrgDesc": "",
+								"DivisionDesc": "",
+								"division": "",
+								"customerPo": "",
+								"materialGroup": "",
+								"itemDlvBlock": "",
+								"distributionChannel": "",
+								"initialDate": null,
+								"endDate": null,
+								"materialGroupFor": "",
+								"shipToParty": "",
+								"headerDlvBlock": "",
+								"sapMaterialNum": ""
+							};
+						}*/
 			var oPayload = {
 				"currentUserInfo": {
-					"taskOwner": oUserInfoModel.getProperty("/name"),
-					"ownerEmail": oUserInfoModel.getProperty("/email"),
-					"taskOwnerDisplayName": oUserInfoModel.getProperty("/displayName")
+					/*					"taskOwner": oUserInfoModel.getProperty("/name"),
+										"ownerEmail": oUserInfoModel.getProperty("/email"),
+										"taskOwnerDisplayName": oUserInfoModel.getProperty("/displayName")*/
+					"taskOwner": oUserMangement.getProperty("/id"),
+					"ownerEmail": oUserMangement.getProperty("/emails")[0].value,
+					"taskOwnerDisplayName": oUserMangement.getProperty("/userName")
 						/*					"taskOwner": 'P000032',
 											"ownerEmail": 'jen.ling.lee@dksh.com',
 											"taskOwnerDisplayName": "Jen Ling Lee DKSH"*/
 				},
-				"isAdmin": true,
+				"isAdmin": false,
 				"salesOrderFilterDto": salesOrderFilterDto,
+				/*				"salesOrderFilterDto": this.searchPayload,*/
 				"page": oSettingModel.getProperty("/selectedPage")
 			};
 			oView.setBusy(true);
@@ -150,9 +174,9 @@ sap.ui.define([
 				var fnSDdetailLevel = function (oDataIndx, oLoadDataModel) {
 					oLoadDataModel.loadData(vUrl).then(function () {
 						var oLoadData = oView.getModel("LoadDataModel").getData();
+						debugger;
 						for (var indx in oLoadData.data.salesDocItemList) {
 							var oItem = oLoadData.data.salesDocItemList[indx];
-							debugger;
 							Object.assign(oItem, {
 								editMaterial: false,
 								editOrderQty: false,
@@ -166,6 +190,7 @@ sap.ui.define([
 					oView.setBusy(false);
 				};
 				// Fetch Sale order from Java
+				debugger;
 				for (var indx in oData.workBoxDtos) {
 					var oDataIndx = oData.workBoxDtos[indx],
 						sSplitDate = oDataIndx.taskDescription.split("|")[6].split("/"),
@@ -182,7 +207,7 @@ sap.ui.define([
 				}
 				oView.getModel("ItemBlockModel").refresh();
 			}.bind(this)).catch(function (oErr) {
-				oView.setBusy(false);
+				this.getView().setBusy(false);
 			}.bind(this));
 		},
 		postJavaService: function (Model, sUrl, oPayload) {
@@ -307,7 +332,9 @@ sap.ui.define([
 				return "Error";
 			}
 		},
-
+		messageStatus: function (isValid) {
+			return (isValid) ? "sap-icon://message-success" : "sap-icon://message-error";
+		},
 		concatenateBatch: function (val1, val2, val3) {
 			if (val1 && val2 && val3) {
 				// var date = val2.getDate();

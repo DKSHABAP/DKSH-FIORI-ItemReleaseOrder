@@ -97,7 +97,8 @@
 					<Button icon="sap-icon://decline" type="Reject" tooltip="{i18n>Reject}" class="dkshRejectBtnStyle"
 						press="onRejectPress($event, 'Reject', ${ItemBlockModel>})"/>
 					<Button icon="sap-icon://upload" type="Transparent" tooltip="{i18n>Submit}" press="onItemSubmission"/>
-					<Button icon="sap-icon://display" type="Transparent" tooltip="{i18n>DisplayActions}" press="onDisplayMarkedItems"/>
+					<Button icon="sap-icon://display" type="Transparent" tooltip="{i18n>DisplayActions}"
+						press="onDisplayMarkedItems($event, 'DisplayMarkedItems')"/>
 					<Button icon="sap-icon://reset" type="Transparent" tooltip="{i18n>resetDisplayBtn}" press="onResetDisplay"/>
 				</OverflowToolbar>
 			</headerToolbar>
@@ -186,9 +187,6 @@
 						<!-- Spl Price -->
 						<Text text="{ItemBlockModel>splPrice}" textAlign="Right"/>
 						<!-- Net Price & Order Qty Sales & Doc Currency -->
-						<!--						<Text
-							text="{parts:[{path:'ItemBlockModel>netWorth'},{path:'ItemBlockModel>orderedQtySales'},{path:'ItemBlockModel>docCurrency'}],formatter:'.formatter.concatenateStrings'}"
-							textAlign="Right"/>-->
 						<Text text="{ItemBlockModel>netWorth} ({ItemBlockModel>docCurrency})" textAlign="Right"/>
 						<!-- Storage Location -->
 						<VBox>
