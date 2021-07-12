@@ -129,7 +129,7 @@ sap.ui.define([
 											"ownerEmail": 'jen.ling.lee@dksh.com',
 											"taskOwnerDisplayName": "Jen Ling Lee DKSH"*/
 				},
-				"isAdmin": false,
+				"isAdmin": true,
 				"salesOrderFilterDto": salesOrderFilterDto,
 				/*				"salesOrderFilterDto": this.searchPayload,*/
 				"page": oSettingModel.getProperty("/selectedPage")

@@ -1,5 +1,5 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:ui="sap.ui.table" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core">
-	<Dialog icon="sap-icon://hint" title="Status" draggable="true" contentWidth="40%" class="custBox ">
+	<Dialog icon="sap-icon://hint" title="Status" showHeader="true" draggable="true" contentWidth="40%">
 		<VBox>
 			<Table inset="false" fixedLayout="true" items="{path: 'SavedMessageModel>/results', sorter: {path: 'salesItemOrderNo'}}"
 				backgroundDesign="Solid" class="sapUiSizeCompact">
@@ -12,8 +12,9 @@
 					<ColumnListItem>
 						<cells>
 							<!--						<Text text="{SavedMessageModel>Message}" textAlign="Left"/>-->
-							<ObjectStatus class="sapUiSmallMarginBottom" text="{SavedMessageModel>Message}"
-								icon="{ path : 'SavedMessageModel>isValid', formatter: '.formatter.messageStatus' }"/>
+							<FlexBox alignItems="Center">
+								<ObjectStatus text="{SavedMessageModel>Message}" icon="{ path : 'SavedMessageModel>isValid', formatter: '.formatter.messageStatus' }"/>
+							</FlexBox>
 						</cells>
 					</ColumnListItem>
 				</items>
