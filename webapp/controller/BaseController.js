@@ -61,11 +61,7 @@ sap.ui.define([
 			}
 			return aFilters;
 		},
-		displayWarning: function () {
-
-		},
-		displayError: function () {
-
-		}
+		displayWarning: function () {},
+		displayError: function () {}
 	});
 });

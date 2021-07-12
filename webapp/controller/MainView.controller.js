@@ -230,6 +230,7 @@ sap.ui.define([
 				}).map(function (obj) {
 					return obj.sPath;
 				});
+				debugger;
 				this.onSaveEditItem["Payload"].listOfChangedItemData = this.onSaveEditItem["Payload"].listOfChangedItemData.filter(function (
 					array) {
 					return oRes[0].results.some(function (filter) {
@@ -253,6 +254,11 @@ sap.ui.define([
 							oItemBlockModel.setProperty(sPath, oInitialValueModel.getProperty(sPath));
 						}
 					}
+					this.onSaveEditItem["aAggregationContent"][5].setEnabled(true);
+					this.onSaveEditItem["aAggregationContent"][6].setEnabled(true);
+					this.onSaveEditItem["aAggregationContent"][7].setEnabled(true);
+					this.onSaveEditItem["aAggregationContent"][8].setEnabled(true);
+					this.onSaveEditItem["aAggregationContent"][9].setEnabled(true);
 					// Reset button's visible
 					this.formatter.setCancelEditItem.call(this, oItemBlockModel, this.onSaveEditItem["aItems"], this.onSaveEditItem[
 						"aAggregationContent"]);
@@ -472,6 +478,19 @@ sap.ui.define([
 			} else {
 				oBinding.filter(null);
 			}
+		},
+		onDisplayMarkedItems: function (oEvent, sFragmentName) {
+			var sFragmentPath = this.getText("MainFragmentPath");
+			if (!this.oFragmentList[sFragmentName]) {
+				this.oFragmentList[sFragmentName] = sap.ui.xmlfragment(sFragmentPath + sFragmentName, this);
+				this.getView().addDependent(this.oFragmentList[sFragmentName]);
+				this.oFragmentList[sFragmentName].addStyleClass("sapUiSizeCompact");
+				this.oFragmentList[sFragmentName].open();
+			} else {
+				this.oFragmentList[sFragmentName].open();
+			}
+			/*			this.DisplayMarkedItems.setModel(oEvent.getSource().getModel("SalesHeaderModel"), "SalesHeaderModel");*/
+
 		},
 		onResetDisplay: function (oEvent) {
 			var oSource = oEvent.getSource(),

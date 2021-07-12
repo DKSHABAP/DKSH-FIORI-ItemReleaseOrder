@@ -36,7 +36,7 @@
 				</fb:FilterGroupItem>
 				<fb:FilterGroupItem groupName="G1" name="E" label="{i18n>CustomerPONo}" partOfCurrentVariant="true" visibleInFilterBar="true">
 					<fb:control>
-						<Input value="{filterModel>/selectCustomerPo}" tooltip="{filterModel>/selectCustomerPo}" maxLength="100"
+						<Input value="{filterModel>/selectCustomerPo}" tooltip="{filterModel>/selectCustomerPo}" maxLength="10"
 							liveChange="salesDocValidationHandle" placeholder="{i18n>plchCustPo}"/>
 					</fb:control>
 				</fb:FilterGroupItem>
@@ -79,7 +79,7 @@
 				<fb:FilterGroupItem groupName="G1" name="K" label="{i18n>ShipToParty}" partOfCurrentVariant="true" visibleInFilterBar="true">
 					<fb:control>
 						<Input value="{filterModel>/selectedShipToParty}" tooltip="{filterModel>/selectedShipToParty}" liveChange="salesDocValidationHandle"
-							placeholder="{i18n>EntrShipTpParty}" maxLength="100"/>
+							placeholder="{i18n>EntrShipTpParty}" maxLength="10"/>
 					</fb:control>
 				</fb:FilterGroupItem>
 				<fb:FilterGroupItem groupName="G1" name="L" label="{i18n>HeaderDeliveryBlock}" partOfCurrentVariant="true" visibleInFilterBar="true">
@@ -93,7 +93,19 @@
 				<fb:FilterGroupItem groupName="G1" name="M" label="{i18n>MaterialCode}" partOfCurrentVariant="true" visibleInFilterBar="true">
 					<fb:control>
 						<Input value="{filterModel>/selectedMaterialNum}" tooltip="{filterModel>/selectedMaterialNum}" placeholder="{i18n>EnterMaterialCode}"
-							maxLength="100" liveChange="salesDocValidationHandle"/>
+							maxLength="18" liveChange="salesDocValidationHandle"/>
+					</fb:control>
+				</fb:FilterGroupItem>
+				<fb:FilterGroupItem groupName="G1" name="N" label="{i18n>SalesTerritory}" partOfCurrentVariant="true" visibleInFilterBar="true">
+					<fb:control>
+						<Input value="{filterModel>/selectedSalesTerritory}" tooltip="{filterModel>/selectedSalesTerritory}"
+							placeholder="{i18n>EnterSalesTerritory}" maxLength="10" liveChange="salesDocValidationHandle"/>
+					</fb:control>
+				</fb:FilterGroupItem>
+				<fb:FilterGroupItem groupName="G1" name="O" label="{i18n>SalesTerritory}" partOfCurrentVariant="true" visibleInFilterBar="true">
+					<fb:control>
+						<Input value="{filterModel>/selectedSalesTeam}" tooltip="{filterModel>/selectedSalesTeam}" placeholder="{i18n>EnterSalesTeam}"
+							maxLength="10" liveChange="salesDocValidationHandle"/>
 					</fb:control>
 				</fb:FilterGroupItem>
 			</fb:filterGroupItems>
