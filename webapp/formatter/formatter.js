@@ -78,7 +78,9 @@ sap.ui.define([
 			// Search Header Filter
 			/*			if (Object.keys(oFilterModel.getProperty("/")).length > 0) {*/
 			salesOrderFilterDto["customerCode"] = "";
-			salesOrderFilterDto["salesDocNumInitial"] = "5700001321";
+			/*			salesOrderFilterDto["salesDocNumInitial"] = "5700001321";*/
+
+			salesOrderFilterDto["salesDocNumInitial"] = "";
 			/*			salesOrderFilterDto["salesDocNumInitial"] = "";*/
 			salesOrderFilterDto["salesDocNumEnd"] = "";
 			salesOrderFilterDto["salesOrg"] = "";
@@ -119,17 +121,17 @@ sap.ui.define([
 						}*/
 			var oPayload = {
 				"currentUserInfo": {
-					/*					"taskOwner": oUserInfoModel.getProperty("/name"),
-										"ownerEmail": oUserInfoModel.getProperty("/email"),
-										"taskOwnerDisplayName": oUserInfoModel.getProperty("/displayName")*/
-					"taskOwner": oUserMangement.getProperty("/id"),
-					"ownerEmail": oUserMangement.getProperty("/emails")[0].value,
-					"taskOwnerDisplayName": oUserMangement.getProperty("/userName")
+					"taskOwner": oUserInfoModel.getProperty("/name"),
+					"ownerEmail": oUserInfoModel.getProperty("/email"),
+					"taskOwnerDisplayName": oUserInfoModel.getProperty("/displayName")
+						/*					"taskOwner": oUserMangement.getProperty("/id"),
+											"ownerEmail": oUserMangement.getProperty("/emails")[0].value,
+											"taskOwnerDisplayName": oUserMangement.getProperty("/userName")*/
 						/*					"taskOwner": 'P000032',
 											"ownerEmail": 'jen.ling.lee@dksh.com',
 											"taskOwnerDisplayName": "Jen Ling Lee DKSH"*/
 				},
-				"isAdmin": true,
+				"isAdmin": false,
 				"salesOrderFilterDto": salesOrderFilterDto,
 				/*				"salesOrderFilterDto": this.searchPayload,*/
 				"page": oSettingModel.getProperty("/selectedPage")
@@ -170,6 +172,7 @@ sap.ui.define([
 						pageNum: count.toString()
 					});
 				}
+				debugger;
 				oSettingModel.setProperty("/pagination", aPageNum);
 				var fnSDdetailLevel = function (oDataIndx, oLoadDataModel) {
 					oLoadDataModel.loadData(vUrl).then(function () {

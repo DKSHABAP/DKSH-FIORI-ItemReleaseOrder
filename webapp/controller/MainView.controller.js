@@ -120,7 +120,6 @@ sap.ui.define([
 
 			// Set edit button
 			oSource.setVisible(false);
-			debugger;
 			aContent.find(function (el, idx) {
 				try {
 					if (el.getText()) {
@@ -174,7 +173,6 @@ sap.ui.define([
 				MessageToast.show(this.getText("ItemSelectList"));
 				return;
 			}
-			debugger;
 			oView.setBusy(true);
 			this.onSaveEditItem["Payload"] = {};
 			for (var index in aHeadProperties) {
@@ -230,7 +228,6 @@ sap.ui.define([
 				}).map(function (obj) {
 					return obj.sPath;
 				});
-				debugger;
 				this.onSaveEditItem["Payload"].listOfChangedItemData = this.onSaveEditItem["Payload"].listOfChangedItemData.filter(function (
 					array) {
 					return oRes[0].results.some(function (filter) {
@@ -490,7 +487,6 @@ sap.ui.define([
 				this.oFragmentList[sFragmentName].open();
 			}
 			/*			this.DisplayMarkedItems.setModel(oEvent.getSource().getModel("SalesHeaderModel"), "SalesHeaderModel");*/
-
 		},
 		onResetDisplay: function (oEvent) {
 			var oSource = oEvent.getSource(),
@@ -884,12 +880,8 @@ sap.ui.define([
 			oFilterModel.setProperty("/SoldToPartDistChannel", "");
 			oFilterModel.updateBindings(true);
 		},
-		_refresh: function () {
-
-		},
-		_resetModel: function (oEvent) {
-
-		},
+		_refresh: function () {},
+		_resetModel: function (oEvent) {},
 		_getSmartTable: function (sId) {
 			return this.getView().byId(sId);
 		},
