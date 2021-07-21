@@ -48,7 +48,6 @@ sap.ui.define([
 						var oUserInfoModel = oView.getModel("UserInfo"),
 							oUserAccessModel = oView.getModel("UserAccess");
 
-						// resolved only when user access has been retrieved
 						oUserAccessModel.loadData("/DKSHJavaService2/userDetails/findAllRightsForUserInDomain/" + oUserInfoModel.getData().name +
 								"&cc")
 							.then(function (oUserAccessResp) {}).catch(function (oErr) {
@@ -70,72 +69,53 @@ sap.ui.define([
 			var oView = this.getView(),
 				oUserInfoModel = oView.getModel("UserInfo"),
 				oUserMangement = oView.getModel("UserManagement"),
+				oFilterSaleOrder = oView.getModel("filterModel").getData(),
 				oSettingModel = oView.getModel("settings"),
-				oFilterModel = oView.getModel("filterModel"),
-				salesOrderFilterDto = {},
-				url = "/WorkboxServices/inbox/filterdetail";
-
-			// Search Header Filter
-			/*			if (Object.keys(oFilterModel.getProperty("/")).length > 0) {*/
-			salesOrderFilterDto["customerCode"] = "";
-			/*			salesOrderFilterDto["salesDocNumInitial"] = "5700001321";*/
-
-			salesOrderFilterDto["salesDocNumInitial"] = "";
-			/*			salesOrderFilterDto["salesDocNumInitial"] = "";*/
-			salesOrderFilterDto["salesDocNumEnd"] = "";
-			salesOrderFilterDto["salesOrg"] = "";
-			salesOrderFilterDto["SalesOrgDesc"] = "";
-			salesOrderFilterDto["DivisionDesc"] = "";
-			salesOrderFilterDto["division"] = "";
-			salesOrderFilterDto["customerPo"] = "";
-			salesOrderFilterDto["materialGroup"] = "";
-			salesOrderFilterDto["itemDlvBlock"] = "";
-			salesOrderFilterDto["distributionChannel"] = "";
-			salesOrderFilterDto["initialDate"] = null;
-			salesOrderFilterDto["endDate"] = null;
-			salesOrderFilterDto["materialGroupFor"] = "";
-			salesOrderFilterDto["shipToParty"] = "";
-			salesOrderFilterDto["headerDlvBlock"] = "";
-			salesOrderFilterDto["sapMaterialNum"] = "";
-			/*			}*/
-			/*			if (!this.searchPayload) {
-							this.searchPayload = {
-								"customerCode": "",
-								"salesDocNumInitial": "",
-								"salesDocNumEnd": "",
-								"salesOrg": "",
-								"SalesOrgDesc": "",
-								"DivisionDesc": "",
-								"division": "",
-								"customerPo": "",
-								"materialGroup": "",
-								"itemDlvBlock": "",
-								"distributionChannel": "",
-								"initialDate": null,
-								"endDate": null,
-								"materialGroupFor": "",
-								"shipToParty": "",
-								"headerDlvBlock": "",
-								"sapMaterialNum": ""
-							};
-						}*/
-			var oPayload = {
-				"currentUserInfo": {
-					"taskOwner": oUserInfoModel.getProperty("/name"),
-					"ownerEmail": oUserInfoModel.getProperty("/email"),
-					"taskOwnerDisplayName": oUserInfoModel.getProperty("/displayName")
-						/*					"taskOwner": oUserMangement.getProperty("/id"),
-											"ownerEmail": oUserMangement.getProperty("/emails")[0].value,
-											"taskOwnerDisplayName": oUserMangement.getProperty("/userName")*/
-						/*					"taskOwner": 'P000032',
-											"ownerEmail": 'jen.ling.lee@dksh.com',
-											"taskOwnerDisplayName": "Jen Ling Lee DKSH"*/
+				url = "/WorkboxServices/inbox/filterdetail",
+				oSalesOrderFilterDto = {
+					"customerCode": (oFilterSaleOrder.selectedSoldToParty) ? oFilterSaleOrder.selectedSoldToParty : "",
+					"salesDocNumInitial": (oFilterSaleOrder.selectedSalesDocNumInitial) ? oFilterSaleOrder.selectedSalesDocNumInitial : "",
+					"salesDocNumEnd": (oFilterSaleOrder.selectedSalesDocNumEnd) ? oFilterSaleOrder.selectedSalesDocNumEnd : "",
+					"distributionChannel": (oFilterSaleOrder.selectedDistChannel) ? oFilterSaleOrder.selectedDistChannel : "",
+					"initialDate": (oFilterSaleOrder.selectedSalesDocDateFrom) ? oFilterSaleOrder.selectedSalesDocDateFrom.getDate() : null,
+					"endDate": (oFilterSaleOrder.selectedSalesDocDateTo) ? oFilterSaleOrder.selectedSalesDocDateTo.getDate() : null,
+					"materialGroupFor": (oFilterSaleOrder.selectedMatGrp4) ? oFilterSaleOrder.selectedMatGrp4 : "",
+					"materialGroup": (oFilterSaleOrder.selectedMatGrp) ? oFilterSaleOrder.selectedMatGrp : "",
+					"salesOrg": (oFilterSaleOrder.selectedSalesOrg) ? oFilterSaleOrder.selectedSalesOrg : "",
+					"division": (oFilterSaleOrder.selectedDivision) ? oFilterSaleOrder.selectedDivision : "",
+					"customerPo": (oFilterSaleOrder.selectCustomerPo) ? oFilterSaleOrder.selectCustomerPo : "",
+					"itemDlvBlock": (oFilterSaleOrder.selectedDeliveryBlock) ? oFilterSaleOrder.selectedDeliveryBlock : "",
+					"shipToParty": (oFilterSaleOrder.selectedShipToParty) ? oFilterSaleOrder.selectedShipToParty : "",
+					"headerDlvBlock": (oFilterSaleOrder.selectedHeaderDeliveryBlock) ? oFilterSaleOrder.selectedHeaderDeliveryBlock : "",
+					"sapMaterialNum": (oFilterSaleOrder.selectedMaterialNum) ? oFilterSaleOrder.selectedMaterialNum : ""
 				},
-				"isAdmin": false,
-				"salesOrderFilterDto": salesOrderFilterDto,
-				/*				"salesOrderFilterDto": this.searchPayload,*/
-				"page": oSettingModel.getProperty("/selectedPage")
-			};
+				oPayload = {
+					"currentUserInfo": {
+						"taskOwner": oUserInfoModel.getProperty("/name"),
+						"ownerEmail": oUserInfoModel.getProperty("/email"),
+						"taskOwnerDisplayName": oUserInfoModel.getProperty("/displayName")
+					},
+					"isAdmin": false,
+					"salesOrderFilterDto": oSalesOrderFilterDto,
+					"page": oSettingModel.getProperty("/selectedPage")
+				};
+
+			/*			var oPayload = {
+							"currentUserInfo": {
+								"taskOwner": oUserInfoModel.getProperty("/name"),
+								"ownerEmail": oUserInfoModel.getProperty("/email"),
+								"taskOwnerDisplayName": oUserInfoModel.getProperty("/displayName")*/
+			/*					"taskOwner": oUserMangement.getProperty("/id"),
+								"ownerEmail": oUserMangement.getProperty("/emails")[0].value,
+								"taskOwnerDisplayName": oUserMangement.getProperty("/userName")*/
+			/*					"taskOwner": 'P000032',
+								"ownerEmail": 'jen.ling.lee@dksh.com',
+								"taskOwnerDisplayName": "Jen Ling Lee DKSH"*/
+			/*				},
+							"isAdmin": false,
+							"salesOrderFilterDto": oSalesOrderFilterDto,
+							"page": oSettingModel.getProperty("/selectedPage")
+						};*/
 			oView.setBusy(true);
 			oView.getModel("ItemBlockModel").loadData(url, JSON.stringify(oPayload), true, "POST", false, false, oHeader).then(function (oResp) {
 				var oData = oView.getModel("ItemBlockModel").getData(),
@@ -172,12 +152,11 @@ sap.ui.define([
 						pageNum: count.toString()
 					});
 				}
-				debugger;
+
 				oSettingModel.setProperty("/pagination", aPageNum);
 				var fnSDdetailLevel = function (oDataIndx, oLoadDataModel) {
 					oLoadDataModel.loadData(vUrl).then(function () {
 						var oLoadData = oView.getModel("LoadDataModel").getData();
-						debugger;
 						for (var indx in oLoadData.data.salesDocItemList) {
 							var oItem = oLoadData.data.salesDocItemList[indx];
 							Object.assign(oItem, {
@@ -193,7 +172,6 @@ sap.ui.define([
 					oView.setBusy(false);
 				};
 				// Fetch Sale order from Java
-				debugger;
 				for (var indx in oData.workBoxDtos) {
 					var oDataIndx = oData.workBoxDtos[indx],
 						sSplitDate = oDataIndx.taskDescription.split("|")[6].split("/"),

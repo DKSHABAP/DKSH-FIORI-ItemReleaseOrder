@@ -22,7 +22,23 @@ sap.ui.define([
 				selectedPage: 1,
 				pagination: []
 			}), "settings");
-			oView.setModel(new JSONModel({}), "filterModel");
+			oView.setModel(new JSONModel({
+				"selectedSoldToParty": "",
+				"selectedSalesDocNumInitial": "",
+				"selectedSalesDocNumEnd": "",
+				"selectedDistChannel": "",
+				"selectedSalesDocDateFrom": null,
+				"selectedSalesDocDateTo": null,
+				"selectedMatGrp4": "",
+				"selectedMatGrp": "",
+				"selectedSalesOrg": "",
+				"selectedDivision": "",
+				"selectCustomerPo": "",
+				"selectedDeliveryBlock": "",
+				"selectedShipToParty": "",
+				"selectedHeaderDeliveryBlock": "",
+				"selectedMaterialNum": ""
+			}), "filterModel");
 			oView.setModel(oMockData, "MockData");
 			oView.setModel(new JSONModel(), "LoadDataModel");
 			oView.setModel(new JSONModel({
