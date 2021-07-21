@@ -108,13 +108,20 @@
 							maxLength="10" liveChange="salesDocValidationHandle"/>
 					</fb:control>
 				</fb:FilterGroupItem>
+				<fb:FilterGroupItem groupName="G1" name="P" label="{i18n>SalesTeam}" partOfCurrentVariant="true" visibleInFilterBar="true">
+					<fb:control>
+						<!--						<Input value="{filterModel>/selectedSalesTeam}" tooltip="{filterModel>/selectedSalesTeam}" placeholder="{i18n>EnterSalesTeam}"
+							maxLength="10" liveChange="salesDocValidationHandle"/>-->
+					</fb:control>
+				</fb:FilterGroupItem>
 			</fb:filterGroupItems>
 		</fb:FilterBar>
 	</l:VerticalLayout>
 	<OverflowToolbar>
 		<ToolbarSpacer/>
 		<Button icon="sap-icon://action-settings" tooltip="{i18n>FilterPersonalization}" press="onPressFilterPersonalization"></Button>
-		<Button icon="sap-icon://search" tooltip="{i18n>Search}" text="{i18n>Search}" type="Emphasized" press="onSearchSalesHeader"></Button>
+		<Button icon="sap-icon://search" tooltip="{i18n>Search}" text="{i18n>Search}" type="Emphasized"
+			press="onSearchSalesHeader($event, ${filterModel>/})"></Button>
 		<Button icon="sap-icon://refresh" tooltip="{i18n>Reset}" text="{i18n>Reset}" press="onResetValueHelp"></Button>
 		<ToolbarSpacer visible="false"/>
 	</OverflowToolbar>

@@ -47,10 +47,10 @@ sap.ui.define([
 
 			if (sIcon === "sap-icon://drill-down") {
 				oEvent.getSource().setProperty("icon", "sap-icon://drill-up");
-				aSorters.push(new sap.ui.model.Sorter(sField, true, false));
+				aSorters.push(new Sorter(sField, true, false));
 			} else {
 				oEvent.getSource().setProperty("icon", "sap-icon://drill-down");
-				aSorters.push(new sap.ui.model.Sorter(sField, false, false));
+				aSorters.push(new Sorter(sField, false, false));
 			}
 			oBinding.sort(aSorters);
 		},
@@ -499,27 +499,12 @@ sap.ui.define([
 			oTable.removeSelections();
 		},
 		// On Search data
-		onSearchSalesHeader: function (oEvent) {
-			/*			var oFilterModel = this.getView().getModel("filterModel");
-						this.searchPayload = {
-							"customerCode": oFilterModel.getProperty("/selectedSoldToParty"),
-							"salesDocNumInitial": oFilterModel.getProperty("/selectedSalesDocNumInitial"),
-							"salesDocNumEnd": oFilterModel.getProperty("/selectedSalesDocNumEnd"),
-							"distributionChannel": oFilterModel.getProperty("/selectedDistChannel"),
-							"initialDate": oFilterModel.getProperty("/selectedSalesDocDateFrom"),
-							"endDate": oFilterModel.getProperty("/selectedSalesDocDateTo"),
-							"materialGroupFor": oFilterModel.getProperty("/selectedMatGrp4"),
-							"materialGroup": oFilterModel.getProperty("/selectedMatGrp"),
-							"salesOrg": oFilterModel.getProperty("/selectedSalesOrg"),
-							"division": oFilterModel.getProperty("/selectedDivision"),
-							"customerPo": oFilterModel.getProperty("/selectCustomerPo"),
-							"itemDlvBlock": oFilterModel.getProperty("/selectedDeliveryBlock"),
-							"shipToParty": oFilterModel.getProperty("/selectedShipToParty"),
-							"headerDlvBlock": oFilterModel.getProperty("/selectedHeaderDeliveryBlock"),
-							"sapMaterialNum": oFilterModel.getProperty("/selectedMaterialNum")
-						};*/
+		onSearchSalesHeader: function (oEvent, oFilterSaleOrder) {
 			var oView = this.getView(),
 				oSettingModel = oView.getModel("settings");
+			oSettingModel.setProperty("/selectedPage", 1);
+			this.formatter.fetchSaleOrder.call(this);
+
 			/*			if (Object.keys(oFilterModel.getProperty("/")).length > 0) {
 							for (var indx in Object.keys(oFilterModel.getProperty("/"))) {
 								var sProperty = Object.keys(oFilterModel.getProperty("/"))[indx];
@@ -527,8 +512,8 @@ sap.ui.define([
 							}
 						}*/
 
-			oSettingModel.setProperty("/selectedPage", 1);
-			this.formatter.fetchSaleOrder.call(this);
+			/*			oSettingModel.setProperty("/selectedPage", 1);
+						this.formatter.fetchSaleOrder.call(this);*/
 			/*			this.searchPayload = {
 							"customerCode": oFilterModel.getProperty("/selectedSoldToParty"),
 							"salesDocNumInitial": oFilterModel.getProperty("/selectedSalesDocNumInitial"),
@@ -776,6 +761,19 @@ sap.ui.define([
 			}
 			if (this.oFragmentList[sFragmentName]) {
 				this.oFragmentList[sFragmentName].close();
+			}
+		},
+		onItemSubmission: function (oEvent) {
+			// Can't get ID by view since each panel ID is generated dynamically from control itself
+			// In this case, have to use sap.ui.core() to get the object of the sId
+			var sId = oEvent.getSource().getParent().getParent().getId(),
+				oBinding = sap.ui.getCore().byId(sId).getBinding("items");
+
+			if (oBinding.oList.find(function (oList) {
+					return !oList.acceptOrReject;
+				})) {
+				MessageToast.show(this.getText("noActionTaken"));
+				return;
 			}
 		},
 		handleCreditBlockPress: function (oEvent, sOrderNum) {
