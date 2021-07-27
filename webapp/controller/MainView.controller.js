@@ -219,7 +219,7 @@ sap.ui.define([
 			}
 
 			// Validate if item has rejection or SO blocked prior update item to ECC
-			Promise.all([this.formatter.fetchData.call(this, oValueHelpModel, "/ValidateSaleOrderItemsSet", aFilters)]).
+			Promise.all([this.formatter.fetchData.call(this, oValueHelpModel, "/ValidateItemsBeforeSaveSet", aFilters)]).
 			then(function (oRes) {
 				var sFragmentPath = this.getText("MainFragmentPath");
 
@@ -399,9 +399,6 @@ sap.ui.define([
 				aRejectModel.push(Object.assign(oSelectedContext.getObject(), {
 					sPath: oSelectedContext.getPath()
 				}));
-				/*				this.onRejectPress["aRejectModel"].push(Object.assign(oSelectedContext.getObject(), {
-									sPath: oSelectedContext.getPath()
-								}));*/
 			}
 			oView.setModel(new JSONModel(aRejectModel), "RejectDataModel");
 			oView.setBusy(true);
@@ -426,15 +423,18 @@ sap.ui.define([
 			}.bind(this)).catch(function (oErr) {
 				var errMsg = JSON.parse(oErr.responseText).error.message.value;
 				MessageBox.warning(errMsg);
+				oView.setBusy(false);
 			});
 		},
 		onOkRejectPress: function (oEvent, aItems) {
 			var oView = this.getView(),
 				oItemBlockModel = oView.getModel("ItemBlockModel");
+
 			for (var index in aItems) {
 				var oItem = aItems[index];
 
 				oItemBlockModel.setProperty([oItem.sPath, "/acceptOrReject"].join(""), "R");
+				oItemBlockModel.setProperty([oItem.sPath, "/itemStagingStatus"].join(""), "Rejected");
 			}
 			this.handleCloseValueHelp(oEvent, "Reject");
 		},
@@ -502,35 +502,9 @@ sap.ui.define([
 		onSearchSalesHeader: function (oEvent, oFilterSaleOrder) {
 			var oView = this.getView(),
 				oSettingModel = oView.getModel("settings");
+
 			oSettingModel.setProperty("/selectedPage", 1);
 			this.formatter.fetchSaleOrder.call(this);
-
-			/*			if (Object.keys(oFilterModel.getProperty("/")).length > 0) {
-							for (var indx in Object.keys(oFilterModel.getProperty("/"))) {
-								var sProperty = Object.keys(oFilterModel.getProperty("/"))[indx];
-								oPayload[sProperty] = oFilterModel.getProperty("/" + sProperty);
-							}
-						}*/
-
-			/*			oSettingModel.setProperty("/selectedPage", 1);
-						this.formatter.fetchSaleOrder.call(this);*/
-			/*			this.searchPayload = {
-							"customerCode": oFilterModel.getProperty("/selectedSoldToParty"),
-							"salesDocNumInitial": oFilterModel.getProperty("/selectedSalesDocNumInitial"),
-							"salesDocNumEnd": oFilterModel.getProperty("/selectedSalesDocNumEnd"),
-							"distributionChannel": oFilterModel.getProperty("/selectedDistChannel"),
-							"initialDate": oFilterModel.getProperty("/selectedSalesDocDateFrom"),
-							"endDate": oFilterModel.getProperty("/selectedSalesDocDateTo"),
-							"materialGroupFor": oFilterModel.getProperty("/selectedMatGrp4"),
-							"materialGroup": oFilterModel.getProperty("/selectedMatGrp"),
-							"salesOrg": oFilterModel.getProperty("/selectedSalesOrg"),
-							"division": oFilterModel.getProperty("/selectedDivision"),
-							"customerPo": oFilterModel.getProperty("/selectCustomerPo"),
-							"itemDlvBlock": oFilterModel.getProperty("/selectedDeliveryBlock"),
-							"shipToParty": oFilterModel.getProperty("/selectedShipToParty"),
-							"headerDlvBlock": oFilterModel.getProperty("/selectedHeaderDeliveryBlock"),
-							"sapMaterialNum": oFilterModel.getProperty("/selectedMaterialNum")
-						};*/
 		},
 		valueHelpRequest: function (oEvent, sFragment, sPath, sAccess, filter1) {
 			var oView = this.getView(),
@@ -556,6 +530,7 @@ sap.ui.define([
 
 			this.valueHelpId = oEvent.getSource().getId();
 			aFilters.push(oFilter);
+			oView.setBusy(true);
 			if (!this.oFragmentList[sFragment]) {
 				Fragment.load({
 					id: oView.getId(),
@@ -567,13 +542,16 @@ sap.ui.define([
 						this.oFragmentList[sFragment] = oDialog;
 						oView.addDependent(oDialog);
 						this.oFragmentList[sFragment].setModel(new JSONModel(oRes[0]), "ValueHelpSet");
+						oView.setBusy(false);
 						this.oFragmentList[sFragment].open();
 					}.bind(this)).catch(function (oErrResp) {});
 				}.bind(this)).catch(function (oErr) {
+					oView().setBusy(false);
 					var errMsg = JSON.parse(oErr.responseText).error.message.value;
 					MessageBox.warning(errMsg);
-				});
+				}.bind(this));
 			} else {
+				oView.setBusy(false);
 				this.oFragmentList[sFragment].open();
 			}
 		},
@@ -763,18 +741,47 @@ sap.ui.define([
 				this.oFragmentList[sFragmentName].close();
 			}
 		},
-		onItemSubmission: function (oEvent) {
-			// Can't get ID by view since each panel ID is generated dynamically from control itself
-			// In this case, have to use sap.ui.core() to get the object of the sId
-			var sId = oEvent.getSource().getParent().getParent().getId(),
-				oBinding = sap.ui.getCore().byId(sId).getBinding("items");
+		onItemSubmission: function (oEvent, aItem) {
+			var oView = this.getView(),
+				aDetailItem = aItem.detailLevel[0],
+				oDataModel = oView.getModel("ValueHelp"),
+				aEntry = {
+					navHeaderToValidateItem: []
+				},
+				aDataProperties = ["salesItemOrderNo", "salesHeaderNo", "sapMaterialNum", "orderedQtySales", "netPrice", "storageLoc", "batchNum"];
 
-			if (oBinding.oList.find(function (oList) {
+			if (aDetailItem.salesDocItemList.find(function (oList) {
 					return !oList.acceptOrReject;
 				})) {
 				MessageToast.show(this.getText("noActionTaken"));
 				return;
 			}
+
+			oView.setBusy(true);
+			Object.assign(aEntry, {
+				salesHeaderNo: aDetailItem.salesOrderNum
+			});
+			for (var index in aDetailItem.salesDocItemList) {
+				var oItem = aDetailItem.salesDocItemList[index],
+					oEntry = {};
+
+				for (var indx in Object.keys(aDataProperties)) {
+					var sDataProperty = aDataProperties[indx];
+					oEntry[sDataProperty] = oItem[sDataProperty].toString();
+				}
+				aEntry.navHeaderToValidateItem.push(oEntry);
+			}
+			// Call create is easy to structure for multiple entries
+			Promise.all([this.formatter.createData.call(this, oDataModel, "/ValidateBeforeSubmitSet", aEntry)]).then(
+				function (oRes) {
+					debugger;
+					oView.setBusy(false);
+				}).catch(function (oErr) {
+				debugger;
+				oView.setBusy(false);
+				var errMsg = JSON.parse(oErr.responseText).error.message.value;
+				MessageBox.warning(errMsg);
+			});
 		},
 		handleCreditBlockPress: function (oEvent, sOrderNum) {
 			var oButton = oEvent.getSource(),
