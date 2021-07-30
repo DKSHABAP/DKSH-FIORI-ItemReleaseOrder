@@ -121,6 +121,7 @@ sap.ui.define([
 				var oData = oView.getModel("ItemBlockModel").getData(),
 					aPageNum = [],
 					count = 0;
+
 				// No data found
 				if (!oData.count) {
 					oView.setBusy(false);
@@ -334,15 +335,6 @@ sap.ui.define([
 			} else {
 				return true;
 			}
-		},
-		approveRejectText: function (mark) {
-			if (mark === "R") {
-				return "Rejected";
-			}
-			if (mark === "A") {
-				return "Approved";
-			}
-			return "";
 		},
 		// no need
 		getDecisionSet: function (taskDec) {

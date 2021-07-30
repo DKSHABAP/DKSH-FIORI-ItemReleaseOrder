@@ -74,6 +74,10 @@ sap.ui.define([
 			var oView = this.getView(),
 				sFragmentPath = this.getText("MainFragmentPath");
 
+			oView.setModel({
+				deletePersBtnVisible: false,
+				savePersBtnVisible: false
+			}, "FilterPersonalization");
 			if (!this.oFragmentList["Personalization"]) {
 				Fragment.load({
 					id: oView.getId(),
@@ -344,13 +348,6 @@ sap.ui.define([
 				MessageToast.show(this.getText("ItemSelectList"));
 				return;
 			}
-			// Check if found any rejected item(s)
-			if (oTable.getSelectedContexts().some(function (el) {
-					return el.getProperty(el.sPath).acceptOrReject === "R";
-				})) {
-				MessageToast.show(this.getText("ItemRejectedMsg"));
-				return;
-			}
 			// Need to enhance logic if it's final level or not
 			this.onApprovePress["Table"] = oTable;
 			var fnCloseApprove = function (oAction) {
@@ -359,7 +356,12 @@ sap.ui.define([
 					for (var index in oTable.getSelectedContexts()) {
 						var oSelectedContext = oTable.getSelectedContexts()[index],
 							sPath = oSelectedContext.getPath();
+
 						oSelectedContext.getModel().setProperty([sPath, "/acceptOrReject"].join(""), "A");
+						oSelectedContext.getModel().setProperty([sPath, "/itemStagingStatus"].join(""), "Pending Approval");
+						// Set both comment and reject reason text to blank for user action
+						oSelectedContext.getModel().setProperty([sPath, "/reasonForRejectionText"].join(""), "");
+						oSelectedContext.getModel().setProperty([sPath, "/comments"].join(""), "");
 					}
 				}
 			}.bind(this);
@@ -391,15 +393,11 @@ sap.ui.define([
 
 			for (var indx in oTable.getSelectedContexts()) {
 				var oSelectedContext = oTable.getSelectedContexts()[indx];
-				// Check if found any rejected item(s)
-				if (oSelectedContext.getObject().acceptOrReject === "A") {
-					MessageToast.show(this.getText("ItemApprovedMsg"));
-					return;
-				}
 				aRejectModel.push(Object.assign(oSelectedContext.getObject(), {
 					sPath: oSelectedContext.getPath()
 				}));
 			}
+
 			oView.setModel(new JSONModel(aRejectModel), "RejectDataModel");
 			oView.setBusy(true);
 			Promise.all([this.formatter.fetchData.call(this, oValueHelpModel, "/SearchHelp_RejectReasonSet")]).then(function (oRes) {
@@ -426,15 +424,17 @@ sap.ui.define([
 				oView.setBusy(false);
 			});
 		},
-		onOkRejectPress: function (oEvent, aItems) {
+		onOkRejectPress: function (oEvent, aItems, aValueHelpSet) {
 			var oView = this.getView(),
 				oItemBlockModel = oView.getModel("ItemBlockModel");
 
 			for (var index in aItems) {
-				var oItem = aItems[index];
+				var oItem = aItems[index],
+					sRejectText = sap.ui.getCore().byId(oItem.selectedId).getProperty("text");
 
 				oItemBlockModel.setProperty([oItem.sPath, "/acceptOrReject"].join(""), "R");
 				oItemBlockModel.setProperty([oItem.sPath, "/itemStagingStatus"].join(""), "Rejected");
+				oItemBlockModel.setProperty([oItem.sPath, "/reasonForRejectionText"].join(""), sRejectText);
 			}
 			this.handleCloseValueHelp(oEvent, "Reject");
 		},
@@ -443,6 +443,15 @@ sap.ui.define([
 				oItems = oEvent.getSource().getParent().getParent().getItems();
 			for (var index in oItems) {
 				oItems[index].getCells()[2].setSelectedItem(oSelectedKey);
+			}
+		},
+		onAddRejectComments: function (oEvent, aItems) {
+			var oView = this.getView(),
+				oItemBlockModel = oView.getModel("ItemBlockModel");
+
+			for (var index in aItems) {
+				var oItem = aItems[index];
+				oItemBlockModel.setProperty([oItem.sPath, "/comments"].join(""), oEvent.getParameter("value"));
 			}
 		},
 		onItemTableFreeSearch: function (oEvent) {
@@ -476,17 +485,18 @@ sap.ui.define([
 				oBinding.filter(null);
 			}
 		},
-		onDisplayMarkedItems: function (oEvent, sFragmentName) {
+		onDisplayMarkedItems: function (oEvent, sFragmentName, oItemModel) {
 			var sFragmentPath = this.getText("MainFragmentPath");
 			if (!this.oFragmentList[sFragmentName]) {
 				this.oFragmentList[sFragmentName] = sap.ui.xmlfragment(sFragmentPath + sFragmentName, this);
 				this.getView().addDependent(this.oFragmentList[sFragmentName]);
 				this.oFragmentList[sFragmentName].addStyleClass("sapUiSizeCompact");
+				this.oFragmentList[sFragmentName].setModel(new JSONModel(oItemModel), "DisplayActionModel");
 				this.oFragmentList[sFragmentName].open();
 			} else {
+				this.oFragmentList[sFragmentName].setModel(new JSONModel(oItemModel), "DisplayActionModel");
 				this.oFragmentList[sFragmentName].open();
 			}
-			/*			this.DisplayMarkedItems.setModel(oEvent.getSource().getModel("SalesHeaderModel"), "SalesHeaderModel");*/
 		},
 		onResetDisplay: function (oEvent) {
 			var oSource = oEvent.getSource(),
@@ -756,7 +766,6 @@ sap.ui.define([
 				MessageToast.show(this.getText("noActionTaken"));
 				return;
 			}
-
 			oView.setBusy(true);
 			Object.assign(aEntry, {
 				salesHeaderNo: aDetailItem.salesOrderNum
@@ -765,19 +774,17 @@ sap.ui.define([
 				var oItem = aDetailItem.salesDocItemList[index],
 					oEntry = {};
 
-				for (var indx in Object.keys(aDataProperties)) {
-					var sDataProperty = aDataProperties[indx];
+				for (index in Object.keys(aDataProperties)) {
+					var sDataProperty = aDataProperties[index];
 					oEntry[sDataProperty] = oItem[sDataProperty].toString();
 				}
 				aEntry.navHeaderToValidateItem.push(oEntry);
 			}
-			// Call create is easy to structure for multiple entries
+			// Use create is easy to structure for deep entries
 			Promise.all([this.formatter.createData.call(this, oDataModel, "/ValidateBeforeSubmitSet", aEntry)]).then(
 				function (oRes) {
-					debugger;
 					oView.setBusy(false);
 				}).catch(function (oErr) {
-				debugger;
 				oView.setBusy(false);
 				var errMsg = JSON.parse(oErr.responseText).error.message.value;
 				MessageBox.warning(errMsg);

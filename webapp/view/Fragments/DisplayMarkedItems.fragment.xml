@@ -2,7 +2,7 @@
 	<Dialog title="{i18n>userActions}" class="custBox ">
 		<VBox>
 			<Table inset="false" fixedLayout="true"
-				items="{ path: 'SalesHeaderModel>/salesDocItemList', filters: [{ path: 'acceptOrReject', operator: 'EQ', value1: 'R' },{ path: 'acceptOrReject', operator: 'EQ', value1: 'A' }] }"
+				items="{ path: 'DisplayActionModel>/salesDocItemList', filters: [{ path: 'acceptOrReject', operator: 'EQ', value1: 'R' },{ path: 'acceptOrReject', operator: 'EQ', value1: 'A' }] }"
 				selectionChange="onSelectSingleSelectMaster" class="sapUiSizeCompact">
 				<columns>
 					<Column width="120px">
@@ -23,11 +23,12 @@
 				</columns>
 				<items>
 					<ColumnListItem>
-						<Text text="{SalesHeaderModel>salesItemOrderNo}" textAlign="Left"/>
-						<Text text="{SalesHeaderModel>sapMaterialNum}" textAlign="Left"/>
-						<Text text="{path: 'SalesHeaderModel>acceptOrReject', formatter:'.formatter.approveRejectText'}" textAlign="Left"/>
-						<Text text="{SalesHeaderModel>reasonForRejection}" textAlign="Left"/>
-						<Text text="{SalesHeaderModel>comments}" textAlign="Left"/>
+						<Text text="{DisplayActionModel>salesItemOrderNo}" textAlign="Left"/>
+						<Text text="{DisplayActionModel>sapMaterialNum}" textAlign="Left"/>
+						<Text text="{=${DisplayActionModel>acceptOrReject} === 'R' ? 'Rejected' : 'Approved'}" textAlign="Left"/>
+						<!--						<Text text="{DisplayActionModel>reasonForRejection}" textAlign="Left"/>-->
+						<Text text="{DisplayActionModel>reasonForRejectionText}" textAlign="Left"/>
+						<Text text="{DisplayActionModel>comments}" textAlign="Left"/>
 					</ColumnListItem>
 				</items>
 			</Table>
