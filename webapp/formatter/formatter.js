@@ -9,6 +9,7 @@ sap.ui.define([
 		"Content-Type": "application/json;charset=utf-8"
 	};
 	return {
+		// Te
 		getFragmentPath: function (sFragmentPath, sFragmentName) {
 			return sFragmentPath + sFragmentName;
 		},
@@ -88,8 +89,10 @@ sap.ui.define([
 						"salesDocNumInitial": (oFilterSaleOrder.selectedSalesDocNumInitial) ? oFilterSaleOrder.selectedSalesDocNumInitial : "",
 						"salesDocNumEnd": (oFilterSaleOrder.selectedSalesDocNumEnd) ? oFilterSaleOrder.selectedSalesDocNumEnd : "",
 						"distributionChannel": (oFilterSaleOrder.selectedDistChannel) ? oFilterSaleOrder.selectedDistChannel : "",
-						"initialDate": (oFilterSaleOrder.selectedSalesDocDateFrom) ? oFilterSaleOrder.selectedSalesDocDateFrom.toUTCString() : null,
-						"endDate": (oFilterSaleOrder.selectedSalesDocDateTo) ? oFilterSaleOrder.selectedSalesDocDateTo.toUTCString() : null,
+						/*						"initialDate": (oFilterSaleOrder.selectedSalesDocDateFrom) ? oFilterSaleOrder.selectedSalesDocDateFrom.toUTCString() : null,
+												"endDate": (oFilterSaleOrder.selectedSalesDocDateTo) ? oFilterSaleOrder.selectedSalesDocDateTo.toUTCString() : null,*/
+						"initialDate": null,
+						"endDate": null,
 						"materialGroupFor": (oFilterSaleOrder.selectedMatGrp4) ? oFilterSaleOrder.selectedMatGrp4 : "",
 						"materialGroup": (oFilterSaleOrder.selectedMatGrp) ? oFilterSaleOrder.selectedMatGrp : "",
 						"salesOrg": (oFilterSaleOrder.selectedSalesOrg) ? oFilterSaleOrder.selectedSalesOrg : "",
@@ -121,7 +124,7 @@ sap.ui.define([
 				var oData = oView.getModel("ItemBlockModel").getData(),
 					aPageNum = [],
 					count = 0;
-
+				debugger;
 				// No data found
 				if (!oData.count) {
 					oView.setBusy(false);
@@ -155,38 +158,57 @@ sap.ui.define([
 				}
 
 				oSettingModel.setProperty("/pagination", aPageNum);
-				var fnSDdetailLevel = function (oDataIndx, oLoadDataModel) {
-					oLoadDataModel.loadData(vUrl).then(function () {
-						var oLoadData = oView.getModel("LoadDataModel").getData();
-						for (var indx in oLoadData.data.salesDocItemList) {
-							var oItem = oLoadData.data.salesDocItemList[indx];
-							Object.assign(oItem, {
-								editMaterial: false,
-								editOrderQty: false,
-								editNetPrice: false,
-								editSLoc: false,
-								editBatchNo: false
-							});
-						}
-						oDataIndx.detailLevel.push(oLoadData.data);
-					}.bind(this)).finally(function () {}.bind(this));
-					oView.setBusy(false);
-				};
-				// Fetch Sale order from Java
-				for (var indx in oData.workBoxDtos) {
-					var oDataIndx = oData.workBoxDtos[indx],
-						sSplitDate = oDataIndx.taskDescription.split("|")[6].split("/"),
-						sDescSet = this.formatter.splitText(oDataIndx.taskDescription, 0),
-						vUrl = ["/DKSHJavaService/taskSubmit/getSalesOrder/", oDataIndx.requestId, "&", sDescSet, "&", oDataIndx.processId, "&", this.formatter
-							.splitText(oDataIndx.taskDescription, 2)
-						].join("");
+				// Old - Fetch list of sale order
+				/*				var fnSDdetailLevel = function (oDataIndx, oLoadDataModel) {
+									oLoadDataModel.loadData(vUrl).then(function () {
+										var oLoadData = oView.getModel("LoadDataModel").getData();
+										for (var indx in oLoadData.data.salesDocItemList) {
+											var oItem = oLoadData.data.salesDocItemList[indx];
+											Object.assign(oItem, {
+												editMaterial: false,
+												editOrderQty: false,
+												editNetPrice: false,
+												editSLoc: false,
+												editBatchNo: false
+											});
+										}
+										oDataIndx.detailLevel.push(oLoadData.data);
+									}.bind(this)).finally(function () {}.bind(this));
+									oView.setBusy(false);
+								}.bind(this);
 
-					oDataIndx.detailLevel = [];
-					oDataIndx.expanded = false;
-					oDataIndx.DescSet = sDescSet;
-					oDataIndx.postingDate = new Date(+sSplitDate[2], sSplitDate[1] - 1, +sSplitDate[0]);
-					fnSDdetailLevel(oDataIndx, oView.getModel("LoadDataModel"));
-				}
+								for (var indx in oData.workBoxDtos) {
+									var oDataIndx = oData.workBoxDtos[indx],
+										sSplitDate = oDataIndx.taskDescription.split("|")[6].split("/"),
+										sDescSet = this.formatter.splitText(oDataIndx.taskDescription, 0),
+										vUrl = ["/DKSHJavaService/taskSubmit/getSalesOrder/", oDataIndx.requestId, "&", sDescSet, "&", oDataIndx.processId, "&", this.formatter
+											.splitText(oDataIndx.taskDescription, 2)
+										].join("");
+
+									oDataIndx.detailLevel = [];
+									oDataIndx.expanded = false;
+									oDataIndx.DescSet = sDescSet;
+									oDataIndx.postingDate = new Date(+sSplitDate[2], sSplitDate[1] - 1, +sSplitDate[0]);
+									fnSDdetailLevel(oDataIndx, oView.getModel("LoadDataModel"));
+								}*/
+				// New - Fetch list of sale order
+				/*				oPayload = [];
+								for (var indx in oData.workBoxDtos) {
+									var oDataIndx = oData.workBoxDtos[indx];
+
+									oPayload.push({
+										"salesOrderNum": oDataIndx.requestId,
+										"decisionSetId": this.formatter.splitText(oDataIndx.taskDescription, 0),
+										"sapTaskId": oDataIndx.taskId
+									});
+								}
+								var vUrl = ["/DKSHJavaService/taskSubmit/getSalesBlockOrder/", oView.getModel("UserInfo").getData().name].join("");
+								oView.getModel("LoadDataModel").loadData(vUrl, JSON.stringify(oPayload), true, "POST", false, false, oHeader).then(function (oRes) {
+										oView.setBusy(false);
+									})
+									.catch(function (oErr) {
+										oView.setBusy(false);
+									});*/
 				oView.getModel("ItemBlockModel").refresh();
 			}.bind(this)).catch(function (oErr) {
 				this.getView().setBusy(false);
@@ -261,8 +283,31 @@ sap.ui.define([
 					});
 				});
 		},
-		approveItem: function () {
+		controlEditabled: function (object) {
 
+			var aItemUsage = ["B", "C"];
+			// high level item carry item's posnr
+			if (object.higherLevelItem !== "000000" && aItemUsage.includes(object.higherLevelItemUsage)) {
+				object.editMaterial = false;
+				object.editOrderQty = false;
+				object.editNetPrice = false;
+				object.editSLoc = true;
+				object.editBatchNo = true;
+			} else if (object.higherLevelItem !== "000000" && !object.higherLevelItemUsage) {
+				object.editMaterial = false;
+				object.editOrderQty = (object.salesItemOrderNo === object.higherLevelItem) ? false : true;
+				object.editNetPrice = (object.salesItemOrderNo === object.higherLevelItem) ? true : false;
+				object.editSLoc = true;
+				object.editBatchNo = true;
+				// no high level item carry this item's posnr
+			} else if (object.higherLevelItem === "000000") {
+				object.editMaterial = true;
+				object.editOrderQty = true;
+				object.editNetPrice = true;
+				object.editSLoc = true;
+				object.editBatchNo = true;
+			}
+			return object;
 		},
 		splitText: function (taskDescription, index) {
 			return taskDescription.split("|")[+index];

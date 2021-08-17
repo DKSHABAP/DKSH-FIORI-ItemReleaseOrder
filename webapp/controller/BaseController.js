@@ -37,7 +37,8 @@ sap.ui.define([
 				"selectedDeliveryBlock": "",
 				"selectedShipToParty": "",
 				"selectedHeaderDeliveryBlock": "",
-				"selectedMaterialNum": ""
+				"selectedMaterialNum": "",
+				/*				"isAdmin": true*/
 			}), "filterModel");
 			oView.setModel(oMockData, "MockData");
 			oView.setModel(new JSONModel(), "LoadDataModel");

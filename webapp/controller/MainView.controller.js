@@ -122,8 +122,30 @@ sap.ui.define([
 				aItems = oTable.getItems(),
 				aContent = oSource.getParent().getAggregation("content");
 
-			// Set edit button
 			oSource.setVisible(false);
+			// Control selected item's properties visibility
+			for (var index in aItems) {
+				var object = aItems[index].getBindingContext("ItemBlockModel").getObject();
+				/*				object.editMaterial = true;
+								object.editOrderQty = true;
+								object.editNetPrice = true;
+								object.editSLoc = true;
+								object.editBatchNo = true;*/
+
+				object = this.formatter.controlEditabled.call(this, object);
+				// Default Sales Unit to UOM if its blank
+				object.salesUnit = (!object.salesUnit) ? this.getText("UoM").toUpperCase() : object.salesUnit;
+			}
+			// store initial value model for onSaveEditItem function
+			// In case if item(s) are not valid then reset to initial value in onSaveEditItem function
+			oView.setModel(new JSONModel(), "initialValueModel");
+			oView.getModel("initialValueModel").setData(JSON.parse(oTable.getModel("ItemBlockModel").getJSON()));
+			// Set edit button
+			aContent[5].setEnabled(false);
+			aContent[6].setEnabled(false);
+			aContent[7].setEnabled(false);
+			aContent[8].setEnabled(false);
+			aContent[9].setEnabled(false);
 			aContent.find(function (el, idx) {
 				try {
 					if (el.getText()) {
@@ -133,26 +155,6 @@ sap.ui.define([
 					// Catch Exception
 				}
 			});
-			aContent[5].setEnabled(false);
-			aContent[6].setEnabled(false);
-			aContent[7].setEnabled(false);
-			aContent[8].setEnabled(false);
-			aContent[9].setEnabled(false);
-			// Control selected item's properties visibility
-			for (var index in aItems) {
-				var object = aItems[index].getBindingContext("ItemBlockModel").getObject();
-				object.editMaterial = true;
-				object.editOrderQty = true;
-				object.editNetPrice = true;
-				object.editSLoc = true;
-				object.editBatchNo = true;
-				// Default Sales Unit to UOM if its blank
-				object.salesUnit = (!object.salesUnit) ? this.getText("UoM").toUpperCase() : object.salesUnit;
-			}
-			// store initial value model for onSaveEditItem function
-			// In case if item(s) are not valid then reset to initial value in onSaveEditItem function
-			oView.setModel(new JSONModel(), "initialValueModel");
-			oView.getModel("initialValueModel").setData(JSON.parse(oTable.getModel("ItemBlockModel").getJSON()));
 			oItemBlockModel.refresh();
 		},
 		onSaveEditItem: function (oEvent, sFragmentName, oItem) {
