@@ -72,31 +72,34 @@ sap.ui.define([
 				oFilterSaleOrder = oView.getModel("filterModel").getData(),
 				oSettingModel = oView.getModel("settings"),
 				url = "/WorkboxServices/inbox/filterdetail",
-				oSalesOrderFilterDto = {
-					"customerCode": (oFilterSaleOrder.selectedSoldToParty) ? oFilterSaleOrder.selectedSoldToParty : "",
-					"salesDocNumInitial": (oFilterSaleOrder.selectedSalesDocNumInitial) ? oFilterSaleOrder.selectedSalesDocNumInitial : "",
-					"salesDocNumEnd": (oFilterSaleOrder.selectedSalesDocNumEnd) ? oFilterSaleOrder.selectedSalesDocNumEnd : "",
-					"distributionChannel": (oFilterSaleOrder.selectedDistChannel) ? oFilterSaleOrder.selectedDistChannel : "",
-					"initialDate": (oFilterSaleOrder.selectedSalesDocDateFrom) ? oFilterSaleOrder.selectedSalesDocDateFrom.getDate() : null,
-					"endDate": (oFilterSaleOrder.selectedSalesDocDateTo) ? oFilterSaleOrder.selectedSalesDocDateTo.getDate() : null,
-					"materialGroupFor": (oFilterSaleOrder.selectedMatGrp4) ? oFilterSaleOrder.selectedMatGrp4 : "",
-					"materialGroup": (oFilterSaleOrder.selectedMatGrp) ? oFilterSaleOrder.selectedMatGrp : "",
-					"salesOrg": (oFilterSaleOrder.selectedSalesOrg) ? oFilterSaleOrder.selectedSalesOrg : "",
-					"division": (oFilterSaleOrder.selectedDivision) ? oFilterSaleOrder.selectedDivision : "",
-					"customerPo": (oFilterSaleOrder.selectCustomerPo) ? oFilterSaleOrder.selectCustomerPo : "",
-					"itemDlvBlock": (oFilterSaleOrder.selectedDeliveryBlock) ? oFilterSaleOrder.selectedDeliveryBlock : "",
-					"shipToParty": (oFilterSaleOrder.selectedShipToParty) ? oFilterSaleOrder.selectedShipToParty : "",
-					"headerDlvBlock": (oFilterSaleOrder.selectedHeaderDeliveryBlock) ? oFilterSaleOrder.selectedHeaderDeliveryBlock : "",
-					"sapMaterialNum": (oFilterSaleOrder.selectedMaterialNum) ? oFilterSaleOrder.selectedMaterialNum : ""
-				},
 				oPayload = {
 					"currentUserInfo": {
 						"taskOwner": oUserInfoModel.getProperty("/name"),
 						"ownerEmail": oUserInfoModel.getProperty("/email"),
 						"taskOwnerDisplayName": oUserInfoModel.getProperty("/displayName")
+							/*						"taskOwner": "P000032",
+													"ownerEmail": "jen.ling.lee@dksh.com",
+													"taskOwnerDisplayName": "Jen Ling Lee DKSH"*/
 					},
-					"isAdmin": false,
-					"salesOrderFilterDto": oSalesOrderFilterDto,
+					/*					"isAdmin": false,*/
+					"isAdmin": oFilterSaleOrder.isAdmin,
+					"salesOrderFilterDto": {
+						"customerCode": (oFilterSaleOrder.selectedSoldToParty) ? oFilterSaleOrder.selectedSoldToParty : "",
+						"salesDocNumInitial": (oFilterSaleOrder.selectedSalesDocNumInitial) ? oFilterSaleOrder.selectedSalesDocNumInitial : "",
+						"salesDocNumEnd": (oFilterSaleOrder.selectedSalesDocNumEnd) ? oFilterSaleOrder.selectedSalesDocNumEnd : "",
+						"distributionChannel": (oFilterSaleOrder.selectedDistChannel) ? oFilterSaleOrder.selectedDistChannel : "",
+						"initialDate": (oFilterSaleOrder.selectedSalesDocDateFrom) ? oFilterSaleOrder.selectedSalesDocDateFrom.toUTCString() : null,
+						"endDate": (oFilterSaleOrder.selectedSalesDocDateTo) ? oFilterSaleOrder.selectedSalesDocDateTo.toUTCString() : null,
+						"materialGroupFor": (oFilterSaleOrder.selectedMatGrp4) ? oFilterSaleOrder.selectedMatGrp4 : "",
+						"materialGroup": (oFilterSaleOrder.selectedMatGrp) ? oFilterSaleOrder.selectedMatGrp : "",
+						"salesOrg": (oFilterSaleOrder.selectedSalesOrg) ? oFilterSaleOrder.selectedSalesOrg : "",
+						"division": (oFilterSaleOrder.selectedDivision) ? oFilterSaleOrder.selectedDivision : "",
+						"customerPo": (oFilterSaleOrder.selectCustomerPo) ? oFilterSaleOrder.selectCustomerPo : "",
+						"itemDlvBlock": (oFilterSaleOrder.selectedDeliveryBlock) ? oFilterSaleOrder.selectedDeliveryBlock : "",
+						"shipToParty": (oFilterSaleOrder.selectedShipToParty) ? oFilterSaleOrder.selectedShipToParty : "",
+						"headerDlvBlock": (oFilterSaleOrder.selectedHeaderDeliveryBlock) ? oFilterSaleOrder.selectedHeaderDeliveryBlock : "",
+						"sapMaterialNum": (oFilterSaleOrder.selectedMaterialNum) ? oFilterSaleOrder.selectedMaterialNum : ""
+					},
 					"page": oSettingModel.getProperty("/selectedPage")
 				};
 
@@ -108,9 +111,6 @@ sap.ui.define([
 			/*					"taskOwner": oUserMangement.getProperty("/id"),
 								"ownerEmail": oUserMangement.getProperty("/emails")[0].value,
 								"taskOwnerDisplayName": oUserMangement.getProperty("/userName")*/
-			/*					"taskOwner": 'P000032',
-								"ownerEmail": 'jen.ling.lee@dksh.com',
-								"taskOwnerDisplayName": "Jen Ling Lee DKSH"*/
 			/*				},
 							"isAdmin": false,
 							"salesOrderFilterDto": oSalesOrderFilterDto,
@@ -121,6 +121,7 @@ sap.ui.define([
 				var oData = oView.getModel("ItemBlockModel").getData(),
 					aPageNum = [],
 					count = 0;
+
 				// No data found
 				if (!oData.count) {
 					oView.setBusy(false);
@@ -217,7 +218,6 @@ sap.ui.define([
 					}
 				});
 				// Control selected item's properties visibility
-				debugger;
 				for (var indx in aItems) {
 					var object = aItems[indx].getBindingContext("ItemBlockModel").getObject();
 					object.editMaterial = false;
@@ -316,21 +316,6 @@ sap.ui.define([
 		messageStatus: function (isValid) {
 			return (isValid) ? "sap-icon://message-success" : "sap-icon://message-error";
 		},
-		concatenateBatch: function (val1, val2, val3) {
-			if (val1 && val2 && val3) {
-				// var date = val2.getDate();
-				// var month = val2.getMonth();
-				// var year = val2.getYear();
-				var a = new Date(val2);
-
-				var Oval2 = a.toLocaleDateString();
-				// var Oval2 = [date, month, year].join('/');
-				return val1 + " " + "(" + Oval2 + ")" + " " + "(" + val3 + ")";
-			} else {
-				return "";
-			}
-		},
-
 		dateFormatter: function (pTimeStamp) {
 			if (!pTimeStamp) {
 				return;
@@ -344,22 +329,12 @@ sap.ui.define([
 			// });
 			// return dateFormat.format(new Date(pTimeStamp));
 		},
-
 		hideMultipleFilter: function (key) {
 			if (key === "salesDocNumEnd" || key === "endDate" || key === "approvalType" || key === "storageLocText") {
 				return false;
 			} else {
 				return true;
 			}
-		},
-		approveRejectText: function (mark) {
-			if (mark === "R") {
-				return "Rejected";
-			}
-			if (mark === "A") {
-				return "Approved";
-			}
-			return "";
 		},
 		// no need
 		getDecisionSet: function (taskDec) {
@@ -389,38 +364,6 @@ sap.ui.define([
 				return "ACTIVE";
 			}
 		},
-
-		formatNumber: function (sValue1, sValue2) {
-			/*			sValue1 = parseFloat(sValue1).toFixed(2);
-						if (sValue1 !== undefined && sValue1 !== null) {
-							sValue1 = sValue1.toString();
-						}
-
-						if (sValue2 == null)
-							sValue2 = "";
-						if (sValue1 == "" || sValue1 == undefined) {
-							return "";
-						} else {
-							var x = sValue1;
-							x = x.toString();
-							var afterPoint = '';
-							if (x.indexOf('.') > 0)
-								afterPoint = x.substring(x.indexOf('.'), x.length);
-							x = Math.floor(x);
-							x = x.toString();
-							var lastThree = x.substring(x.length - 3);
-							var otherNumbers = x.substring(0, x.length - 3);
-							if (otherNumbers != '')
-								lastThree = ',' + lastThree;
-							var res = otherNumbers.replace(/\B(?=(\d{3})+(?!\d))/g, ",") + lastThree + afterPoint;
-							if (sValue2 != "")
-								return res + " (" + sValue2 + ")";
-							else if (sValue2 == "" || sValue2 == undefined)
-								return res;
-						}*/
-
-		},
-
 		setEditRestriction: function (levelNum, processor, taskOwner) {
 			if (processor === "" && levelNum === "L1") {
 				return true;

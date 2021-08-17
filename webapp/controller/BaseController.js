@@ -70,9 +70,10 @@ sap.ui.define([
 		setODataFilter: function (aProperties, oItemRow) {
 			var aFilters = [];
 
+			debugger;
 			for (var indx in aProperties) {
 				if (oItemRow[aProperties[indx]]) {
-					aFilters.push(new Filter(aProperties[indx], FilterOperator.EQ, oItemRow[aProperties[indx]]));
+					aFilters.push(new Filter(aProperties[indx], FilterOperator.EQ, oItemRow[aProperties[indx]].toString()));
 				}
 			}
 			return aFilters;
