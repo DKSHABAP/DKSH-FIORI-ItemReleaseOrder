@@ -98,10 +98,6 @@
 					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="hgLvItemUsage" Type="Edm.String" Nullable="false" MaxLength="1" sap:unicode="false" sap:label="higher-level item usage"
 					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/></EntityType>
 			<EntityType Name="ValidateBeforeSubmit" sap:content-version="1">
-				<Key><PropertyRef Name="salesHeaderNo"/></Key><Property Name="salesHeaderNo" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Sales Document"
-					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><NavigationProperty Name="navHeaderToValidateItem" Relationship="ZDKSH_CC_HDR_ITEM_RELEASE_SRV.HeaderToValidateItem"
-					FromRole="FromRole_HeaderToValidateItem" ToRole="ToRole_HeaderToValidateItem"/></EntityType>
-			<EntityType Name="ValidateSubmitItem" sap:content-version="1">
 				<Key><PropertyRef Name="salesItemOrderNo"/><PropertyRef Name="salesHeaderNo"/></Key><Property Name="salesItemOrderNo" Type="Edm.String" Nullable="false" MaxLength="6" sap:unicode="false" sap:label="Item No"
 					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="salesHeaderNo" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Sales Document"
 					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="sapMaterialNum" Type="Edm.String" Nullable="false" MaxLength="18" sap:unicode="false" sap:label="Material No"
@@ -153,12 +149,6 @@
 					<Dependent Role="ToRole_HeaderToItem"><PropertyRef Name="docNumber"/></Dependent>
 				</ReferentialConstraint>
 			</Association>
-			<Association Name="HeaderToValidateItem" sap:content-version="1"><End Type="ZDKSH_CC_HDR_ITEM_RELEASE_SRV.ValidateBeforeSubmit" Multiplicity="1" Role="FromRole_HeaderToValidateItem"/><End Type="ZDKSH_CC_HDR_ITEM_RELEASE_SRV.ValidateSubmitItem" Multiplicity="*" Role="ToRole_HeaderToValidateItem"/>
-				<ReferentialConstraint>
-					<Principal Role="FromRole_HeaderToValidateItem"><PropertyRef Name="salesHeaderNo"/></Principal>
-					<Dependent Role="ToRole_HeaderToValidateItem"><PropertyRef Name="salesHeaderNo"/></Dependent>
-				</ReferentialConstraint>
-			</Association>
 			<EntityContainer Name="ZDKSH_CC_HDR_ITEM_RELEASE_SRV_Entities" m:IsDefaultEntityContainer="true" sap:supported-formats="atom json xlsx"><EntitySet Name="SearchHelp_StorageLocationSet" EntityType="ZDKSH_CC_HDR_ITEM_RELEASE_SRV.SearchHelp_StorageLocation" sap:creatable="false"
 				sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/><EntitySet Name="SearchHelp_BatchNoSet" EntityType="ZDKSH_CC_HDR_ITEM_RELEASE_SRV.SearchHelp_BatchNo" sap:creatable="false"
 				sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/><EntitySet Name="SearchHelp_RejectReasonSet" EntityType="ZDKSH_CC_HDR_ITEM_RELEASE_SRV.SearchHelp_RejectReason" sap:creatable="false"
@@ -168,7 +158,6 @@
 				sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/><EntitySet Name="SoHeaderSet" EntityType="ZDKSH_CC_HDR_ITEM_RELEASE_SRV.SoHeader" sap:creatable="false" sap:updatable="false"
 				sap:deletable="false" sap:searchable="true" sap:pageable="false" sap:addressable="false" sap:content-version="1"/><EntitySet Name="SoItemSet" EntityType="ZDKSH_CC_HDR_ITEM_RELEASE_SRV.SoItem" sap:creatable="false" sap:updatable="false"
 				sap:deletable="false" sap:searchable="true" sap:pageable="false" sap:addressable="false" sap:content-version="1"/><EntitySet Name="ValidateBeforeSubmitSet" EntityType="ZDKSH_CC_HDR_ITEM_RELEASE_SRV.ValidateBeforeSubmit" sap:creatable="false"
-				sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/><EntitySet Name="ValidateSubmitItemSet" EntityType="ZDKSH_CC_HDR_ITEM_RELEASE_SRV.ValidateSubmitItem" sap:creatable="false"
 				sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/><EntitySet Name="SearchHelp_SalesOrgSet" EntityType="ZDKSH_CC_HDR_ITEM_RELEASE_SRV.SearchHelp_SalesOrg" sap:creatable="false"
 				sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/><EntitySet Name="SearchHelp_HeaderDeliveryBlockSet" EntityType="ZDKSH_CC_HDR_ITEM_RELEASE_SRV.SearchHelp_HeaderDeliveryBlock"
 				sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/><EntitySet Name="SearchHelp_ItemDeliveryBlockSet" EntityType="ZDKSH_CC_HDR_ITEM_RELEASE_SRV.SearchHelp_ItemDeliveryBlock"
@@ -179,8 +168,6 @@
 				sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
 				<AssociationSet Name="HeaderToItemSet" Association="ZDKSH_CC_HDR_ITEM_RELEASE_SRV.HeaderToItem" sap:creatable="false" sap:updatable="false"
 					sap:deletable="false" sap:content-version="1"><End EntitySet="SoHeaderSet" Role="FromRole_HeaderToItem"/><End EntitySet="SoItemSet" Role="ToRole_HeaderToItem"/></AssociationSet>
-				<AssociationSet Name="HeaderToValidateItemSet" Association="ZDKSH_CC_HDR_ITEM_RELEASE_SRV.HeaderToValidateItem" sap:creatable="false"
-					sap:updatable="false" sap:deletable="false" sap:content-version="1"><End EntitySet="ValidateBeforeSubmitSet" Role="FromRole_HeaderToValidateItem"/><End EntitySet="ValidateSubmitItemSet" Role="ToRole_HeaderToValidateItem"/></AssociationSet>
 			</EntityContainer><atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="self" href="./sap/ZDKSH_CC_HDR_ITEM_RELEASE_SRV/$metadata"/><atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="latest-version" href="./sap/ZDKSH_CC_HDR_ITEM_RELEASE_SRV/$metadata"/></Schema>
 	</edmx:DataServices>
 </edmx:Edmx>

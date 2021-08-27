@@ -166,11 +166,11 @@ sap.ui.define([
 				aItems = oTable.getItems(),
 				aAggregationContent = oSource.getParent().getAggregation("content"),
 				oLoadDataModel = oView.getModel("LoadDataModel"),
-				oValueHelpModel = this.getOwnerComponent().getModel("ValueHelp"),
+				oModel = this.getOwnerComponent().getModel(),
 				oUserManagementModel = oView.getModel("UserManagement"),
 				aFilters = [],
 				aHeadProperties = ["taskId", "requestId"],
-				aDetailProperties = ["salesOrderNum", "salesOrderDate", "orderType", "orderTypeText", "customerPoDate", "soldToParty",
+				aDetailProperties = ["salesOrderNum", "salesOrmderDate", "orderType", "orderTypeText", "customerPoDate", "soldToParty",
 					"shipToParty", "shipToPartyText", "decisionSetId", "levelNum"
 				];
 
@@ -225,7 +225,7 @@ sap.ui.define([
 			}
 
 			// Validate if item has rejection or SO blocked prior update item to ECC
-			Promise.all([this.formatter.fetchData.call(this, oValueHelpModel, "/ValidateItemsBeforeSaveSet", aFilters)]).
+			Promise.all([this.formatter.fetchData.call(this, oModel, "/ValidateItemsBeforeSaveSet", aFilters)]).
 			then(function (oRes) {
 				var sFragmentPath = this.getText("MainFragmentPath");
 
@@ -246,8 +246,8 @@ sap.ui.define([
 				}
 				this.oFragmentList[sFragmentName].setModel(new JSONModel(oRes[0]), "SavedMessageModel");
 				// Update to ECC and hana DB
-				this.formatter.postJavaService.call(this, oLoadDataModel, "/DKSHJavaService/OdataServices/updateOnSaveOrEdit", this.onSaveEditItem[
-					"Payload"]).then(function (oResponse) {
+				this.formatter.postJavaService.call(this, oLoadDataModel, "/DKSHJavaService/OdataServices/updateOnSaveOrEdit", JSON.stringify(
+					this.onSaveEditItem["Payload"])).then(function (oResponse) {
 					var oItemBlockModel = oView.getModel("ItemBlockModel"),
 						oInitialValueModel = oView.getModel("initialValueModel");
 
@@ -299,7 +299,7 @@ sap.ui.define([
 				oSource = oEvent.getSource(),
 				oBindingContext = oSource.getParent().getBindingContext("ItemBlockModel"),
 				oItem = oBindingContext.getProperty(oBindingContext.getPath()),
-				oDataModel = oView.getModel("ValueHelp"),
+				oDataModel = oView.getModel(),
 				oEntry = {},
 				aDataProperties = ["salesHeaderNo", "salesItemOrderNo", "sapMaterialNum", "shortText", "orderedQtySales", "salesUnit", "netPrice",
 					"splPrice", "netWorth", "docCurrency", "storageLoc", "batchNum"
@@ -385,7 +385,7 @@ sap.ui.define([
 				sId = oSource.getParent().getParent().getId(),
 				oTable = sap.ui.getCore().byId(sId),
 				aRejectModel = [],
-				oValueHelpModel = this.getOwnerComponent().getModel("ValueHelp"),
+				oModel = this.getOwnerComponent().getModel(),
 				sFragmentPath = this.getText("FragmentPath");
 
 			if (oTable.getSelectedItems().length === 0) {
@@ -402,7 +402,7 @@ sap.ui.define([
 
 			oView.setModel(new JSONModel(aRejectModel), "RejectDataModel");
 			oView.setBusy(true);
-			Promise.all([this.formatter.fetchData.call(this, oValueHelpModel, "/SearchHelp_RejectReasonSet")]).then(function (oRes) {
+			Promise.all([this.formatter.fetchData.call(this, oModel, "/SearchHelp_RejectReasonSet")]).then(function (oRes) {
 				if (!this.oFragmentList[sFragment]) {
 					Fragment.load({
 						id: oView.getId(),
@@ -426,7 +426,7 @@ sap.ui.define([
 				oView.setBusy(false);
 			});
 		},
-		onOkRejectPress: function (oEvent, aItems, aValueHelpSet) {
+		onOkRejectPress: function (oEvent, aItems, aSet) {
 			var oView = this.getView(),
 				oItemBlockModel = oView.getModel("ItemBlockModel");
 
@@ -537,7 +537,7 @@ sap.ui.define([
 					filters: filter,
 					and: true
 				}),
-				oValueHelpModel = this.getOwnerComponent().getModel("ValueHelp"),
+				oModel = this.getOwnerComponent().getModel(),
 				sFragmentPath = this.getText("FragmentPath");
 
 			this.valueHelpId = oEvent.getSource().getId();
@@ -549,7 +549,7 @@ sap.ui.define([
 					name: this.formatter.getFragmentPath(sFragmentPath, sFragment),
 					controller: this
 				}).then(function (oDialog) {
-					Promise.all([this.formatter.fetchData.call(this, oValueHelpModel, sPath, aFilters)]).
+					Promise.all([this.formatter.fetchData.call(this, oModel, sPath, aFilters)]).
 					then(function (oRes) {
 						this.oFragmentList[sFragment] = oDialog;
 						oView.addDependent(oDialog);
@@ -573,7 +573,7 @@ sap.ui.define([
 				oItemLevel = oEvent.getSource().getParent().getParent(),
 				oItemModel = oView.getModel("ItemBlockModel"),
 				oItemRow = oItemModel.getProperty(oItemLevel.getBindingContextPath()),
-				oValueHelpModel = this.getOwnerComponent().getModel("ValueHelp"),
+				oModel = this.getOwnerComponent().getModel(),
 				sFragmentPath = this.getText("FragmentPath"),
 				aFilters = [];
 
@@ -599,7 +599,7 @@ sap.ui.define([
 					name: this.formatter.getFragmentPath(sFragmentPath, sFragment),
 					controller: this
 				}).then(function (oDialog) {
-					Promise.all([this.formatter.fetchData.call(this, oValueHelpModel, sPath, aFilters)]).
+					Promise.all([this.formatter.fetchData.call(this, oModel, sPath, aFilters)]).
 					then(function (oRes) {
 						this.oFragmentList[sFragment] = oDialog;
 						oView.addDependent(oDialog);
@@ -611,7 +611,7 @@ sap.ui.define([
 					});
 				}.bind(this)).catch(function (oErr) {});
 			} else {
-				Promise.all([this.formatter.fetchData.call(this, oValueHelpModel, sPath, aFilters)]).
+				Promise.all([this.formatter.fetchData.call(this, oModel, sPath, aFilters)]).
 				then(function (oRes) {
 					this.oFragmentList[sFragment].setModel(new JSONModel(oRes[0]), "ValueHelpSet");
 					this.oFragmentList[sFragment].open();
@@ -647,7 +647,7 @@ sap.ui.define([
 			var oView = this.getView(),
 				oData = oView.getModel("filterModel").getData(),
 				oTable = this._getTable(sId),
-				oValueHelpModel = oView.getModel("ValueHelp_SoldToParty"),
+				oModel = oView.getModel("_SoldToParty"),
 				aFilters = [];
 
 			if (!oData.SoldToPartId && !oData.SoldToPartName && !oData.SoldToPartSaleOrg && !oData.SoldToPartDivision && !oData.SoldToPartDistChannel) {
@@ -669,7 +669,7 @@ sap.ui.define([
 				and: true
 			});
 			aFilters.push(oFilter);
-			this.formatter.fetchData.call(this, oValueHelpModel, sPath, aFilters).then(function (oRes) {
+			this.formatter.fetchData.call(this, oModel, sPath, aFilters).then(function (oRes) {
 				Object.assign(oRes, {
 					"totalRecords": oRes.results.length
 				});
@@ -742,6 +742,7 @@ sap.ui.define([
 			if (this.oFragmentList[sFragmentName]) {
 				this.oFragmentList[sFragmentName].close();
 			}
+			this.getView().setBusy(false);
 		},
 		//	On Cancel for particular fragment
 		handleCancel: function (oEvent, sFragmentName) {
@@ -753,16 +754,17 @@ sap.ui.define([
 				this.oFragmentList[sFragmentName].close();
 			}
 		},
-		onItemSubmission: function (oEvent, aItem) {
+		onItemSubmission: function (oEvent, aItem, sFragmentName) {
 			var oView = this.getView(),
-				aDetailItem = aItem.detailLevel[0],
-				oDataModel = oView.getModel("ValueHelp"),
+				oDataModel = oView.getModel(),
+				oLoadDataModel = oView.getModel("LoadDataModel"),
 				aEntry = {
 					navHeaderToValidateItem: []
 				},
 				aDataProperties = ["salesItemOrderNo", "salesHeaderNo", "sapMaterialNum", "orderedQtySales", "netPrice", "storageLoc", "batchNum"];
+			this.aDetailItem = aItem.detailLevel[0];
 
-			if (aDetailItem.salesDocItemList.find(function (oList) {
+			if (this.aDetailItem.salesDocItemList.find(function (oList) {
 					return !oList.acceptOrReject;
 				})) {
 				MessageToast.show(this.getText("noActionTaken"));
@@ -770,10 +772,10 @@ sap.ui.define([
 			}
 			oView.setBusy(true);
 			Object.assign(aEntry, {
-				salesHeaderNo: aDetailItem.salesOrderNum
+				salesHeaderNo: this.aDetailItem.salesOrderNum
 			});
-			for (var index in aDetailItem.salesDocItemList) {
-				var oItem = aDetailItem.salesDocItemList[index],
+			for (var index in this.aDetailItem.salesDocItemList) {
+				var oItem = this.aDetailItem.salesDocItemList[index],
 					oEntry = {};
 
 				for (index in Object.keys(aDataProperties)) {
@@ -783,20 +785,75 @@ sap.ui.define([
 				aEntry.navHeaderToValidateItem.push(oEntry);
 			}
 			// Use create is easy to structure for deep entries
-			Promise.all([this.formatter.createData.call(this, oDataModel, "/ValidateBeforeSubmitSet", aEntry)]).then(
-				function (oRes) {
+			debugger;
+			// Promise.all([this.formatter.createData.call(this, oDataModel, "/ValidateBeforeSubmitSet", aEntry)]).then(
+			// 	function (oRes) {
+			// 		debugger;
+
+			// 		// if found the data in data in rontend is not sync with backend, prompt error.
+			// 		/*					if (oRes[0].isChanged) {
+			// 								if (!this.oFragmentList[sFragmentName]) {
+			// 									this.oFragmentList[sFragmentName] = sap.ui.xmlfragment(this.getText("MainFragmentPath") + sFragmentName, this);
+			// 									oView.addDependent(this.oFragmentList[sFragmentName]);
+			// 								}
+			// 								this.oFragmentList[sFragmentName].setModel(new JSONModel(oRes[0].navHeaderToValidateItem), "SubmitMessageModel");
+			// 								this.oFragmentList[sFragmentName].open();
+			// 								return;
+			// 							}*/
+
+			// 		// Trigger endpoint for submission
+			// 		var sUrl = "/DKSHJavaService2/returnRequest/connect-onSubmitBlockOrderApproval"
+			// 		this.formatter.postJavaService.call(this, oLoadDataModel, sUrl, oPayload).then(function (oJavaRes) {
+
+			// 			debugger;
+			// 		}.bind(this)).catch(function (oJavaErr) {
+			// 			debugger;
+			// 		}.bind(this));
+
+			// 		oView.setBusy(false);
+			// 	}.bind(this)).catch(function (oErr) {
+			// 	debugger;
+			// 	oView.setBusy(false);
+			// 	var errMsg = JSON.parse(oErr.responseText).error.message.value;
+			// 	MessageBox.warning(errMsg);
+			// });
+			var oReturnPromise = this.formatter.createData.call(this, oDataModel, "/ValidateBeforeSubmitSet", aEntry);
+			oReturnPromise.then(function (oRes) {
+				debugger;
+				// if found the data in data in rontend is not sync with backend, prompt error.
+				if (oRes[0].isChanged) {
+					if (!this.oFragmentList[sFragmentName]) {
+						this.oFragmentList[sFragmentName] = sap.ui.xmlfragment(this.getText("MainFragmentPath") + sFragmentName, this);
+						oView.addDependent(this.oFragmentList[sFragmentName]);
+					}
+					this.oFragmentList[sFragmentName].setModel(new JSONModel(oRes[0].navHeaderToValidateItem), "SubmitMessageModel");
+					this.oFragmentList[sFragmentName].open();
+					return;
+				}
+
+				// Trigger endpoint for submission
+				var sUrl = "/DKSHJavaService2/returnRequest/onSubmitBlockOrderApproval";
+				this.formatter.postJavaService.call(this, oLoadDataModel, sUrl, JSON.stringify(this.aDetailItem)).then(function (oJavaRes) {
+
+					debugger;
 					oView.setBusy(false);
-				}).catch(function (oErr) {
+				}.bind(this)).catch(function (oJavaErr) {
+					debugger;
+					oView.setBusy(false);
+				}.bind(this));
+			}.bind(this)).catch(function (oErr) {
+				debugger;
 				oView.setBusy(false);
 				var errMsg = JSON.parse(oErr.responseText).error.message.value;
 				MessageBox.warning(errMsg);
-			});
+			}.bind(this));
+
 		},
 		handleCreditBlockPress: function (oEvent, sOrderNum) {
 			var oButton = oEvent.getSource(),
 				sFragmentPath = this.getText("MainFragmentPath"),
 				oView = this.getView(),
-				oValueHelpModel = this.getOwnerComponent().getModel("ValueHelp"),
+				oModel = this.getOwnerComponent().getModel(),
 				oItemRow = {},
 				aFilters = [];
 
@@ -816,7 +873,7 @@ sap.ui.define([
 					name: this.formatter.getFragmentPath(sFragmentPath, "CreditBlockReasons"),
 					controller: this
 				}).then(function (oPopover) {
-					Promise.all([this.formatter.fetchData.call(this, oValueHelpModel, "/CreditStatusSet", aFilters)]).
+					Promise.all([this.formatter.fetchData.call(this, oModel, "/CreditStatusSet", aFilters)]).
 					then(function (oRes) {
 						this.oFragmentList["CreditBlockReasons"] = oPopover;
 						oView.addDependent(oPopover);
@@ -828,7 +885,7 @@ sap.ui.define([
 					});
 				}.bind(this));
 			} else {
-				Promise.all([this.formatter.fetchData.call(this, oValueHelpModel, "/CreditStatusSet", aFilters)]).
+				Promise.all([this.formatter.fetchData.call(this, oModel, "/CreditStatusSet", aFilters)]).
 				then(function (oRes) {
 					this.oFragmentList["CreditBlockReasons"].openBy(oButton);
 				}.bind(this)).catch(function (oErr) {
@@ -878,7 +935,7 @@ sap.ui.define([
 				this.formatter.fetchSaleOrder.call(this);
 			}
 		},
-		onResetValueHelp: function (oEvent) {
+		onReset: function (oEvent) {
 			var oFilterModel = this.getView().getModel("filterModel");
 
 			oFilterModel.setData({});

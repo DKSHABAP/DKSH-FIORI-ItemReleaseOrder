@@ -1,0 +1,29 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:ui="sap.ui.table" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core">
+	<Dialog icon="sap-icon://hint" title="Status" showHeader="true" draggable="true" contentWidth="40%">
+		<VBox>
+			<Table inset="false" fixedLayout="true"
+				items="{path: 'SubmitMessageModel>/results', filter: { path: 'isChanged', operator: 'EQ', value1: true }, sorter: {path: 'salesItemOrderNo'}}"
+				backgroundDesign="Solid" class="sapUiSizeCompact">
+				<columns>
+					<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left" width="140px">
+						<Label design="Bold" text="Message"/>
+					</Column>
+				</columns>
+				<items>
+					<ColumnListItem>
+						<cells>
+							<!--						<Text text="{SubmitMessageModel>Message}" textAlign="Left"/>-->
+							<FlexBox alignItems="Center">
+								<ObjectStatus text="{SubmitMessageModel>Message}"
+									icon="{ path : '{= !${SubmitMessageModel>isChanged}}', formatter: '.formatter.messageStatus' }"/>
+							</FlexBox>
+						</cells>
+					</ColumnListItem>
+				</items>
+			</Table>
+		</VBox>
+		<buttons>
+			<Button text="{i18n>cancel}" press="handleCloseValueHelp($event, 'SubmitErrorMessage')"/>
+		</buttons>
+	</Dialog>
+</core:FragmentDefinition>
