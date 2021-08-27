@@ -9,6 +9,7 @@ sap.ui.define([
 		"Content-Type": "application/json;charset=utf-8"
 	};
 	return {
+		// Te
 		getFragmentPath: function (sFragmentPath, sFragmentName) {
 			return sFragmentPath + sFragmentName;
 		},
@@ -74,14 +75,13 @@ sap.ui.define([
 				url = "/WorkboxServices/inbox/filterdetail",
 				oPayload = {
 					"currentUserInfo": {
-						"taskOwner": oUserInfoModel.getProperty("/name"),
-						"ownerEmail": oUserInfoModel.getProperty("/email"),
-						"taskOwnerDisplayName": oUserInfoModel.getProperty("/displayName")
-							/*						"taskOwner": "P000032",
-													"ownerEmail": "jen.ling.lee@dksh.com",
-													"taskOwnerDisplayName": "Jen Ling Lee DKSH"*/
+						// "taskOwner": oUserInfoModel.getProperty("/name"),
+						// "ownerEmail": oUserInfoModel.getProperty("/email"),
+						// "taskOwnerDisplayName": oUserInfoModel.getProperty("/displayName")
+						"taskOwner": "P000032",
+						// "ownerEmail": "jen.ling.lee@dksh.com",
+						// "taskOwnerDisplayName": "Jen Ling Lee DKSH"
 					},
-					/*					"isAdmin": false,*/
 					"isAdmin": oFilterSaleOrder.isAdmin,
 					"salesOrderFilterDto": {
 						"customerCode": (oFilterSaleOrder.selectedSoldToParty) ? oFilterSaleOrder.selectedSoldToParty : "",
@@ -90,6 +90,8 @@ sap.ui.define([
 						"distributionChannel": (oFilterSaleOrder.selectedDistChannel) ? oFilterSaleOrder.selectedDistChannel : "",
 						"initialDate": (oFilterSaleOrder.selectedSalesDocDateFrom) ? oFilterSaleOrder.selectedSalesDocDateFrom.toUTCString() : null,
 						"endDate": (oFilterSaleOrder.selectedSalesDocDateTo) ? oFilterSaleOrder.selectedSalesDocDateTo.toUTCString() : null,
+						/*						"initialDate": null,
+												"endDate": null,*/
 						"materialGroupFor": (oFilterSaleOrder.selectedMatGrp4) ? oFilterSaleOrder.selectedMatGrp4 : "",
 						"materialGroup": (oFilterSaleOrder.selectedMatGrp) ? oFilterSaleOrder.selectedMatGrp : "",
 						"salesOrg": (oFilterSaleOrder.selectedSalesOrg) ? oFilterSaleOrder.selectedSalesOrg : "",
@@ -100,28 +102,17 @@ sap.ui.define([
 						"headerDlvBlock": (oFilterSaleOrder.selectedHeaderDeliveryBlock) ? oFilterSaleOrder.selectedHeaderDeliveryBlock : "",
 						"sapMaterialNum": (oFilterSaleOrder.selectedMaterialNum) ? oFilterSaleOrder.selectedMaterialNum : ""
 					},
-					"page": oSettingModel.getProperty("/selectedPage")
+					"page": oSettingModel.getProperty("/selectedPage"),
+					"orderType": "createdAt",
+					"orderBy": "ASC"
 				};
-
-			/*			var oPayload = {
-							"currentUserInfo": {
-								"taskOwner": oUserInfoModel.getProperty("/name"),
-								"ownerEmail": oUserInfoModel.getProperty("/email"),
-								"taskOwnerDisplayName": oUserInfoModel.getProperty("/displayName")*/
-			/*					"taskOwner": oUserMangement.getProperty("/id"),
-								"ownerEmail": oUserMangement.getProperty("/emails")[0].value,
-								"taskOwnerDisplayName": oUserMangement.getProperty("/userName")*/
-			/*				},
-							"isAdmin": false,
-							"salesOrderFilterDto": oSalesOrderFilterDto,
-							"page": oSettingModel.getProperty("/selectedPage")
-						};*/
+			debugger;
 			oView.setBusy(true);
 			oView.getModel("ItemBlockModel").loadData(url, JSON.stringify(oPayload), true, "POST", false, false, oHeader).then(function (oResp) {
 				var oData = oView.getModel("ItemBlockModel").getData(),
 					aPageNum = [],
 					count = 0;
-
+				debugger;
 				// No data found
 				if (!oData.count) {
 					oView.setBusy(false);
@@ -155,38 +146,49 @@ sap.ui.define([
 				}
 
 				oSettingModel.setProperty("/pagination", aPageNum);
-				var fnSDdetailLevel = function (oDataIndx, oLoadDataModel) {
-					oLoadDataModel.loadData(vUrl).then(function () {
-						var oLoadData = oView.getModel("LoadDataModel").getData();
-						for (var indx in oLoadData.data.salesDocItemList) {
-							var oItem = oLoadData.data.salesDocItemList[indx];
-							Object.assign(oItem, {
-								editMaterial: false,
-								editOrderQty: false,
-								editNetPrice: false,
-								editSLoc: false,
-								editBatchNo: false
-							});
-						}
-						oDataIndx.detailLevel.push(oLoadData.data);
-					}.bind(this)).finally(function () {}.bind(this));
-					oView.setBusy(false);
-				};
-				// Fetch Sale order from Java
+				oPayload = [];
 				for (var indx in oData.workBoxDtos) {
 					var oDataIndx = oData.workBoxDtos[indx],
 						sSplitDate = oDataIndx.taskDescription.split("|")[6].split("/"),
-						sDescSet = this.formatter.splitText(oDataIndx.taskDescription, 0),
-						vUrl = ["/DKSHJavaService/taskSubmit/getSalesOrder/", oDataIndx.requestId, "&", sDescSet, "&", oDataIndx.processId, "&", this.formatter
-							.splitText(oDataIndx.taskDescription, 2)
-						].join("");
+						sDescSet = this.formatter.splitText(oDataIndx.taskDescription, 0);
 
 					oDataIndx.detailLevel = [];
 					oDataIndx.expanded = false;
 					oDataIndx.DescSet = sDescSet;
 					oDataIndx.postingDate = new Date(+sSplitDate[2], sSplitDate[1] - 1, +sSplitDate[0]);
-					fnSDdetailLevel(oDataIndx, oView.getModel("LoadDataModel"));
+					oPayload.push({
+						"salesOrderNum": oDataIndx.requestId,
+						"decisionSetId": this.formatter.splitText(oDataIndx.taskDescription, 0),
+						"sapTaskId": oDataIndx.processId
+					});
 				}
+
+				var vUrl = ["/DKSHJavaService/taskSubmit/getSalesBlockOrder/", oView.getModel("UserInfo").getData().name].join("");
+				oView.getModel("LoadDataModel").loadData(vUrl, JSON.stringify(oPayload), true, "POST", false, false, oHeader).then(function (oRes) {
+						/*				oView.getModel("LoadDataModel").loadData(vUrl, oPayload, true, "POST", false, false, oHeader).then(function (oRes) {*/
+						var oLoadData = oView.getModel("LoadDataModel");
+
+						// Remove element in workDtoBox if no task id compare to java endpoint
+						// oItemModel.setProperty("/workBoxDtos", oItemModel.getProperty("/workBoxDtos").filter(function (itemBlock) {
+						// 	return oLoadData.getProperty("/data").find(function (loadDataItem) {
+						// 		return itemBlock.requestId === loadDataItem.salesOrderNum;
+						// 	});
+						// }));
+						for (var index in oData.workBoxDtos) {
+							var oItem = oData.workBoxDtos[index];
+							var oReturn = oLoadData.getProperty("/data").find(function (item) {
+								return item.salesOrderNum === oItem.requestId;
+							});
+							if (!oReturn) {
+								continue;
+							}
+							oData.workBoxDtos[index].detailLevel.push(oReturn);
+						}
+						oView.setBusy(false);
+					})
+					.catch(function (oErr) {
+						oView.setBusy(false);
+					});
 				oView.getModel("ItemBlockModel").refresh();
 			}.bind(this)).catch(function (oErr) {
 				this.getView().setBusy(false);
@@ -195,7 +197,7 @@ sap.ui.define([
 		postJavaService: function (Model, sUrl, oPayload) {
 			return new Promise(
 				function (resolve, reject) {
-					Model.loadData(sUrl, JSON.stringify(oPayload), true, "POST", false, false, oHeader)
+					Model.loadData(sUrl, oPayload, true, "POST", false, false, oHeader)
 						.then(
 							function (oRes) {
 								resolve(oRes);
@@ -261,8 +263,31 @@ sap.ui.define([
 					});
 				});
 		},
-		approveItem: function () {
+		controlEditabled: function (object) {
 
+			var aItemUsage = ["B", "C"];
+			// high level item carry item's posnr
+			if (object.higherLevelItem !== "000000" && aItemUsage.includes(object.higherLevelItemUsage)) {
+				object.editMaterial = false;
+				object.editOrderQty = false;
+				object.editNetPrice = false;
+				object.editSLoc = true;
+				object.editBatchNo = true;
+			} else if (object.higherLevelItem !== "000000" && !object.higherLevelItemUsage) {
+				object.editMaterial = false;
+				object.editOrderQty = (object.salesItemOrderNo === object.higherLevelItem) ? false : true;
+				object.editNetPrice = (object.salesItemOrderNo === object.higherLevelItem) ? true : false;
+				object.editSLoc = true;
+				object.editBatchNo = true;
+				// no high level item carry this item's posnr
+			} else if (object.higherLevelItem === "000000") {
+				object.editMaterial = true;
+				object.editOrderQty = true;
+				object.editNetPrice = true;
+				object.editSLoc = true;
+				object.editBatchNo = true;
+			}
+			return object;
 		},
 		splitText: function (taskDescription, index) {
 			return taskDescription.split("|")[+index];
@@ -314,6 +339,7 @@ sap.ui.define([
 			}
 		},
 		messageStatus: function (isValid) {
+			debugger;
 			return (isValid) ? "sap-icon://message-success" : "sap-icon://message-error";
 		},
 		dateFormatter: function (pTimeStamp) {

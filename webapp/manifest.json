@@ -93,18 +93,7 @@
 				"type": "sap.ui.model.resource.ResourceModel",
 				"uri": "i18n/i18n.properties"
 			},
-			"ValueHelp_SoldToParty": {
-				"type": "sap.ui.model.odata.v2.ODataModel",
-				"settings": {
-					"defaultOperationMode": "Server",
-					"defaultBindingMode": "TwoWay",
-					"defaultCountMode": "None",
-					"useBatch": false
-				},
-				"dataSource": "ZDKSH_CC_DAC_SOLDTOPARTY_SRV",
-				"preload": true
-			},
-			"ValueHelp": {
+			"_SoldToParty": {
 				"type": "sap.ui.model.odata.v2.ODataModel",
 				"settings": {
 					"defaultOperationMode": "Server",
@@ -112,16 +101,24 @@
 					"defaultCountMode": "None",
 					"useBatch": false
 				},
+				"dataSource": "ZDKSH_CC_DAC_SOLDTOPARTY_SRV",
+				"preload": true
+			},
+			"": {
+				"type": "sap.ui.model.odata.v2.ODataModel",
+				"settings": {
+					"defaultOperationMode": "Server",
+					"defaultBindingMode": "OneWay",
+					"defaultCountMode": "Request"
+				},
 				"dataSource": "ZDKSH_CC_HDR_ITEM_RELEASE_SRV",
 				"preload": true
 			}
 		},
 		"resources": {
-			"css": [
-				{
-					"uri": "css/style.css"
-				}
-			]
+			"css": [{
+				"uri": "css/style.css"
+			}]
 		},
 		"routing": {
 			"config": {
@@ -136,15 +133,11 @@
 					"target": []
 				}
 			},
-			"routes": [
-				{
-					"name": "MainView",
-					"pattern": "",
-					"target": [
-						"MainView"
-					]
-				}
-			],
+			"routes": [{
+				"name": "MainView",
+				"pattern": "",
+				"target": ["MainView"]
+			}],
 			"targets": {
 				"MainView": {
 					"viewType": "XML",

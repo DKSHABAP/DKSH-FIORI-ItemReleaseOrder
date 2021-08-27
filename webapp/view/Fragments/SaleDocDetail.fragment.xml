@@ -96,7 +96,8 @@
 						press="onApprovePress($event, ${ItemBlockModel>})"/>
 					<Button icon="sap-icon://decline" type="Reject" tooltip="{i18n>Reject}" class="dkshRejectBtnStyle"
 						press="onRejectPress($event, 'Reject', ${ItemBlockModel>})"/>
-					<Button icon="sap-icon://upload" type="Transparent" tooltip="{i18n>Submit}" press="onItemSubmission($event, ${ItemBlockModel>})"/>
+					<Button icon="sap-icon://upload" type="Transparent" tooltip="{i18n>Submit}"
+						press="onItemSubmission($event, ${ItemBlockModel>}, 'SubmitErrorMessage')"/>
 					<Button icon="sap-icon://display" type="Transparent" tooltip="{i18n>DisplayActions}"
 						press="onDisplayMarkedItems($event, 'DisplayMarkedItems', ${ItemBlockModel>detailLevel/0/})"/>
 					<Button icon="sap-icon://reset" type="Transparent" tooltip="{i18n>resetDisplayBtn}" press="onResetDisplay"/>

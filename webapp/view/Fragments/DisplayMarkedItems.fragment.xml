@@ -11,7 +11,7 @@
 					<Column width="120px">
 						<Label design="Bold" text="{i18n>Material}"/>
 					</Column>
-					<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left" popinDisplay="Inline">
+					<Column width="120px" demandPopin="true" minScreenWidth="Tablet" hAlign="Left" popinDisplay="Inline">
 						<Label design="Bold" text="{i18n>action}"/>
 					</Column>
 					<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left" popinDisplay="Inline">
