@@ -71,13 +71,25 @@ sap.ui.define([
 		setODataFilter: function (aProperties, oItemRow) {
 			var aFilters = [];
 
-			debugger;
 			for (var indx in aProperties) {
 				if (oItemRow[aProperties[indx]]) {
 					aFilters.push(new Filter(aProperties[indx], FilterOperator.EQ, oItemRow[aProperties[indx]].toString()));
 				}
 			}
 			return aFilters;
+		},
+		resetModel: function (oModel, aProperties) {
+			aProperties.map(function (aProperty) {
+				var sPath = ["/", aProperty].join("");
+				if (typeof oModel.getProperty(sPath) === "string") {
+					oModel.setProperty(sPath, "");
+				} else if (typeof oModel.getProperty(sPath) === "boolean") {
+					oModel.setProperty(sPath, false);
+				} else if (oModel.getProperty(sPath) instanceof Date) {
+					oModel.setProperty(sPath, null);
+				}
+			});
+			oModel.updateBindings(true);
 		},
 		displayWarning: function () {},
 		displayError: function () {}

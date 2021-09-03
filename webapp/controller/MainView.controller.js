@@ -41,7 +41,6 @@ sap.ui.define([
 		},
 		onDetailTableSortPress: function (oEvent, sField) {
 			var sIcon = oEvent.getSource().getProperty("icon"),
-				// Get to table level
 				oBinding = oEvent.getSource().getParent().getParent().getParent().getBinding("items"),
 				aSorters = [];
 
@@ -69,6 +68,10 @@ sap.ui.define([
 				oWorkBoxDtos[index].expanded = false;
 			}
 			oItemBlockModel.refresh();
+		},
+		onResetValueHelp: function (oEvent) {
+			var oFilterModel = this.getView().getModel("filterModel");
+			this.resetModel(oFilterModel, Object.keys(this.getView().getModel("filterModel").getData()));
 		},
 		onPressPersonalization: function (oEvent) {
 			var oView = this.getView(),
@@ -120,23 +123,21 @@ sap.ui.define([
 				oTable = sap.ui.getCore().byId(sId),
 				oItemBlockModel = oTable.getModel("ItemBlockModel"),
 				aItems = oTable.getItems(),
-				aContent = oSource.getParent().getAggregation("content");
+				aContent = oSource.getParent().getAggregation("content"),
+				aItemUsage = ["B", "C"],
+				bBonus = aItems.some(function (oItem) {
+					var obj = oItem.getBindingContext("ItemBlockModel").getObject();
+					return aItemUsage.includes(obj.higherLevelItemUsage) || (obj.higherLevelItem !== "000000");
+				});
 
 			oSource.setVisible(false);
 			// Control selected item's properties visibility
-			for (var index in aItems) {
-				var object = aItems[index].getBindingContext("ItemBlockModel").getObject();
-				/*				object.editMaterial = true;
-								object.editOrderQty = true;
-								object.editNetPrice = true;
-								object.editSLoc = true;
-								object.editBatchNo = true;*/
-
-				object = this.formatter.controlEditabled.call(this, object);
-				// Default Sales Unit to UOM if its blank
+			aItems.map(function (oItem) {
+				var object = oItem.getBindingContext("ItemBlockModel").getObject();
+				object = this.formatter.controlEditabled.call(this, object, bBonus, aItemUsage);
 				object.salesUnit = (!object.salesUnit) ? this.getText("UoM").toUpperCase() : object.salesUnit;
-			}
-			// store initial value model for onSaveEditItem function
+			}.bind(this));
+			// Store initial value model for onSaveEditItem function
 			// In case if item(s) are not valid then reset to initial value in onSaveEditItem function
 			oView.setModel(new JSONModel(), "initialValueModel");
 			oView.getModel("initialValueModel").setData(JSON.parse(oTable.getModel("ItemBlockModel").getJSON()));
@@ -819,8 +820,7 @@ sap.ui.define([
 			// });
 			var oReturnPromise = this.formatter.createData.call(this, oDataModel, "/ValidateBeforeSubmitSet", aEntry);
 			oReturnPromise.then(function (oRes) {
-				debugger;
-				// if found the data in data in rontend is not sync with backend, prompt error.
+				// if found the data in data from frontend is not sync with backend, prompt error.
 				if (oRes[0].isChanged) {
 					if (!this.oFragmentList[sFragmentName]) {
 						this.oFragmentList[sFragmentName] = sap.ui.xmlfragment(this.getText("MainFragmentPath") + sFragmentName, this);
@@ -943,16 +943,9 @@ sap.ui.define([
 		},
 		onResetSoldToParty: function (oEvent) {
 			var oFilterModel = this.getView().getModel("filterModel");
-
-			oFilterModel.setProperty("/SoldToPartId", "");
-			oFilterModel.setProperty("/SoldToPartName", "");
-			oFilterModel.setProperty("/SoldToPartSaleOrg", "");
-			oFilterModel.setProperty("/SoldToPartDivision", "");
-			oFilterModel.setProperty("/SoldToPartDistChannel", "");
-			oFilterModel.updateBindings(true);
+			this.resetModel(oFilterModel, ["SoldToPartId", "SoldToPartName", "SoldToPartSaleOrg", "SoldToPartDivision", "SoldToPartDistChannel"]);
 		},
 		_refresh: function () {},
-		_resetModel: function (oEvent) {},
 		_getSmartTable: function (sId) {
 			return this.getView().byId(sId);
 		},
