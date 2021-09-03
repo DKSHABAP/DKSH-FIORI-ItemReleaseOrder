@@ -75,12 +75,12 @@ sap.ui.define([
 				url = "/WorkboxServices/inbox/filterdetail",
 				oPayload = {
 					"currentUserInfo": {
-						// "taskOwner": oUserInfoModel.getProperty("/name"),
-						// "ownerEmail": oUserInfoModel.getProperty("/email"),
-						// "taskOwnerDisplayName": oUserInfoModel.getProperty("/displayName")
-						"taskOwner": "P000032",
-						// "ownerEmail": "jen.ling.lee@dksh.com",
-						// "taskOwnerDisplayName": "Jen Ling Lee DKSH"
+						"taskOwner": oUserInfoModel.getProperty("/name")
+							// "ownerEmail": oUserInfoModel.getProperty("/email"),
+							// "taskOwnerDisplayName": oUserInfoModel.getProperty("/displayName")
+							// "taskOwner": "P000032",
+							// "ownerEmail": "jen.ling.lee@dksh.com",
+							// "taskOwnerDisplayName": "Jen Ling Lee DKSH"
 					},
 					"isAdmin": oFilterSaleOrder.isAdmin,
 					"salesOrderFilterDto": {
@@ -103,8 +103,8 @@ sap.ui.define([
 						"sapMaterialNum": (oFilterSaleOrder.selectedMaterialNum) ? oFilterSaleOrder.selectedMaterialNum : ""
 					},
 					"page": oSettingModel.getProperty("/selectedPage"),
-					"orderType": "createdAt",
-					"orderBy": "ASC"
+					// "orderType": "createdAt",
+					// "orderBy": "ASC"
 				};
 			debugger;
 			oView.setBusy(true);
@@ -174,6 +174,7 @@ sap.ui.define([
 						// 		return itemBlock.requestId === loadDataItem.salesOrderNum;
 						// 	});
 						// }));
+
 						for (var index in oData.workBoxDtos) {
 							var oItem = oData.workBoxDtos[index];
 							var oReturn = oLoadData.getProperty("/data").find(function (item) {
@@ -184,6 +185,10 @@ sap.ui.define([
 							}
 							oData.workBoxDtos[index].detailLevel.push(oReturn);
 						}
+						// oData.workBoxDtos.map(function (oItem) {
+						// 	debugger;
+
+						// });
 						oView.setBusy(false);
 					})
 					.catch(function (oErr) {
@@ -263,27 +268,21 @@ sap.ui.define([
 					});
 				});
 		},
-		controlEditabled: function (object) {
-
-			var aItemUsage = ["B", "C"];
-			// high level item carry item's posnr
-			if (object.higherLevelItem !== "000000" && aItemUsage.includes(object.higherLevelItemUsage)) {
+		controlEditabled: function (object, bBonus, aItemUsage) {
+			object.editMaterial = true;
+			object.editOrderQty = true;
+			object.editNetPrice = true;
+			object.editSLoc = true;
+			object.editBatchNo = true;
+			// Auto/ Manual bonus found
+			if (bBonus) {
 				object.editMaterial = false;
 				object.editOrderQty = false;
-				object.editNetPrice = false;
-				object.editSLoc = true;
-				object.editBatchNo = true;
-			} else if (object.higherLevelItem !== "000000" && !object.higherLevelItemUsage) {
-				object.editMaterial = false;
-				object.editOrderQty = (object.salesItemOrderNo === object.higherLevelItem) ? false : true;
-				object.editNetPrice = (object.salesItemOrderNo === object.higherLevelItem) ? true : false;
-				object.editSLoc = true;
-				object.editBatchNo = true;
-				// no high level item carry this item's posnr
-			} else if (object.higherLevelItem === "000000") {
-				object.editMaterial = true;
-				object.editOrderQty = true;
-				object.editNetPrice = true;
+				if (object.higherLevelItem !== "000000") {
+					// object.editOrderQty = (!object.higherLevelItemUsage) ? true : false;
+					object.editOrderQty = (aItemUsage.includes(object.higherLevelItemUsage)) ? false : true;
+					object.editNetPrice = false;
+				}
 				object.editSLoc = true;
 				object.editBatchNo = true;
 			}
