@@ -11,19 +11,19 @@
 					<f:formElements>
 						<f:FormElement label="{i18n>SalesDocument}">
 							<f:fields>
-								<!--								<Text text="{MockData>SaleOrder}"/>-->
-								<Text text="{ItemBlockModel>requestId}" class="sapUiTinyMarginBegin"/>
+								<Text text="{ItemBlockModel>salesOrderNum}" class="sapUiTinyMarginBegin"/>
 							</f:fields>
 						</f:FormElement>
 						<f:FormElement label="{i18n>OrderType}">
 							<f:fields>
-								<Text text="{ItemBlockModel>detailLevel/0/orderType}" class="sapUiTinyMarginBegin"/>
+								<Text text="{ItemBlockModel>orderType}" class="sapUiTinyMarginBegin"/>
 							</f:fields>
 						</f:FormElement>
 						<f:FormElement label="{i18n>DeliveryBlock}">
 							<f:fields>
-								<!--								<Text text="{MockData>DeliveryBlock}"/>-->
-								<Text text="{ItemBlockModel>detailLevel/0/deliveryBlockCode} {ItemBlockModel>detailLevel/0/deliveryBlockCodeText}"
+								<!--<Text text="{ItemBlockModel>deliveryBlockCode} ({ItemBlockModel>deliveryBlockCodeText})" class="sapUiTinyMarginBegin"/>-->
+								<Text
+									text="{parts:[{path:'ItemBlockModel>deliveryBlockCode'},{path:'ItemBlockModel>deliveryBlockCodeText'}],formatter:'.formatter.concateText'}"
 									class="sapUiTinyMarginBegin"/>
 							</f:fields>
 						</f:FormElement>
@@ -33,14 +33,12 @@
 					<f:formElements>
 						<f:FormElement label="{i18n>SalesDocDate}">
 							<f:fields>
-								<!--								<Text text="{MockData>SaleOrderDate}"/>-->
-								<Text text="{path: 'ItemBlockModel>detailLevel/0/salesOrderDate', formatter:'.formatter.dateFormatter'}" class="sapUiTinyMarginBegin"/>
+								<Text text="{path: 'ItemBlockModel>salesOrderDate', formatter:'.formatter.dateFormatter'}" class="sapUiTinyMarginBegin"/>
 							</f:fields>
 						</f:FormElement>
 						<f:FormElement label="{i18n>CustomerPONo}">
 							<f:fields>
-								<!--								<Text text="{MockData>CustomerPONumber}"/>-->
-								<Text text="{ItemBlockModel>detailLevel/0/customerPo}" class="sapUiTinyMarginBegin"/>
+								<Text text="{ItemBlockModel>customerPo}" class="sapUiTinyMarginBegin"/>
 							</f:fields>
 						</f:FormElement>
 					</f:formElements>
@@ -49,14 +47,14 @@
 					<f:formElements>
 						<f:FormElement label="{i18n>distributionChnlFilter}">
 							<f:fields>
-								<!--								<Text text="{MockData>DistributionChannel}"/>-->
-								<Text text="{ItemBlockModel>detailLevel/0/distributionChannel}" class="sapUiTinyMarginBegin"/>
+								<!--<Text text="{ItemBlockModel>distributionChannel}" class="sapUiTinyMarginBegin"/>-->
+								<Text text="{parts:[{path:'ItemBlockModel>distributionChannel'},{path:'ItemBlockModel>distrChanText'}],formatter:'.formatter.concateText'}"
+									class="sapUiTinyMarginBegin"/>
 							</f:fields>
 						</f:FormElement>
 						<f:FormElement label="{i18n>SoldToParty}">
 							<f:fields>
-								<!--								<Text text="{MockData>SoldToParty}"/>-->
-								<Text text="{ItemBlockModel>detailLevel/0/soldToParty} {ItemBlockModel>detailLevel/0/soldToPartyText}" class="sapUiTinyMarginBegin"/>
+								<Text text="{ItemBlockModel>soldToParty} ({ItemBlockModel>soldToPartyText})" class="sapUiTinyMarginBegin"/>
 							</f:fields>
 						</f:FormElement>
 					</f:formElements>
@@ -65,23 +63,24 @@
 					<f:formElements>
 						<f:FormElement label="{i18n>CreditStatus}">
 							<f:fields>
-								<!--								<Text text="{MockData>CreditStatus}"/>-->
-								<Link text="{ItemBlockModel>detailLevel/0/creditBlock}" press="handleCreditBlockPress($event, ${ItemBlockModel>requestId})"
+								<Link text="{ItemBlockModel>creditBlock}" press="handleCreditBlockPress($event, ${ItemBlockModel>salesOrderNum})"
 									class="sapUiTinyMarginBegin"/>
 							</f:fields>
 						</f:FormElement>
 						<f:FormElement label="{i18n>ShipToParty}">
 							<f:fields>
-								<!--								<Text text="{MockData>ShipToParty}"/>-->
-								<Text text="{ItemBlockModel>detailLevel/0/shipToParty} {ItemBlockModel>detailLevel/0/shipToPartyText}" class="sapUiTinyMarginBegin"/>
+								<Text text="{ItemBlockModel>shipToParty} ({ItemBlockModel>shipToPartyText})" class="sapUiTinyMarginBegin"/>
 							</f:fields>
 						</f:FormElement>
 					</f:formElements>
 				</f:FormContainer>
 			</f:formContainers>
 		</f:Form>
-		<Table inset="false" fixedLayout="true" items="{path: 'ItemBlockModel>detailLevel/0/salesDocItemList', templateShareable: false}"
-			mode="MultiSelect" selectionChange="onChangeSelectionItem" backgroundDesign="Solid">
+		<!--<Table inset="false" fixedLayout="true" items="{path: 'ItemBlockModel>/salesDocItemList', templateShareable: false}"-->
+		<!--	mode="MultiSelect" selectionChange="onChangeSelectionItem" backgroundDesign="Solid">-->
+		<Table inset="false" fixedLayout="true" growing="true" growingThreshold="20"
+			items="{path: 'ItemBlockModel>salesDocItemList', templateShareable: false}" mode="MultiSelect" selectionChange="onChangeSelectionItem"
+			backgroundDesign="Solid">
 			<headerToolbar>
 				<OverflowToolbar>
 					<ToolbarSpacer/>
@@ -89,18 +88,22 @@
 					<!-- need to enhance to restrict edit button by approval level -->
 					<!--					<Button icon="sap-icon://edit" type="Transparent" tooltip="{i18n>Edit}" press="onPressEditItem"
 						enabled="{parts:['SalesHeaderModel>/levelNum','SalesHeaderModel>/processor','SalesHeaderModel>/taskOwner'] , formatter:'.formatter.setEditRestriction'}"/>-->
-					<Button icon="sap-icon://edit" type="Transparent" tooltip="{i18n>Edit}" press="onPressEditItem" enabled="true"/>
-					<Button type="Transparent" text="{i18n>Save}" visible="false" press="onSaveEditItem($event, 'SavedMessage', ${ItemBlockModel>})"/>
-					<Button type="Transparent" text="{i18n>Cancel}" visible="false" press="onCancelEditItem"/>
+					<Button icon="sap-icon://edit" type="Transparent" tooltip="{i18n>Edit}" press="onPressEditItem"
+						visible="{= ${ItemBlockModel>itemBtnEanbled}}" enabled="{= ${ItemBlockModel>itemBtnEanbled}}"/>
+					<Button type="Transparent" text="{i18n>Save}" visible="{= !${ItemBlockModel>itemBtnEanbled}}"
+						enabled="{= !${ItemBlockModel>itemBtnEanbled}}" press="onSaveEditItem($event, 'SavedMessage', ${ItemBlockModel>})"/>
+					<Button type="Transparent" text="{i18n>Cancel}" visible="{= !${ItemBlockModel>itemBtnEanbled}}"
+						enabled="{= !${ItemBlockModel>itemBtnEanbled}}" press="onCancelEditItem"/>
 					<Button icon="sap-icon://accept" type="Accept" tooltip="{i18n>Approve}" class="dkshAcceptBtnStyle"
-						press="onApprovePress($event, ${ItemBlockModel>})"/>
+						enabled="{= ${ItemBlockModel>itemBtnEanbled}}" press="onApprovePress($event, ${ItemBlockModel>})"/>
 					<Button icon="sap-icon://decline" type="Reject" tooltip="{i18n>Reject}" class="dkshRejectBtnStyle"
-						press="onRejectPress($event, 'Reject', ${ItemBlockModel>})"/>
-					<Button icon="sap-icon://upload" type="Transparent" tooltip="{i18n>Submit}"
+						enabled="{= ${ItemBlockModel>itemBtnEanbled}}" press="onRejectPress($event, 'Reject', ${ItemBlockModel>})"/>
+					<Button icon="sap-icon://upload" type="Transparent" tooltip="{i18n>Submit}" enabled="{= ${ItemBlockModel>itemBtnEanbled}}"
 						press="onItemSubmission($event, ${ItemBlockModel>}, 'SubmitErrorMessage')"/>
-					<Button icon="sap-icon://display" type="Transparent" tooltip="{i18n>DisplayActions}"
-						press="onDisplayMarkedItems($event, 'DisplayMarkedItems', ${ItemBlockModel>detailLevel/0/})"/>
-					<Button icon="sap-icon://reset" type="Transparent" tooltip="{i18n>resetDisplayBtn}" press="onResetDisplay"/>
+					<Button icon="sap-icon://display" type="Transparent" tooltip="{i18n>DisplayActions}" enabled="{= ${ItemBlockModel>itemBtnEanbled}}"
+						press="onDisplayMarkedItems($event, 'DisplayMarkedItems', ${ItemBlockModel>})"/>
+					<Button icon="sap-icon://reset" type="Transparent" tooltip="{i18n>resetDisplayBtn}" enabled="{= ${ItemBlockModel>itemBtnEanbled}}"
+						press="onResetDisplay"/>
 				</OverflowToolbar>
 			</headerToolbar>
 			<columns>
@@ -169,7 +172,7 @@
 						</HBox>
 						<!-- Material -->
 						<VBox>
-							<Text text=" {parts:['ItemBlockModel>shortText','ItemBlockModel>sapMaterialNum'],formatter:'.formatter.concatenateMaterial'}"
+							<Text text=" {parts:['ItemBlockModel>sapMaterialNum','ItemBlockModel>shortText'],formatter:'.formatter.concateText'}"
 								visible="{= !${ItemBlockModel>editMaterial}}"/>
 							<Input value="{ItemBlockModel>sapMaterialNum}" change="onChangeItemValue($event, 'Material')" textAlign="Left" maxLength="9"
 								visible="{= ${ItemBlockModel>editMaterial}}" placeholder="{i18n>tltpMaterial}"/>
@@ -206,12 +209,9 @@
 						<!-- Material Group 4 -->
 						<Text text="{ItemBlockModel>materialGroup4}" textAlign="Left"/>
 						<!-- Item Delivery Block -->
-						<Text
-							text="{parts:[{path:'ItemBlockModel>itemDlvBlockText'},{path:'ItemBlockModel>itemDlvBlock'}],formatter:'.formatter.concatenateMaterial'}"
-							textAlign="Left"/>
+						<Text text="{parts:['ItemBlockModel>itemDlvBlock','ItemBlockModel>itemDlvBlockText'] ,formatter:'.formatter.concateText'}" textAlign="Left"/>
 						<!-- Item Category -->
-						<Text text="{parts:[{path:'ItemBlockModel>itemCategText'},{path:'ItemBlockModel>itemCategory'}],formatter:'.formatter.concatenateMaterial'}"
-							textAlign="Left"/>
+						<Text text="{parts:['ItemBlockModel>itemCategory','ItemBlockModel>itemCategText'] ,formatter:'.formatter.concateText'}" textAlign="Left"/>
 						<!-- Old Material Code -->
 						<Text text="{ItemBlockModel>oldMatCode}" textAlign="Left"/>
 						<!-- Item Staging Status -->

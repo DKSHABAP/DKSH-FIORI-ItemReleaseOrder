@@ -17,7 +17,7 @@ sap.ui.define([
 			oView.setModel(oDataValueHelpModel);
 			oView.setModel(new JSONModel(), "oUserDetailModel");
 			oView.setModel(new JSONModel({
-				panelSort: false,
+				panelSort: true,
 				isPageBusy: false,
 				selectedPage: 1,
 				pagination: []

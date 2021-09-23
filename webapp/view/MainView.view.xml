@@ -75,8 +75,33 @@
 				<Button icon="sap-icon://settings" type="Transparent" tooltip="{i18n>ItemPersonalization}" press="onPressPersonalization"/>
 				<Button icon="sap-icon://refresh" type="Emphasized" tooltip="{i18n>Refresh}" press="onPressRefresh"/>
 			</OverflowToolbar>
-			<List id="idList" growing="false" growingScrollToLoad="false" enableBusyIndicator="true"
-				items="{path: 'ItemBlockModel>/workBoxDtos', templateShareable: false, sorter: {path: 'postingDate'} }"
+			<!--<List id="idList" growing="false" growingScrollToLoad="false" enableBusyIndicator="true"-->
+			<!--	items="{path: 'ItemBlockModel>/workBoxDtos', templateShareable: false, sorter: {path: 'postingDate'} }"-->
+			<!--	noDataText="No pending release found" class="sapUiSizeCompact">-->
+			<!--	<items>-->
+			<!--		<CustomListItem>-->
+			<!--			<Panel expandable="true" class="hideContent" expanded="{ItemBlockModel>expanded}" expand="onExpand">-->
+			<!--				<headerToolbar>-->
+			<!--					<OverflowToolbar>-->
+			<!--						<Label text="{i18n>ApproveBlockSalesOrder}"/>-->
+			<!--						<Label text="{ItemBlockModel>requestId}" design="Bold"/>-->
+			<!--						<Label text="{i18n>descSet}"/>-->
+			<!--						<Label text="{= ${ItemBlockModel>taskDescription}.split('|')[0]}" design="Bold"/>-->
+			<!--						<Label text="{i18n>level}"/>-->
+			<!--						<Label text="{= ${ItemBlockModel>taskDescription}.split('|')[2]}" design="Bold"/>-->
+			<!--						<ToolbarSpacer/>-->
+			<!--						<Label-->
+			<!--							text="{ path: 'ItemBlockModel>postingDate', type: 'sap.ui.model.odata.type.Date', formatOptions: { strictParsing: true, UTC: true } }"-->
+			<!--							design="Bold"/>-->
+			<!--					</OverflowToolbar>-->
+			<!--				</headerToolbar>-->
+			<!--				<content><core:Fragment fragmentName="dksh.connectclient.itemblockorder.view.Fragments.SaleDocDetail" type="XML"/></content>-->
+			<!--			</Panel>-->
+			<!--		</CustomListItem>-->
+			<!--	</items>-->
+			<!--</List>-->
+			<List id="idList" growing="true" growingScrollToLoad="true" enableBusyIndicator="true"
+				items="{path: 'ItemBlockModel>/data', templateShareable: false, sorter : { path: 'postingDate', descending : 'true' } }"
 				noDataText="No pending release found" class="sapUiSizeCompact">
 				<items>
 					<CustomListItem>
@@ -84,14 +109,14 @@
 							<headerToolbar>
 								<OverflowToolbar>
 									<Label text="{i18n>ApproveBlockSalesOrder}"/>
-									<Label text="{ItemBlockModel>requestId}" design="Bold"/>
+									<Label text="{ItemBlockModel>salesOrderNum}" design="Bold"/>
 									<Label text="{i18n>descSet}"/>
-									<Label text="{= ${ItemBlockModel>taskDescription}.split('|')[0]}" design="Bold"/>
+									<Label text="{ItemBlockModel>decisionSetId}" design="Bold"/>
 									<Label text="{i18n>level}"/>
-									<Label text="{= ${ItemBlockModel>taskDescription}.split('|')[2]}" design="Bold"/>
+									<Label text="{ItemBlockModel>levelNum}" design="Bold"/>
 									<ToolbarSpacer/>
 									<Label
-										text="{ path: 'ItemBlockModel>postingDate', type: 'sap.ui.model.odata.type.Date', formatOptions: { strictParsing: true, UTC: true } }"
+										text="{ path: 'ItemBlockModel>postingDate', type: 'sap.ui.model.odata.type.Date', formatOptions: { strictParsing: true, UTC: true, pattern: 'dd/MM/yyyy' } }"
 										design="Bold"/>
 								</OverflowToolbar>
 							</headerToolbar>
@@ -101,99 +126,20 @@
 				</items>
 			</List>
 		</content>
-		<footer type="Transparent">
-			<Toolbar design="Transparent" height="150%">
-				<!--				<ToolbarSpacer/>
-				<ScrollContainer height="110%" width="100%" vertical="false" focusable="true">
-					<VBox alignItems="Center">
-						<ToolbarSpacer/>
-						<FlexBox alignItems="Center">
-							<Label id="idCurrentPage" class="pageNumberStyleClass"/>
-							<Button id="idPrevButton" icon="sap-icon://close-command-field" class="navigateButtonClass sapUiSizeCompact" press="onScrollLeft"
-								type="Transparent"/>
-							<HBox items="{settings>/pagination}" alignItems="Center">
-								<Link text="{settings>pageNum}" press="onPageClick" class="paginationNumbers"/>
-							</HBox>
-							<Button id="idNextButton" icon="sap-icon://open-command-field" class="navigateButtonClass sapUiSizeCompact" press="onScrollRight"
-								type="Transparent"/>
-						</FlexBox>
-						<ToolbarSpacer/>
-					</VBox>
-				</ScrollContainer>
-				<ToolbarSpacer/>-->
-				<!--				<ToolbarSpacer/>
-				<ScrollContainer height="120%" width="100%" vertical="false">
-					<ToolbarSpacer/>
-					<HBox alignItems="Center">
-						<ToolbarSpacer/>
-						<FlexBox alignItems="Center">
-							<Label id="idCurrentPage" class="pageNumberStyleClass"/>
-							<Button id="idPrevButton" icon="sap-icon://close-command-field" class="navigateButtonClass sapUiSizeCompact" press="onScrollLeft"
-								type="Transparent"/>
-							<HBox items="{settings>/pagination}" alignItems="Center">
-								<Link text="{settings>pageNum}" press="onPageClick" class="paginationNumbers"/>
-							</HBox>
-							<Button id="idNextButton" icon="sap-icon://open-command-field" class="navigateButtonClass sapUiSizeCompact" press="onScrollRight"
-								type="Transparent"/>
-						</FlexBox>
-						<ToolbarSpacer/>
-					</HBox>
-					<ToolbarSpacer/>
-				</ScrollContainer>
-				<ToolbarSpacer/>-->
-				<!--	Working-->
-				<!--				<Button id="idPrevButton" icon="sap-icon://close-command-field" press="onScrollLeft" type="Transparent"/>
-				<ScrollContainer height="120%" width="100%" vertical="false">
-					<HBox items="{settings>/pagination}" alignItems="Center" fitContainer="false">
-						<Link text="{settings>pageNum}" press="onPageClick" class="paginationNumbers"/>
-					</HBox>
-				</ScrollContainer>
-				<Button id="idNextButton" icon="sap-icon://open-command-field" press="onScrollRight" type="Transparent"/>-->
-				<!--				<ScrollContainer height="120%" width="100%" vertical="false" fitContainer="true">
-					<FlexBox alignItems="Center" justifyContent="Center" fitContainer="true">
-						<HBox alignItems="Center" fitContainer="true">
-							<Button id="idPrevButton" icon="sap-icon://close-command-field" press="onScrollLeft" type="Transparent"/>
-							<HBox items="{settings>/pagination}" alignItems="Center">
-								<Link text="{settings>pageNum}" press="onPageClick" class="paginationNumbers"/>
-							</HBox>
-							<Button id="idNextButton" icon="sap-icon://open-command-field" press="onScrollRight" type="Transparent"/>
-						</HBox>
-					</FlexBox>
-				</ScrollContainer>-->
-				<!--Working 2-->
-				<!--				<ScrollContainer height="120%" width="100%" vertical="false" fitContainer="true">
-					<FlexBox alignItems="Center" width="auto" justifyContent="Center" fitContainer="false">
-						<HBox items="{settings>/pagination}" alignContent="Start" justifyContent="Center" width="100%" fitContainer="false">
-							<Link text="{settings>pageNum}" press="onPageClick" class="paginationNumbers"/>
-						</HBox>
-					</FlexBox>
-				</ScrollContainer>-->
-				<ToolbarSpacer/>
-				<FlexBox alignItems="Center" width="auto" justifyContent="Center" fitContainer="false">
-					<Button id="idPrevButton" icon="sap-icon://close-command-field" class="navigateButtonClass sapUiSizeCompact" press="onScrollLeft"
-						type="Transparent"/>
-					<HBox items="{settings>/pagination}" alignContent="Start" justifyContent="Center" width="100%" fitContainer="false">
-						<Link text="{settings>pageNum}" press="onPageClick" class="paginationNumbers"/>
-					</HBox>
-					<Button id="idNextButton" icon="sap-icon://open-command-field" class="navigateButtonClass sapUiSizeCompact" press="onScrollRight"
-						type="Transparent"/>
-				</FlexBox>
-				<ToolbarSpacer/>
-				<!--				<ToolbarSpacer/>
-				<VBox id="idPageNumberDiv" justifyContent="Center" alignItems="Center" class="pageNumberDivClass">
-					<Label id="idCurrentPage" class="pageNumberStyleClass"/>
-					<HBox class="pageLinkClass">
-						<Button id="idPrevButton" icon="sap-icon://close-command-field" class="navigateButtonClass sapUiSizeCompact" press="onScrollLeft"
-							type="Transparent"/>
-						<HBox items="{settings>/pagination}">
-							<Link text="{settings>pageNum}" press="onPageClick" class="paginationNumbers"/>
-						</HBox>
-						<Button id="idNextButton" icon="sap-icon://open-command-field" class="navigateButtonClass sapUiSizeCompact" press="onScrollRight"
-							type="Transparent"/>
-					</HBox>
-				</VBox>
-				<ToolbarSpacer/>-->
-			</Toolbar>
-		</footer>
+		<!--<footer type="Transparent">-->
+		<!--	<Toolbar design="Transparent" height="150%">-->
+		<!--		<ToolbarSpacer/>-->
+		<!--		<FlexBox alignItems="Center" width="auto" justifyContent="Center" fitContainer="false">-->
+		<!--			<Button id="idPrevButton" icon="sap-icon://close-command-field" class="navigateButtonClass sapUiSizeCompact" press="onScrollLeft"-->
+		<!--				type="Transparent"/>-->
+		<!--			<HBox items="{settings>/pagination}" alignContent="Start" justifyContent="Center" width="100%" fitContainer="false">-->
+		<!--				<Link text="{settings>pageNum}" press="onPageClick" class="paginationNumbers"/>-->
+		<!--			</HBox>-->
+		<!--			<Button id="idNextButton" icon="sap-icon://open-command-field" class="navigateButtonClass sapUiSizeCompact" press="onScrollRight"-->
+		<!--				type="Transparent"/>-->
+		<!--		</FlexBox>-->
+		<!--		<ToolbarSpacer/>-->
+		<!--	</Toolbar>-->
+		<!--</footer>-->
 	</Page>
 </mvc:View>
