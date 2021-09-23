@@ -36,8 +36,8 @@
 				</fb:FilterGroupItem>
 				<fb:FilterGroupItem groupName="G1" name="E" label="{i18n>CustomerPONo}" partOfCurrentVariant="true" visibleInFilterBar="true">
 					<fb:control>
-						<Input value="{filterModel>/selectCustomerPo}" tooltip="{filterModel>/selectCustomerPo}" maxLength="10"
-							liveChange="salesDocValidationHandle" placeholder="{i18n>plchCustPo}"/>
+						<Input value="{filterModel>/selectCustomerPo}" tooltip="{filterModel>/selectCustomerPo}" liveChange="salesDocValidationHandle"
+							placeholder="{i18n>plchCustPo}"/>
 					</fb:control>
 				</fb:FilterGroupItem>
 				<fb:FilterGroupItem groupName="G1" name="F" label="{i18n>tltpMatGrp}" partOfCurrentVariant="true" visibleInFilterBar="true">

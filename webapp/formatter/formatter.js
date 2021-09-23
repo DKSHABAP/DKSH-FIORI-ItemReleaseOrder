@@ -1,15 +1,15 @@
 sap.ui.define([
 	"sap/ui/model/json/JSONModel",
 	"sap/m/MessageBox",
-	"sap/m/MessageToast"
-], function (JSONModel, MessageBox, MessageToast) {
+	"sap/m/MessageToast",
+	"sap/ui/core/message/MessageManager"
+], function (JSONModel, MessageBox, MessageToast, MessageManager) {
 	"use strict";
 
 	var oHeader = {
 		"Content-Type": "application/json;charset=utf-8"
 	};
 	return {
-		// Te
 		getFragmentPath: function (sFragmentPath, sFragmentName) {
 			return sFragmentPath + sFragmentName;
 		},
@@ -67,137 +67,102 @@ sap.ui.define([
 			);
 		},
 		fetchSaleOrder: function () {
-			var oView = this.getView(),
-				oUserInfoModel = oView.getModel("UserInfo"),
-				oUserMangement = oView.getModel("UserManagement"),
-				oFilterSaleOrder = oView.getModel("filterModel").getData(),
-				oSettingModel = oView.getModel("settings"),
-				url = "/WorkboxServices/inbox/filterdetail",
+			var oUserInfoModel = this.getView().getModel("UserInfo"),
+				oUserMangement = this.getView().getModel("UserManagement"),
+				oFilterSaleOrder = this.getView().getModel("filterModel").getData(),
+				oSettingModel = this.getView().getModel("settings"),
 				oPayload = {
-					"currentUserInfo": {
-						"taskOwner": oUserInfoModel.getProperty("/name")
-							// "ownerEmail": oUserInfoModel.getProperty("/email"),
-							// "taskOwnerDisplayName": oUserInfoModel.getProperty("/displayName")
-							// "taskOwner": "P000032",
-							// "ownerEmail": "jen.ling.lee@dksh.com",
-							// "taskOwnerDisplayName": "Jen Ling Lee DKSH"
-					},
-					"isAdmin": oFilterSaleOrder.isAdmin,
-					"salesOrderFilterDto": {
-						"customerCode": (oFilterSaleOrder.selectedSoldToParty) ? oFilterSaleOrder.selectedSoldToParty : "",
+					"filter": {
+						"materialGroup": (oFilterSaleOrder.selectedMatGrp) ? oFilterSaleOrder.selectedMatGrp : "",
+						"materialCode": (oFilterSaleOrder.selectedMaterialNum) ? oFilterSaleOrder.selectedMaterialNum : "",
+						"isAdmin": oFilterSaleOrder.isAdmin,
+						"itemDeliveryBlock": (oFilterSaleOrder.selectedDeliveryBlock) ? oFilterSaleOrder.selectedDeliveryBlock : "",
+						"salesOrg": (oFilterSaleOrder.selectedSalesOrg) ? oFilterSaleOrder.selectedSalesOrg : "",
+						"soldtoParty": (oFilterSaleOrder.selectedSoldToParty) ? oFilterSaleOrder.selectedSoldToParty : "",
+						"division": (oFilterSaleOrder.selectedDivision) ? oFilterSaleOrder.selectedDivision : "",
+						"distChannel": (oFilterSaleOrder.selectedDistChannel) ? oFilterSaleOrder.selectedDistChannel : "",
+						"salesTeam": (oFilterSaleOrder.selectedSalesTeam) ? oFilterSaleOrder.selectedSalesTeam : "",
+						"endDate": (oFilterSaleOrder.selectedSalesDocDateTo) ? oFilterSaleOrder.selectedSalesDocDateTo.toUTCString() : null,
+						"initialDate": (oFilterSaleOrder.selectedSalesDocDateFrom) ? oFilterSaleOrder.selectedSalesDocDateFrom.toUTCString() : null,
+						"salesTerritory": (oFilterSaleOrder.selectedSalesTerritory) ? oFilterSaleOrder.selectedSalesTerritory : "",
+						"customerPoNo": (oFilterSaleOrder.selectCustomerPo) ? oFilterSaleOrder.selectCustomerPo : "",
+						"shipToparty": (oFilterSaleOrder.selectedShipToParty) ? oFilterSaleOrder.selectedShipToParty : "",
+						"materialGroup4": (oFilterSaleOrder.selectedMatGrp4) ? oFilterSaleOrder.selectedMatGrp4 : "",
 						"salesDocNumInitial": (oFilterSaleOrder.selectedSalesDocNumInitial) ? oFilterSaleOrder.selectedSalesDocNumInitial : "",
 						"salesDocNumEnd": (oFilterSaleOrder.selectedSalesDocNumEnd) ? oFilterSaleOrder.selectedSalesDocNumEnd : "",
-						"distributionChannel": (oFilterSaleOrder.selectedDistChannel) ? oFilterSaleOrder.selectedDistChannel : "",
-						"initialDate": (oFilterSaleOrder.selectedSalesDocDateFrom) ? oFilterSaleOrder.selectedSalesDocDateFrom.toUTCString() : null,
-						"endDate": (oFilterSaleOrder.selectedSalesDocDateTo) ? oFilterSaleOrder.selectedSalesDocDateTo.toUTCString() : null,
-						/*						"initialDate": null,
-												"endDate": null,*/
-						"materialGroupFor": (oFilterSaleOrder.selectedMatGrp4) ? oFilterSaleOrder.selectedMatGrp4 : "",
-						"materialGroup": (oFilterSaleOrder.selectedMatGrp) ? oFilterSaleOrder.selectedMatGrp : "",
-						"salesOrg": (oFilterSaleOrder.selectedSalesOrg) ? oFilterSaleOrder.selectedSalesOrg : "",
-						"division": (oFilterSaleOrder.selectedDivision) ? oFilterSaleOrder.selectedDivision : "",
-						"customerPo": (oFilterSaleOrder.selectCustomerPo) ? oFilterSaleOrder.selectCustomerPo : "",
-						"itemDlvBlock": (oFilterSaleOrder.selectedDeliveryBlock) ? oFilterSaleOrder.selectedDeliveryBlock : "",
-						"shipToParty": (oFilterSaleOrder.selectedShipToParty) ? oFilterSaleOrder.selectedShipToParty : "",
-						"headerDlvBlock": (oFilterSaleOrder.selectedHeaderDeliveryBlock) ? oFilterSaleOrder.selectedHeaderDeliveryBlock : "",
-						"sapMaterialNum": (oFilterSaleOrder.selectedMaterialNum) ? oFilterSaleOrder.selectedMaterialNum : ""
+						"headerDeliveryBlock": (oFilterSaleOrder.selectedHeaderDeliveryBlock) ? oFilterSaleOrder.selectedHeaderDeliveryBlock : "",
 					},
-					"page": oSettingModel.getProperty("/selectedPage"),
-					// "orderType": "createdAt",
-					// "orderBy": "ASC"
+					"currentUserInfo": {
+						"eventId": "",
+						"isSubstituted": false,
+						"isProcessed": false,
+						"taskOwner": oUserInfoModel.getProperty("/name"),
+						"userId": oUserInfoModel.getProperty("/name")
+							// "taskOwner": "P000142",
+							// "userId": "P000142",
+							// "ownerEmail": oUserInfoModel.getProperty("/email")
+					},
+					"createdBy": "",
+					"orderBy": "",
+					"orderType": "",
+					"processName": []
 				};
 			debugger;
-			oView.setBusy(true);
-			oView.getModel("ItemBlockModel").loadData(url, JSON.stringify(oPayload), true, "POST", false, false, oHeader).then(function (oResp) {
-				var oData = oView.getModel("ItemBlockModel").getData(),
-					aPageNum = [],
-					count = 0;
-				debugger;
-				// No data found
-				if (!oData.count) {
-					oView.setBusy(false);
-					return;
-				}
-
-				// Set pagination
-				/*				var sNumPage = ((Math.ceil(oData.count / 100) * 100) / oData.pageCount).toString();*/
-				var sNumPage = (Math.ceil(oData.count / oData.pageCount));
-				/*				for (var i = 0; i < new Array(sNumPage).length; i++) {
-									count++;
-									aPageNum.push({
-										pageNum: count.toString()
-									});
-								}*/
-				/*				for (var i = 0; i < sNumPage; i++) {
-									count++;
-									aPageNum.push({
-										pageNum: count.toString()
-									});
-								}*/
-				// Temporary logic to fix pagination as 5 (Max)
-				for (var i = 0; i < 5; i++) {
-					count++;
-					if (count > sNumPage || count > 5) {
-						break;
+			this.getView().setBusy(true);
+			var sUrl = "/DKSHJavaService/taskSubmit/getSalesBlockOrder/";
+			this.getView().getModel("ItemBlockModel").loadData(sUrl, JSON.stringify(oPayload), true, "POST", false, false, oHeader).then(function (
+					oRes) {
+					var oData = this.getView().getModel("ItemBlockModel").getData(),
+						aPageNum = [],
+						count = 0;
+					// No data found
+					if (!oData.data.length === 0 || !oData) {
+						this.getView().setBusy(false);
+						return;
 					}
-					aPageNum.push({
-						pageNum: count.toString()
-					});
-				}
-
-				oSettingModel.setProperty("/pagination", aPageNum);
-				oPayload = [];
-				for (var indx in oData.workBoxDtos) {
-					var oDataIndx = oData.workBoxDtos[indx],
-						sSplitDate = oDataIndx.taskDescription.split("|")[6].split("/"),
-						sDescSet = this.formatter.splitText(oDataIndx.taskDescription, 0);
-
-					oDataIndx.detailLevel = [];
-					oDataIndx.expanded = false;
-					oDataIndx.DescSet = sDescSet;
-					oDataIndx.postingDate = new Date(+sSplitDate[2], sSplitDate[1] - 1, +sSplitDate[0]);
-					oPayload.push({
-						"salesOrderNum": oDataIndx.requestId,
-						"decisionSetId": this.formatter.splitText(oDataIndx.taskDescription, 0),
-						"sapTaskId": oDataIndx.processId
-					});
-				}
-
-				var vUrl = ["/DKSHJavaService/taskSubmit/getSalesBlockOrder/", oView.getModel("UserInfo").getData().name].join("");
-				oView.getModel("LoadDataModel").loadData(vUrl, JSON.stringify(oPayload), true, "POST", false, false, oHeader).then(function (oRes) {
-						/*				oView.getModel("LoadDataModel").loadData(vUrl, oPayload, true, "POST", false, false, oHeader).then(function (oRes) {*/
-						var oLoadData = oView.getModel("LoadDataModel");
-
-						// Remove element in workDtoBox if no task id compare to java endpoint
-						// oItemModel.setProperty("/workBoxDtos", oItemModel.getProperty("/workBoxDtos").filter(function (itemBlock) {
-						// 	return oLoadData.getProperty("/data").find(function (loadDataItem) {
-						// 		return itemBlock.requestId === loadDataItem.salesOrderNum;
-						// 	});
-						// }));
-
-						for (var index in oData.workBoxDtos) {
-							var oItem = oData.workBoxDtos[index];
-							var oReturn = oLoadData.getProperty("/data").find(function (item) {
-								return item.salesOrderNum === oItem.requestId;
-							});
-							if (!oReturn) {
-								continue;
-							}
-							oData.workBoxDtos[index].detailLevel.push(oReturn);
-						}
-						// oData.workBoxDtos.map(function (oItem) {
-						// 	debugger;
-
-						// });
-						oView.setBusy(false);
-					})
-					.catch(function (oErr) {
-						oView.setBusy(false);
-					});
-				oView.getModel("ItemBlockModel").refresh();
-			}.bind(this)).catch(function (oErr) {
-				this.getView().setBusy(false);
-			}.bind(this));
+					debugger;
+					this.getView().getModel("ItemBlockModel").setProperty("/count", oData.data.length);
+					oData.data.map(function (data) {
+						var sSplitDate = data.postingDate.split("/");
+						data.postingDate = new Date(+sSplitDate[2], sSplitDate[1] - 1, +sSplitDate[0]);
+						Object.assign(data, {
+							expanded: false,
+							itemBtnEanbled: true
+						});
+					}.bind(this));
+					this.getView().getModel("ItemBlockModel").refresh();
+					// Set pagination
+					// var sNumPage = (Math.ceil(oData.count / oData.pageCount));
+					/*				for (var i = 0; i < new Array(sNumPage).length; i++) {
+										count++;
+										aPageNum.push({
+											pageNum: count.toString()
+										});
+									}*/
+					/*				for (var i = 0; i < sNumPage; i++) {
+										count++;
+										aPageNum.push({
+											pageNum: count.toString()
+										});
+									}*/
+					// Temporary logic to fix pagination as 5 (Max)
+					// for (var i = 0; i < 5; i++) {
+					// 	count++;
+					// 	if (count > sNumPage || count > 5) {
+					// 		break;
+					// 	}
+					// 	aPageNum.push({
+					// 		pageNum: count.toString()
+					// 	});
+					// }
+					// debugger;
+					// oSettingModel.setProperty("/pagination", aPageNum);
+					this.getView().setBusy(false);
+				}.bind(this))
+				.catch(function (oErr) {
+					debugger;
+					this.getView().setBusy(false);
+				}.bind(this));
 		},
 		postJavaService: function (Model, sUrl, oPayload) {
 			return new Promise(
@@ -211,19 +176,8 @@ sap.ui.define([
 						}.bind(this));
 				});
 		},
-		setCancelEditItem: function (oItemBlockModel, aItems, aAggregationContent) {
+		setCancelEditItem: function (oItemBlockModel, aItems) {
 			if (aItems.length > 0) {
-				aAggregationContent.find(function (el, idx) {
-					try {
-						if (el.getIcon() === "sap-icon://edit") {
-							el.setVisible(true);
-						} else if (el.getText() === "Save" || el.getText() === "Cancel") {
-							el.setVisible(false);
-						}
-					} catch (err) {
-						// Catch exception
-					}
-				});
 				// Control selected item's properties visibility
 				for (var indx in aItems) {
 					var object = aItems[indx].getBindingContext("ItemBlockModel").getObject();
@@ -269,6 +223,7 @@ sap.ui.define([
 				});
 		},
 		controlEditabled: function (object, bBonus, aItemUsage) {
+			// Default
 			object.editMaterial = true;
 			object.editOrderQty = true;
 			object.editNetPrice = true;
@@ -279,7 +234,6 @@ sap.ui.define([
 				object.editMaterial = false;
 				object.editOrderQty = false;
 				if (object.higherLevelItem !== "000000") {
-					// object.editOrderQty = (!object.higherLevelItemUsage) ? true : false;
 					object.editOrderQty = (aItemUsage.includes(object.higherLevelItemUsage)) ? false : true;
 					object.editNetPrice = false;
 				}
@@ -290,14 +244,6 @@ sap.ui.define([
 		},
 		splitText: function (taskDescription, index) {
 			return taskDescription.split("|")[+index];
-		},
-		fn_panelClass: function (sStatus) {
-			// alert("abc");
-			return "";
-		},
-
-		itemSlockBlock: function () {
-
 		},
 		reservedTask: function (processor, taskowner) {
 			/*			if (processor !== "") {
@@ -338,7 +284,6 @@ sap.ui.define([
 			}
 		},
 		messageStatus: function (isValid) {
-			debugger;
 			return (isValid) ? "sap-icon://message-success" : "sap-icon://message-error";
 		},
 		dateFormatter: function (pTimeStamp) {
@@ -473,15 +418,10 @@ sap.ui.define([
 			}
 		},
 
-		concatenateMaterial: function (oVal1, oVal2) {
-			if (oVal1 && oVal2) {
-				return oVal2 + " (" + oVal1 + ") ";
-			} else if (oVal1 && !oVal2) {
-				return oVal1;
-			} else if (!oVal1 && oVal2) {
-				return oVal2;
-			} else {
-				return "";
+		concateText: function (sCode, sText) {
+			if (sCode) {
+				sText = (sText) ? "(" + sText + ")" : "";
+				return [sCode, sText].join(" ");
 			}
 		}
 

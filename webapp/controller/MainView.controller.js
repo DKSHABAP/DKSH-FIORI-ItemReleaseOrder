@@ -29,14 +29,16 @@ sap.ui.define([
 		},
 		onExpand: function (oEvent) {},
 		onSortPress: function (oEvent, sId, sPath, sField) {
+			debugger;
 			var oView = this.getView(),
 				oList = oView.byId(sId),
 				oBinding = oList.getBinding("items"),
 				settingModel = oView.getModel("settings"),
-				aSorter = [];
+				aSorter = [],
+				bDesc = !settingModel.getProperty(sPath);
 
 			settingModel.setProperty(sPath, !settingModel.getProperty(sPath));
-			aSorter.push(new Sorter(sField, settingModel.getProperty(sPath), false));
+			aSorter.push(new Sorter(sField, bDesc, false));
 			oBinding.sort(aSorter);
 		},
 		onDetailTableSortPress: function (oEvent, sField) {
@@ -55,17 +57,17 @@ sap.ui.define([
 		},
 		onExpandAll: function (oEvent) {
 			var oItemBlockModel = this.getView().getModel("ItemBlockModel"),
-				oWorkBoxDtos = oItemBlockModel.getProperty("/workBoxDtos");
-			for (var index in oWorkBoxDtos) {
-				oWorkBoxDtos[index].expanded = true;
+				oData = oItemBlockModel.getProperty("/data");
+			for (var index in oData) {
+				oData[index].expanded = true;
 			}
 			oItemBlockModel.refresh();
 		},
 		onCollapseAll: function (oEvent) {
 			var oItemBlockModel = this.getView().getModel("ItemBlockModel"),
-				oWorkBoxDtos = oItemBlockModel.getProperty("/workBoxDtos");
-			for (var index in oWorkBoxDtos) {
-				oWorkBoxDtos[index].expanded = false;
+				oData = oItemBlockModel.getProperty("/data");
+			for (var index in oData) {
+				oData[index].expanded = false;
 			}
 			oItemBlockModel.refresh();
 		},
@@ -107,7 +109,7 @@ sap.ui.define([
 
 			if (!oEvent.getParameters().clearButtonPressed && sValue) {
 				var oFilter = new Filter({
-					filters: this.setBindingFilter(["requestId", "DescSet"], sValue, oBinding),
+					filters: this.setBindingFilter(["salesOrderNum", "decisionSetId"], sValue, oBinding),
 					and: false
 				});
 				aFilters.push(oFilter);
@@ -123,13 +125,13 @@ sap.ui.define([
 				oTable = sap.ui.getCore().byId(sId),
 				oItemBlockModel = oTable.getModel("ItemBlockModel"),
 				aItems = oTable.getItems(),
-				aContent = oSource.getParent().getAggregation("content"),
+				sPath = oTable.getBindingContext("ItemBlockModel").getPath(),
 				aItemUsage = ["B", "C"],
 				bBonus = aItems.some(function (oItem) {
 					var obj = oItem.getBindingContext("ItemBlockModel").getObject();
 					return aItemUsage.includes(obj.higherLevelItemUsage) || (obj.higherLevelItem !== "000000");
 				});
-
+			debugger;
 			oSource.setVisible(false);
 			// Control selected item's properties visibility
 			aItems.map(function (oItem) {
@@ -138,39 +140,26 @@ sap.ui.define([
 				object.salesUnit = (!object.salesUnit) ? this.getText("UoM").toUpperCase() : object.salesUnit;
 			}.bind(this));
 			// Store initial value model for onSaveEditItem function
-			// In case if item(s) are not valid then reset to initial value in onSaveEditItem function
+			// In case if item(s) are not valid then reset to initial value in onSaveEditItem or cancelEditItem function
 			oView.setModel(new JSONModel(), "initialValueModel");
 			oView.getModel("initialValueModel").setData(JSON.parse(oTable.getModel("ItemBlockModel").getJSON()));
 			// Set edit button
-			aContent[5].setEnabled(false);
-			aContent[6].setEnabled(false);
-			aContent[7].setEnabled(false);
-			aContent[8].setEnabled(false);
-			aContent[9].setEnabled(false);
-			aContent.find(function (el, idx) {
-				try {
-					if (el.getText()) {
-						el.setVisible((el.getText() === "Save" || el.getText() === "Cancel") ? true : false);
-					}
-				} catch (err) {
-					// Catch Exception
-				}
-			});
+			oItemBlockModel.setProperty(sPath + "/itemBtnEanbled", false);
 			oItemBlockModel.refresh();
 		},
 		onSaveEditItem: function (oEvent, sFragmentName, oItem) {
+			debugger;
 			var oView = this.getView(),
 				oSource = oEvent.getSource(),
 				sId = oSource.getParent().getParent().getId(),
 				oTable = sap.ui.getCore().byId(sId),
 				aSelectedContext = oTable.getSelectedContexts(),
 				aItems = oTable.getItems(),
-				aAggregationContent = oSource.getParent().getAggregation("content"),
 				oLoadDataModel = oView.getModel("LoadDataModel"),
 				oModel = this.getOwnerComponent().getModel(),
 				oUserManagementModel = oView.getModel("UserManagement"),
 				aFilters = [],
-				aHeadProperties = ["taskId", "requestId"],
+				aHeadProperties = ["salesOrderNum"],
 				aDetailProperties = ["salesOrderNum", "salesOrmderDate", "orderType", "orderTypeText", "customerPoDate", "soldToParty",
 					"shipToParty", "shipToPartyText", "decisionSetId", "levelNum"
 				];
@@ -186,22 +175,22 @@ sap.ui.define([
 				var sHeadProperty = aHeadProperties[index];
 				this.onSaveEditItem["Payload"][sHeadProperty] = oItem[sHeadProperty];
 			}
-			this.onSaveEditItem["Payload"].workflowId = oItem.processId;
+			// this.onSaveEditItem["Payload"].workflowId = oItem.processId; // Changed
 			// This property loggedInUserName is updating edit item text in ECC
 			this.onSaveEditItem["Payload"].loggedInUserName = oUserManagementModel.getData().userName;
 			for (index in aDetailProperties) {
 				var aDetailProperty = aDetailProperties[index];
-				this.onSaveEditItem["Payload"][aDetailProperty] = oItem.detailLevel[0][aDetailProperty];
+				this.onSaveEditItem["Payload"][aDetailProperty] = oItem[aDetailProperty];
 			}
-			this.onSaveEditItem["Payload"].headerDeliveryBlockCode = oItem.detailLevel[0].headerBillBlockCode;
-			this.onSaveEditItem["Payload"].headerDeliveryBlockCodeText = oItem.detailLevel[0].headerBillBlockCodeText;
-			this.onSaveEditItem["Payload"].customerPoNum = oItem.detailLevel[0].customerPo;
-			this.onSaveEditItem["Payload"].soldToPartyText = oItem.detailLevel[0].shipToPartyText;
-			this.onSaveEditItem["Payload"].amount = oItem.detailLevel[0].totalNetAmount;
-			this.onSaveEditItem["Payload"].headerMessage = oItem.detailLevel[0].headerMsg;
+			this.onSaveEditItem["Payload"].headerDeliveryBlockCode = oItem.headerBillBlockCode;
+			this.onSaveEditItem["Payload"].headerDeliveryBlockCodeText = oItem.headerBillBlockCodeText;
+			this.onSaveEditItem["Payload"].customerPoNum = oItem.customerPo;
+			this.onSaveEditItem["Payload"].soldToPartyText = oItem.shipToPartyText;
+			this.onSaveEditItem["Payload"].amount = oItem.totalNetAmount;
+			this.onSaveEditItem["Payload"].headerMessage = oItem.headerMsg;
 			this.onSaveEditItem["Payload"].listOfChangedItemData = [];
-			this.onSaveEditItem["aItems"] = aItems;
-			this.onSaveEditItem["aAggregationContent"] = aAggregationContent;
+			this.onSaveEditItem["aItems"] = aItems; // Set field visible using this later in formatter.setCancelEditItem
+			this.onSaveEditItem["sBindingPath"] = oTable.getBindingContext("ItemBlockModel").getPath();
 			for (var indx in aSelectedContext) {
 				var sPath = aSelectedContext[indx].getPath();
 
@@ -229,7 +218,12 @@ sap.ui.define([
 			Promise.all([this.formatter.fetchData.call(this, oModel, "/ValidateItemsBeforeSaveSet", aFilters)]).
 			then(function (oRes) {
 				var sFragmentPath = this.getText("MainFragmentPath");
-
+				// var oItemBlockModel = oView.getModel("ItemBlockModel");
+				if (!this.oFragmentList[sFragmentName]) {
+					this.oFragmentList[sFragmentName] = sap.ui.xmlfragment(sFragmentPath + sFragmentName, this);
+					oView.addDependent(this.oFragmentList[sFragmentName]);
+				}
+				this.oFragmentList[sFragmentName].setModel(new JSONModel(oRes[0]), "SavedMessageModel");
 				this.onSaveEditItem["aResetChangesPath"] = oRes[0].results.filter(function (item) {
 					return !item.isValid;
 				}).map(function (obj) {
@@ -241,38 +235,39 @@ sap.ui.define([
 						return filter.salesItemOrderNo === array.salesItemOrderNo && (filter.isValid);
 					});
 				});
-				if (!this.oFragmentList[sFragmentName]) {
-					this.oFragmentList[sFragmentName] = sap.ui.xmlfragment(sFragmentPath + sFragmentName, this);
-					oView.addDependent(this.oFragmentList[sFragmentName]);
+				// Exit if no valid item(s) to be updated
+				if (this.onSaveEditItem["Payload"].listOfChangedItemData.length === 0) {
+					this.oFragmentList[sFragmentName].open();
+					this._resetSavedItem(sFragmentName);
+					return;
 				}
-				this.oFragmentList[sFragmentName].setModel(new JSONModel(oRes[0]), "SavedMessageModel");
 				// Update to ECC and hana DB
 				this.formatter.postJavaService.call(this, oLoadDataModel, "/DKSHJavaService/OdataServices/updateOnSaveOrEdit", JSON.stringify(
 					this.onSaveEditItem["Payload"])).then(function (oResponse) {
-					var oItemBlockModel = oView.getModel("ItemBlockModel"),
-						oInitialValueModel = oView.getModel("initialValueModel");
-
-					if (this.onSaveEditItem["aResetChangesPath"].length > 0) {
-						for (index in this.onSaveEditItem["aResetChangesPath"]) {
-							sPath = this.onSaveEditItem["aResetChangesPath"][index];
-							oItemBlockModel.setProperty(sPath, oInitialValueModel.getProperty(sPath));
-						}
-					}
-					this.onSaveEditItem["aAggregationContent"][5].setEnabled(true);
-					this.onSaveEditItem["aAggregationContent"][6].setEnabled(true);
-					this.onSaveEditItem["aAggregationContent"][7].setEnabled(true);
-					this.onSaveEditItem["aAggregationContent"][8].setEnabled(true);
-					this.onSaveEditItem["aAggregationContent"][9].setEnabled(true);
-					// Reset button's visible
-					this.formatter.setCancelEditItem.call(this, oItemBlockModel, this.onSaveEditItem["aItems"], this.onSaveEditItem[
-						"aAggregationContent"]);
 					this.oFragmentList[sFragmentName].open();
-					oView.setBusy(false);
+					this._resetSavedItem(sFragmentName);
+					// oView.setBusy(false);
 				}.bind(this));
 			}.bind(this)).catch(function (oErrResp) {
 				oView.setBusy(false);
 				MessageBox.error("Failed to update to ECC");
 			});
+		},
+		_resetSavedItem: function (sFragmentName) {
+			var oItemBlockModel = this.getView().getModel("ItemBlockModel"),
+				oInitialValueModel = this.getView().getModel("initialValueModel");
+
+			debugger;
+			// Reset to initial value
+			if (this.onSaveEditItem["aResetChangesPath"].length > 0) {
+				for (var index in this.onSaveEditItem["aResetChangesPath"]) {
+					var sPath = this.onSaveEditItem["aResetChangesPath"][index];
+					oItemBlockModel.setProperty(sPath, oInitialValueModel.getProperty(sPath));
+				}
+			}
+			oItemBlockModel.setProperty(this.onSaveEditItem["sBindingPath"] + "/itemBtnEanbled", true);
+			this.formatter.setCancelEditItem.call(this, oItemBlockModel, this.onSaveEditItem["aItems"]);
+			this.getView().setBusy(false);
 		},
 		onCancelEditItem: function (oEvent) {
 			var oView = this.getView(),
@@ -280,20 +275,16 @@ sap.ui.define([
 				sId = oSource.getParent().getParent().getId(),
 				oTable = sap.ui.getCore().byId(sId),
 				oItemBlockModel = oTable.getModel("ItemBlockModel"),
+				sBindingPath = oTable.getBindingContext("ItemBlockModel").getPath(),
 				oInitialValueModel = oView.getModel("initialValueModel"),
-				aItems = oTable.getItems(),
-				aContent = oSource.getParent().getAggregation("content");
+				aItems = oTable.getItems();
 
-			aContent[5].setEnabled(true);
-			aContent[6].setEnabled(true);
-			aContent[7].setEnabled(true);
-			aContent[8].setEnabled(true);
-			aContent[9].setEnabled(true);
+			oItemBlockModel.setProperty(sBindingPath + "/itemBtnEanbled", true);
 			for (var index in aItems) {
 				var sPath = aItems[index].getBindingContextPath();
 				oItemBlockModel.setProperty(sPath, oInitialValueModel.getProperty(sPath));
 			}
-			this.formatter.setCancelEditItem.call(this, oItemBlockModel, aItems, aContent);
+			this.formatter.setCancelEditItem.call(this, oItemBlockModel, aItems);
 		},
 		onChangeItemValue: function (oEvent, sProperty) {
 			var oView = this.getView(),
@@ -489,6 +480,7 @@ sap.ui.define([
 			}
 		},
 		onDisplayMarkedItems: function (oEvent, sFragmentName, oItemModel) {
+			debugger;
 			var sFragmentPath = this.getText("MainFragmentPath");
 			if (!this.oFragmentList[sFragmentName]) {
 				this.oFragmentList[sFragmentName] = sap.ui.xmlfragment(sFragmentPath + sFragmentName, this);
@@ -730,13 +722,16 @@ sap.ui.define([
 				oFilterModel.setProperty(sPath, selectedObj[sProperty]);
 			}
 		},
-		handleAddItem: function (oEvent, sPathProperty, sProperty) {
+		handleAddItem: function (oEvent, sPathProperty, sProperty, sPathReset) {
 			var oView = this.getView(),
 				selectedObj = oEvent.getParameters().selectedContexts[0].getObject(),
 				oItemBlockModel = oView.getModel("ItemBlockModel");
 
 			if (this.sItemPath) {
 				oItemBlockModel.setProperty(this.sItemPath + sPathProperty, selectedObj[sProperty]);
+			}
+			if (sProperty === "StorageLocation") {
+				oItemBlockModel.setProperty(this.sItemPath + sPathReset, "");
 			}
 		},
 		handleCloseValueHelp: function (oEvent, sFragmentName) {
@@ -763,7 +758,7 @@ sap.ui.define([
 					navHeaderToValidateItem: []
 				},
 				aDataProperties = ["salesItemOrderNo", "salesHeaderNo", "sapMaterialNum", "orderedQtySales", "netPrice", "storageLoc", "batchNum"];
-			this.aDetailItem = aItem.detailLevel[0];
+			this.aDetailItem = aItem;
 
 			if (this.aDetailItem.salesDocItemList.find(function (oList) {
 					return !oList.acceptOrReject;
@@ -821,26 +816,33 @@ sap.ui.define([
 			var oReturnPromise = this.formatter.createData.call(this, oDataModel, "/ValidateBeforeSubmitSet", aEntry);
 			oReturnPromise.then(function (oRes) {
 				// if found the data in data from frontend is not sync with backend, prompt error.
-				if (oRes[0].isChanged) {
-					if (!this.oFragmentList[sFragmentName]) {
-						this.oFragmentList[sFragmentName] = sap.ui.xmlfragment(this.getText("MainFragmentPath") + sFragmentName, this);
-						oView.addDependent(this.oFragmentList[sFragmentName]);
-					}
-					this.oFragmentList[sFragmentName].setModel(new JSONModel(oRes[0].navHeaderToValidateItem), "SubmitMessageModel");
-					this.oFragmentList[sFragmentName].open();
-					return;
-				}
+				// if (oRes.isChanged) {
+				// 	if (!this.oFragmentList[sFragmentName]) {
+				// 		this.oFragmentList[sFragmentName] = sap.ui.xmlfragment(this.getText("MainFragmentPath") + sFragmentName, this);
+				// 		oView.addDependent(this.oFragmentList[sFragmentName]);
+				// 	}
+				// 	this.oFragmentList[sFragmentName].setModel(new JSONModel(oRes.navHeaderToValidateItem), "SubmitMessageModel");
+				// 	this.oFragmentList[sFragmentName].open();
+				// 	return;
+				// }
 
 				// Trigger endpoint for submission
-				var sUrl = "/DKSHJavaService2/returnRequest/onSubmitBlockOrderApproval";
+				var sUrl = "/DKSHJavaService/taskSubmit/processECCJobNew";
 				this.formatter.postJavaService.call(this, oLoadDataModel, sUrl, JSON.stringify(this.aDetailItem)).then(function (oJavaRes) {
+					MessageBox.information(this.getText("ItemSelectFilter"));
+					// remove SO if success
 
 					debugger;
-					oView.setBusy(false);
+					// Fetch the sale order 
+					// Can remove the model for performance perspective
+					this.formatter.fetchSaleOrder.call(this);
 				}.bind(this)).catch(function (oJavaErr) {
 					debugger;
+					var errMsg = JSON.parse(oJavaErr.responseText).error.message.value;
+					MessageBox.warning(errMsg);
 					oView.setBusy(false);
 				}.bind(this));
+				oView.setBusy(false);
 			}.bind(this)).catch(function (oErr) {
 				debugger;
 				oView.setBusy(false);
@@ -899,42 +901,42 @@ sap.ui.define([
 				oTable = this._getTable("idSoldtoPartyTable"),
 				oFilterModel = oView.getModel("filterModel"),
 				sPath = oTable.getSelectedContexts()[0].sPath,
-				oData = oTable.getModel().getProperty(sPath);
+				oData = oTable.getModel("SoldToPartyModel").getProperty(sPath);
 
 			oFilterModel.setProperty("/selectedSoldToParty", oData.CustCode);
 			this.handleCancel(oEvent, "SoldToParty");
 		},
-		onPageClick: function (oEvent) {
-			var sPageNum = +oEvent.getSource().getBindingContext("settings").getObject().pageNum,
-				oSettingModel = this.getView().getModel("settings");
-			oSettingModel.setProperty("/selectedPage", sPageNum);
-			this.formatter.fetchSaleOrder.call(this);
-		},
-		onScrollLeft: function (oEvent) {
-			var oSettingModel = this.getView().getModel("settings"),
-				sPageNum = +oSettingModel.getProperty("/selectedPage");
+		// onPageClick: function (oEvent) {
+		// 	var sPageNum = +oEvent.getSource().getBindingContext("settings").getObject().pageNum,
+		// 		oSettingModel = this.getView().getModel("settings");
+		// 	oSettingModel.setProperty("/selectedPage", sPageNum);
+		// 	this.formatter.fetchSaleOrder.call(this);
+		// },
+		// onScrollLeft: function (oEvent) {
+		// 	var oSettingModel = this.getView().getModel("settings"),
+		// 		sPageNum = +oSettingModel.getProperty("/selectedPage");
 
-			sPageNum--;
-			if (sPageNum >= 1) {
-				oSettingModel.setProperty("/selectedPage", sPageNum);
-				this.formatter.fetchSaleOrder.call(this);
-			}
-		},
-		onScrollRight: function (oEvent) {
-			var oSettingModel = this.getView().getModel("settings"),
-				sPageNum = +oSettingModel.getProperty("/selectedPage"),
-				maxPage = oSettingModel.getProperty("/pagination").length;
+		// 	sPageNum--;
+		// 	if (sPageNum >= 1) {
+		// 		oSettingModel.setProperty("/selectedPage", sPageNum);
+		// 		this.formatter.fetchSaleOrder.call(this);
+		// 	}
+		// },
+		// onScrollRight: function (oEvent) {
+		// 	var oSettingModel = this.getView().getModel("settings"),
+		// 		sPageNum = +oSettingModel.getProperty("/selectedPage"),
+		// 		maxPage = oSettingModel.getProperty("/pagination").length;
 
-			/*			if (sPageNum++ < maxPage) {
-							oSettingModel.setProperty("/selectedPage", sPageNum);
-							this.formatter.fetchSaleOrder.call(this);
-						}*/
-			// Set 5 pages for now
-			if (sPageNum++ < 5) {
-				oSettingModel.setProperty("/selectedPage", sPageNum);
-				this.formatter.fetchSaleOrder.call(this);
-			}
-		},
+		// 	/*			if (sPageNum++ < maxPage) {
+		// 					oSettingModel.setProperty("/selectedPage", sPageNum);
+		// 					this.formatter.fetchSaleOrder.call(this);
+		// 				}*/
+		// 	// Set 5 pages for now
+		// 	if (sPageNum++ < 5) {
+		// 		oSettingModel.setProperty("/selectedPage", sPageNum);
+		// 		this.formatter.fetchSaleOrder.call(this);
+		// 	}
+		// },
 		onReset: function (oEvent) {
 			var oFilterModel = this.getView().getModel("filterModel");
 
