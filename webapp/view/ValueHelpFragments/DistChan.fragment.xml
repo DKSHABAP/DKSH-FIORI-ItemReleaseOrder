@@ -4,10 +4,14 @@
 		<StandardListItem title="{parts: ['DistChanSet>DistChl','DistChanSet>Name'], formatter:'.formatter.keyValueformat'}" type="Active"
 			tooltip="{parts: ['DistChanSet>DistChl','DistChanSet>Name'], formatter:'.formatter.keyValueformat'}"/>
 	</SelectDialog>-->
+	<!--<SelectDialog title="{i18n>distChanlCustIdFragLabel}" liveChange="onLiveChange($event, 'Description', 'Distchl')"-->
+	<!--	confirm="handleAdd($event, '/selectedDistChannel', '/SoldToPartDistChannel', 'Distchl')" cancel="handleCancel($event, 'DistChan')"-->
+	<!--	items="{ValueHelpSet>/results}" class="sapUiSizeCompact">-->
+	<!--	<StandardListItem title="{ValueHelpSet>Description}" type="Active"/>-->
+	<!--</SelectDialog>-->
 	<SelectDialog title="{i18n>distChanlCustIdFragLabel}" liveChange="onLiveChange($event, 'Description', 'Distchl')"
 		confirm="handleAdd($event, '/selectedDistChannel', '/SoldToPartDistChannel', 'Distchl')" cancel="handleCancel($event, 'DistChan')"
 		items="{ValueHelpSet>/results}" class="sapUiSizeCompact">
-		<!--		<StandardListItem title="{parts: ['ValueHelpSet>Distchl','ValueHelpSet>Description'], formatter:'.formatter.keyValueformat' }" type="Active"/>-->
 		<StandardListItem title="{ValueHelpSet>Description}" type="Active"/>
 	</SelectDialog>
 </core:FragmentDefinition>

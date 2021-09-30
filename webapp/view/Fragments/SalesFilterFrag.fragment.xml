@@ -99,22 +99,26 @@
 				<fb:FilterGroupItem groupName="G1" name="N" label="{i18n>SalesTerritory}" partOfCurrentVariant="true" visibleInFilterBar="true">
 					<fb:control>
 						<Input value="{filterModel>/selectedSalesTerritory}" tooltip="{filterModel>/selectedSalesTerritory}"
-							placeholder="{i18n>EnterSalesTerritory}" maxLength="10" liveChange="salesDocValidationHandle"/>
+							placeholder="{i18n>EnterSalesTerritory}" maxLength="10"/>
 					</fb:control>
 				</fb:FilterGroupItem>
 				<fb:FilterGroupItem groupName="G1" name="O" label="{i18n>SalesTeam}" partOfCurrentVariant="true" visibleInFilterBar="true">
 					<fb:control>
 						<Input value="{filterModel>/selectedSalesTeam}" tooltip="{filterModel>/selectedSalesTeam}" placeholder="{i18n>EnterSalesTeam}"
-							maxLength="10" liveChange="salesDocValidationHandle"/>
+							maxLength="10"/>
 					</fb:control>
 				</fb:FilterGroupItem>
-				<fb:FilterGroupItem groupName="G1" name="P" label="isAdmin" partOfCurrentVariant="true" visibleInFilterBar="true">
+				<fb:FilterGroupItem groupName="G1" name="P" label="{i18n>OrderType}" partOfCurrentVariant="true" visibleInFilterBar="true">
 					<fb:control>
-						<CheckBox selected="{filterModel>/isAdmin}"/>
-						<!--						<Input value="{filterModel>/selectedSalesTeam}" tooltip="{filterModel>/selectedSalesTeam}" placeholder="{i18n>EnterSalesTeam}"
-							maxLength="10" liveChange="salesDocValidationHandle"/>-->
+						<Input value="{filterModel>/selectedOrderType}" tooltip="{filterModel>/selectedOrderType}" placeholder="{i18n>OrderType}"
+							showValueHelp="true" valueHelpRequest="valueHelpRequestOrderType($event, 'OrderType')" maxLength="100" valueHelpOnly="true"/>
 					</fb:control>
 				</fb:FilterGroupItem>
+				<!--<fb:FilterGroupItem groupName="G1" name="P" label="isAdmin" partOfCurrentVariant="true" visibleInFilterBar="true">-->
+				<!--	<fb:control>-->
+				<!--		<CheckBox selected="{filterModel>/isAdmin}"/>-->
+				<!--	</fb:control>-->
+				<!--</fb:FilterGroupItem>-->
 			</fb:filterGroupItems>
 		</fb:FilterBar>
 	</l:VerticalLayout>

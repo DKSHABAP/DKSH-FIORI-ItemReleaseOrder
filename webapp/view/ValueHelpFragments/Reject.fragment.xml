@@ -15,10 +15,16 @@
 						<Label design="Bold" text="{i18n>rejectReasonText}"/>
 					</Column>-->
 					<Column width="150px">
-						<Select items="{path: 'ValueHelpSet>/results', templateShareable: true, sorter: {path: 'RejCode'}}" width="100%"
-							change="onRejectCommonReasonChange($event, ${RejectDataModel>/})">
+						<!--<Select items="{path: 'ValueHelpSet>/results', templateShareable: true, sorter: {path: 'RejCode'}}" width="100%"-->
+						<!--	change="onRejectCommonReasonChange($event, ${RejectDataModel>/})">-->
+						<!--	<items>-->
+						<!--		<core:Item key="{ValueHelpSet>RejCode}" text="{ValueHelpSet>Description}"/>-->
+						<!--	</items>-->
+						<!--</Select>-->
+						<Select items="{path: '/SearchHelp_RejectReasonSet', templateShareable: true, sorter: {path: 'RejCode'}}"
+							change="onRejectCommonReasonChange($event, ${RejectDataModel>/})" width="100%">
 							<items>
-								<core:Item key="{ValueHelpSet>RejCode}" text="{ValueHelpSet>Description}"/>
+								<core:Item key="{RejCode}" text="{Description}"/>
 							</items>
 						</Select>
 					</Column>
@@ -27,10 +33,16 @@
 					<ColumnListItem>
 						<Text text="{RejectDataModel>salesItemOrderNo}" textAlign="Left"/>
 						<Text text="{RejectDataModel>sapMaterialNum}" textAlign="Left"/>
-						<Select items="{path: 'ValueHelpSet>/results', templateShareable: true, sorter: {path: 'RejCode'}}"
+						<!--<Select items="{path: 'ValueHelpSet>/results', templateShareable: true, sorter: {path: 'RejCode'}}"-->
+						<!--	selectedKey="{RejectDataModel>reasonForRejection}" selectedItemId="{RejectDataModel>selectedId}" width="100%">-->
+						<!--	<items>-->
+						<!--		<core:Item key="{ValueHelpSet>RejCode}" text="{ValueHelpSet>Description}"/>-->
+						<!--	</items>-->
+						<!--</Select>-->
+						<Select items="{path: '/SearchHelp_RejectReasonSet', templateShareable: true, sorter: {path: 'RejCode'}}"
 							selectedKey="{RejectDataModel>reasonForRejection}" selectedItemId="{RejectDataModel>selectedId}" width="100%">
 							<items>
-								<core:Item key="{ValueHelpSet>RejCode}" text="{ValueHelpSet>Description}"/>
+								<core:Item key="{RejCode}" text="{Description}"/>
 							</items>
 						</Select>
 					</ColumnListItem>
