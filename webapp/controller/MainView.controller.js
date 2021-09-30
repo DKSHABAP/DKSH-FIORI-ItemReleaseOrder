@@ -10,7 +10,7 @@ sap.ui.define([
 ], function (BaseController, JSONModel, Fragment, Sorter, Filter, FilterOperator, MessageBox, MessageToast) {
 	"use strict";
 	var sResponsivePaddingClasses = "sapUiResponsivePadding--header sapUiResponsivePadding--content sapUiResponsivePadding--footer";
-	// Test
+
 	return BaseController.extend("dksh.connectclient.itemblockorder.controller.MainView", {
 		onInit: function () {
 			var oView = this.getView();
@@ -29,7 +29,6 @@ sap.ui.define([
 		},
 		onExpand: function (oEvent) {},
 		onSortPress: function (oEvent, sId, sPath, sField) {
-			debugger;
 			var oView = this.getView(),
 				oList = oView.byId(sId),
 				oBinding = oList.getBinding("items"),
@@ -131,7 +130,6 @@ sap.ui.define([
 					var obj = oItem.getBindingContext("ItemBlockModel").getObject();
 					return aItemUsage.includes(obj.higherLevelItemUsage) || (obj.higherLevelItem !== "000000");
 				});
-			debugger;
 			oSource.setVisible(false);
 			// Control selected item's properties visibility
 			aItems.map(function (oItem) {
@@ -169,7 +167,8 @@ sap.ui.define([
 				MessageToast.show(this.getText("ItemSelectList"));
 				return;
 			}
-			oView.setBusy(true);
+			// oView.setBusy(true);
+			this._getTable("idList").setBusy(true);
 			this.onSaveEditItem["Payload"] = {};
 			for (var index in aHeadProperties) {
 				var sHeadProperty = aHeadProperties[index];
@@ -246,18 +245,16 @@ sap.ui.define([
 					this.onSaveEditItem["Payload"])).then(function (oResponse) {
 					this.oFragmentList[sFragmentName].open();
 					this._resetSavedItem(sFragmentName);
-					// oView.setBusy(false);
 				}.bind(this));
 			}.bind(this)).catch(function (oErrResp) {
-				oView.setBusy(false);
+				this._getTable("idList").setBusy(true);
 				MessageBox.error("Failed to update to ECC");
-			});
+			}.bind(this));
 		},
 		_resetSavedItem: function (sFragmentName) {
 			var oItemBlockModel = this.getView().getModel("ItemBlockModel"),
 				oInitialValueModel = this.getView().getModel("initialValueModel");
 
-			debugger;
 			// Reset to initial value
 			if (this.onSaveEditItem["aResetChangesPath"].length > 0) {
 				for (var index in this.onSaveEditItem["aResetChangesPath"]) {
@@ -267,7 +264,8 @@ sap.ui.define([
 			}
 			oItemBlockModel.setProperty(this.onSaveEditItem["sBindingPath"] + "/itemBtnEanbled", true);
 			this.formatter.setCancelEditItem.call(this, oItemBlockModel, this.onSaveEditItem["aItems"]);
-			this.getView().setBusy(false);
+			// this.getView().setBusy(false);
+			this._getTable("idList").setBusy(false);
 		},
 		onCancelEditItem: function (oEvent) {
 			var oView = this.getView(),
@@ -343,6 +341,7 @@ sap.ui.define([
 				return;
 			}
 			// Need to enhance logic if it's final level or not
+			debugger;
 			this.onApprovePress["Table"] = oTable;
 			var fnCloseApprove = function (oAction) {
 				oTable = this.onApprovePress["Table"];
@@ -360,24 +359,27 @@ sap.ui.define([
 				}
 			}.bind(this);
 
-			MessageBox.show(
-				["(", oTable.getSelectedItems().length, ")", " Item(s) approved and sent to next approval level"].join(""), {
-					icon: MessageBox.Icon.INFORMATION,
-					title: "Sales Document: " + oItem.requestId,
-					actions: [MessageBox.Action.YES, MessageBox.Action.CANCEL],
-					onClose: fnCloseApprove,
-					initialFocus: MessageBox.Action.CANCEL,
-					styleClass: sResponsivePaddingClasses
-				}
-			);
+			// As discussed, java will set levelStatus = 4 when any item reached to last level or single level approver.
+			var sApprvMsg = ["(", oTable.getSelectedItems().length, ")", (oItem.salesDocItemList[0].levelStatus === "4") ?
+				" Item(s) approved completely" : " Item(s) approved and sent to next approval level"
+			].join("");
+			MessageBox.show(sApprvMsg, {
+				icon: MessageBox.Icon.INFORMATION,
+				title: "Sales Document: " + oItem.requestId,
+				actions: [MessageBox.Action.YES, MessageBox.Action.CANCEL],
+				onClose: fnCloseApprove,
+				initialFocus: MessageBox.Action.CANCEL,
+				styleClass: sResponsivePaddingClasses
+			});
 		},
 		onRejectPress: function (oEvent, sFragment, oItem) {
+			debugger;
 			var oView = this.getView(),
 				oSource = oEvent.getSource(),
 				sId = oSource.getParent().getParent().getId(),
 				oTable = sap.ui.getCore().byId(sId),
 				aRejectModel = [],
-				oModel = this.getOwnerComponent().getModel(),
+				// oModel = this.getOwnerComponent().getModel(),
 				sFragmentPath = this.getText("FragmentPath");
 
 			if (oTable.getSelectedItems().length === 0) {
@@ -394,29 +396,43 @@ sap.ui.define([
 
 			oView.setModel(new JSONModel(aRejectModel), "RejectDataModel");
 			oView.setBusy(true);
-			Promise.all([this.formatter.fetchData.call(this, oModel, "/SearchHelp_RejectReasonSet")]).then(function (oRes) {
-				if (!this.oFragmentList[sFragment]) {
-					Fragment.load({
-						id: oView.getId(),
-						name: this.formatter.getFragmentPath(sFragmentPath, sFragment),
-						controller: this
-					}).then(function (oDialog) {
-						this.oFragmentList[sFragment] = oDialog;
-						oView.addDependent(oDialog);
-						this.oFragmentList[sFragment].setModel(new JSONModel(oRes[0]), "ValueHelpSet");
-						/*						this.oFragmentList[sFragment].setModel(new JSONModel(oRes[0]), "RejectDataModel");*/
-						this.oFragmentList[sFragment].open();
-						oView.setBusy(false);
-					}.bind(this)).catch(function (oErr) {});
-				} else {
+			// Promise.all([this.formatter.fetchData.call(this, oModel, "/SearchHelp_RejectReasonSet")]).then(function (oRes) {
+			// 	if (!this.oFragmentList[sFragment]) {
+			// 		Fragment.load({
+			// 			id: oView.getId(),
+			// 			name: this.formatter.getFragmentPath(sFragmentPath, sFragment),
+			// 			controller: this
+			// 		}).then(function (oDialog) {
+			// 			this.oFragmentList[sFragment] = oDialog;
+			// 			oView.addDependent(oDialog);
+			// 			this.oFragmentList[sFragment].setModel(new JSONModel(oRes[0]), "ValueHelpSet");
+			// 			this.oFragmentList[sFragment].open();
+			// 			oView.setBusy(false);
+			// 		}.bind(this)).catch(function (oErr) {});
+			// 	} else {
+			// 		this.oFragmentList[sFragment].open();
+			// 		oView.setBusy(false);
+			// 	}
+			// }.bind(this)).catch(function (oErr) {
+			// 	var errMsg = JSON.parse(oErr.responseText).error.message.value;
+			// 	MessageBox.warning(errMsg);
+			// 	oView.setBusy(false);
+			// });
+			if (!this.oFragmentList[sFragment]) {
+				Fragment.load({
+					id: oView.getId(),
+					name: this.formatter.getFragmentPath(sFragmentPath, sFragment),
+					controller: this
+				}).then(function (oDialog) {
+					this.oFragmentList[sFragment] = oDialog;
+					oView.addDependent(oDialog);
 					this.oFragmentList[sFragment].open();
 					oView.setBusy(false);
-				}
-			}.bind(this)).catch(function (oErr) {
-				var errMsg = JSON.parse(oErr.responseText).error.message.value;
-				MessageBox.warning(errMsg);
+				}.bind(this)).catch(function (oErr) {});
+			} else {
+				this.oFragmentList[sFragment].open();
 				oView.setBusy(false);
-			});
+			}
 		},
 		onOkRejectPress: function (oEvent, aItems, aSet) {
 			var oView = this.getView(),
@@ -427,7 +443,7 @@ sap.ui.define([
 					sRejectText = sap.ui.getCore().byId(oItem.selectedId).getProperty("text");
 
 				oItemBlockModel.setProperty([oItem.sPath, "/acceptOrReject"].join(""), "R");
-				oItemBlockModel.setProperty([oItem.sPath, "/itemStagingStatus"].join(""), "Rejected");
+				oItemBlockModel.setProperty([oItem.sPath, "/itemStagingStatus"].join(""), "Pending for Rejection");
 				oItemBlockModel.setProperty([oItem.sPath, "/reasonForRejectionText"].join(""), sRejectText);
 			}
 			this.handleCloseValueHelp(oEvent, "Reject");
@@ -510,6 +526,30 @@ sap.ui.define([
 
 			oSettingModel.setProperty("/selectedPage", 1);
 			this.formatter.fetchSaleOrder.call(this);
+		},
+		// Will integrate sadl cds view in future
+		valueHelpRequestOrderType: function (oEvent, sFragment, sPath, sAccess) {
+			var oView = this.getView(),
+				sFragmentPath = this.getText("FragmentPath");
+			if (!this.oFragmentList[sFragment]) {
+				Fragment.load({
+					id: oView.getId(),
+					name: this.formatter.getFragmentPath(sFragmentPath, sFragment),
+					controller: this
+				}).then(function (oDialog) {
+					this.oFragmentList[sFragment] = oDialog;
+					oView.addDependent(oDialog);
+					oView.setBusy(false);
+					this.oFragmentList[sFragment].open();
+				}.bind(this)).catch(function (oErr) {
+					oView().setBusy(false);
+					var errMsg = JSON.parse(oErr.responseText).error.message.value;
+					MessageBox.warning(errMsg);
+				}.bind(this));
+			} else {
+				oView.setBusy(false);
+				this.oFragmentList[sFragment].open();
+			}
 		},
 		valueHelpRequest: function (oEvent, sFragment, sPath, sAccess, filter1) {
 			var oView = this.getView(),
@@ -698,10 +738,10 @@ sap.ui.define([
 		onLiveChange: function (oEvent, sFilter1, sFilter2) {
 			var value = oEvent.getParameters().value,
 				filters = [],
-				oFilter = new Filter([
-					new Filter(sFilter1, FilterOperator.Contains, value),
-					new Filter(sFilter2, FilterOperator.Contains, value)
-				]),
+				oFilter = new Filter({
+					filters: [new Filter(sFilter1, FilterOperator.Contains, value), new Filter(sFilter2, FilterOperator.Contains, value)],
+					and: true
+				}),
 				oBinding = oEvent.getSource().getBinding("items");
 
 			filters.push(oFilter);
@@ -751,6 +791,7 @@ sap.ui.define([
 			}
 		},
 		onItemSubmission: function (oEvent, aItem, sFragmentName) {
+			debugger;
 			var oView = this.getView(),
 				oDataModel = oView.getModel(),
 				oLoadDataModel = oView.getModel("LoadDataModel"),
@@ -766,7 +807,7 @@ sap.ui.define([
 				MessageToast.show(this.getText("noActionTaken"));
 				return;
 			}
-			oView.setBusy(true);
+			this._getTable("idList").setBusy(true);
 			Object.assign(aEntry, {
 				salesHeaderNo: this.aDetailItem.salesOrderNum
 			});
@@ -781,41 +822,8 @@ sap.ui.define([
 				aEntry.navHeaderToValidateItem.push(oEntry);
 			}
 			// Use create is easy to structure for deep entries
-			debugger;
-			// Promise.all([this.formatter.createData.call(this, oDataModel, "/ValidateBeforeSubmitSet", aEntry)]).then(
-			// 	function (oRes) {
-			// 		debugger;
-
-			// 		// if found the data in data in rontend is not sync with backend, prompt error.
-			// 		/*					if (oRes[0].isChanged) {
-			// 								if (!this.oFragmentList[sFragmentName]) {
-			// 									this.oFragmentList[sFragmentName] = sap.ui.xmlfragment(this.getText("MainFragmentPath") + sFragmentName, this);
-			// 									oView.addDependent(this.oFragmentList[sFragmentName]);
-			// 								}
-			// 								this.oFragmentList[sFragmentName].setModel(new JSONModel(oRes[0].navHeaderToValidateItem), "SubmitMessageModel");
-			// 								this.oFragmentList[sFragmentName].open();
-			// 								return;
-			// 							}*/
-
-			// 		// Trigger endpoint for submission
-			// 		var sUrl = "/DKSHJavaService2/returnRequest/connect-onSubmitBlockOrderApproval"
-			// 		this.formatter.postJavaService.call(this, oLoadDataModel, sUrl, oPayload).then(function (oJavaRes) {
-
-			// 			debugger;
-			// 		}.bind(this)).catch(function (oJavaErr) {
-			// 			debugger;
-			// 		}.bind(this));
-
-			// 		oView.setBusy(false);
-			// 	}.bind(this)).catch(function (oErr) {
-			// 	debugger;
-			// 	oView.setBusy(false);
-			// 	var errMsg = JSON.parse(oErr.responseText).error.message.value;
-			// 	MessageBox.warning(errMsg);
-			// });
-			var oReturnPromise = this.formatter.createData.call(this, oDataModel, "/ValidateBeforeSubmitSet", aEntry);
-			oReturnPromise.then(function (oRes) {
-				// if found the data in data from frontend is not sync with backend, prompt error.
+			Promise.all([this.formatter.createData.call(this, oDataModel, "/ValidateBeforeSubmitSet", aEntry)]).then(function (oRes) {
+				// if found the data from frontend is not sync with backend, prompt error.
 				// if (oRes.isChanged) {
 				// 	if (!this.oFragmentList[sFragmentName]) {
 				// 		this.oFragmentList[sFragmentName] = sap.ui.xmlfragment(this.getText("MainFragmentPath") + sFragmentName, this);
@@ -823,19 +831,28 @@ sap.ui.define([
 				// 	}
 				// 	this.oFragmentList[sFragmentName].setModel(new JSONModel(oRes.navHeaderToValidateItem), "SubmitMessageModel");
 				// 	this.oFragmentList[sFragmentName].open();
+				// 	oView.setBusy(false);
 				// 	return;
 				// }
-
 				// Trigger endpoint for submission
 				var sUrl = "/DKSHJavaService/taskSubmit/processECCJobNew";
 				this.formatter.postJavaService.call(this, oLoadDataModel, sUrl, JSON.stringify(this.aDetailItem)).then(function (oJavaRes) {
-					MessageBox.information(this.getText("ItemSelectFilter"));
-					// remove SO if success
-
 					debugger;
 					// Fetch the sale order 
-					// Can remove the model for performance perspective
+					// Can remove the model for performance perstrueve
+					if (oLoadDataModel.getData().status === "FAILED") {
+						this._getTable("idList").setBusy(false);
+						MessageBox.error(this.getText("SubmitFailedMessage"), {
+							title: "Error",
+							details: oLoadDataModel.getData().message,
+							contentWidth: "100px",
+							styleClass: sResponsivePaddingClasses
+						});
+						return;
+					}
 					this.formatter.fetchSaleOrder.call(this);
+					this._getTable("idList").setBusy(false);
+					MessageBox.information(this.getText("SubmitSuccessMessage"));
 				}.bind(this)).catch(function (oJavaErr) {
 					debugger;
 					var errMsg = JSON.parse(oJavaErr.responseText).error.message.value;
@@ -843,6 +860,7 @@ sap.ui.define([
 					oView.setBusy(false);
 				}.bind(this));
 				oView.setBusy(false);
+
 			}.bind(this)).catch(function (oErr) {
 				debugger;
 				oView.setBusy(false);
@@ -937,6 +955,9 @@ sap.ui.define([
 		// 		this.formatter.fetchSaleOrder.call(this);
 		// 	}
 		// },
+		onPressRefresh: function () {
+			this.formatter.fetchSaleOrder.call(this);
+		},
 		onReset: function (oEvent) {
 			var oFilterModel = this.getView().getModel("filterModel");
 
@@ -946,10 +967,6 @@ sap.ui.define([
 		onResetSoldToParty: function (oEvent) {
 			var oFilterModel = this.getView().getModel("filterModel");
 			this.resetModel(oFilterModel, ["SoldToPartId", "SoldToPartName", "SoldToPartSaleOrg", "SoldToPartDivision", "SoldToPartDistChannel"]);
-		},
-		_refresh: function () {},
-		_getSmartTable: function (sId) {
-			return this.getView().byId(sId);
 		},
 		_getTable: function (sId) {
 			return this.getView().byId(sId);

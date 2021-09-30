@@ -4,4 +4,9 @@
 		items="{ValueHelpSet>/results}" class="sapUiSizeCompact">
 		<StandardListItem title="{ValueHelpSet>Description}" type="Active"/>
 	</SelectDialog>
+	<!--<SelectDialog title="{i18n>tltpStoLoc}" liveChange="onLiveChange($event, 'Description', 'StorageLocation')"-->
+	<!--	confirm="handleAddItem($event, '/storageLoc', 'StorageLocation', '/batchNum')" cancel="handleCancel($event, 'StorageLocation')"-->
+	<!--	items="{ path: '/SearchHelp_StorageLocationSet'}" class="sapUiSizeCompact">-->
+	<!--	<StandardListItem title="{Description}" type="Active"/>-->
+	<!--</SelectDialog>-->
 </core:FragmentDefinition>

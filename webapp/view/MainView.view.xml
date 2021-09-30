@@ -62,7 +62,7 @@
 			</Toolbar>
 		</f:footer>
 	</f:DynamicPage>-->
-	<Page showHeader="false" showFooter="true" class="sapUiSizeCompact">
+	<Page showHeader="false" showFooter="true" class="sapUiSizeCompact" busy="false">
 		<content>
 			<core:Fragment fragmentName="dksh.connectclient.itemblockorder.view.Fragments.SalesFilterFrag" type="XML"/>
 			<OverflowToolbar id="otb1" class="dkshToolbarStyle customTitle">
@@ -100,7 +100,7 @@
 			<!--		</CustomListItem>-->
 			<!--	</items>-->
 			<!--</List>-->
-			<List id="idList" growing="true" growingScrollToLoad="true" enableBusyIndicator="true"
+			<List id="idList" growing="true" growingScrollToLoad="true"
 				items="{path: 'ItemBlockModel>/data', templateShareable: false, sorter : { path: 'postingDate', descending : 'true' } }"
 				noDataText="No pending release found" class="sapUiSizeCompact">
 				<items>

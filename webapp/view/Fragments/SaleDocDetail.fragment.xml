@@ -85,9 +85,6 @@
 				<OverflowToolbar>
 					<ToolbarSpacer/>
 					<SearchField width="30%" liveChange="onItemTableFreeSearch"></SearchField>
-					<!-- need to enhance to restrict edit button by approval level -->
-					<!--					<Button icon="sap-icon://edit" type="Transparent" tooltip="{i18n>Edit}" press="onPressEditItem"
-						enabled="{parts:['SalesHeaderModel>/levelNum','SalesHeaderModel>/processor','SalesHeaderModel>/taskOwner'] , formatter:'.formatter.setEditRestriction'}"/>-->
 					<Button icon="sap-icon://edit" type="Transparent" tooltip="{i18n>Edit}" press="onPressEditItem"
 						visible="{= ${ItemBlockModel>itemBtnEanbled}}" enabled="{= ${ItemBlockModel>itemBtnEanbled}}"/>
 					<Button type="Transparent" text="{i18n>Save}" visible="{= !${ItemBlockModel>itemBtnEanbled}}"
@@ -215,8 +212,9 @@
 						<!-- Old Material Code -->
 						<Text text="{ItemBlockModel>oldMatCode}" textAlign="Left"/>
 						<!-- Item Staging Status -->
-						<ObjectStatus text="{ItemBlockModel>itemStagingStatus}"
-							state="{parts:[{path:'ItemBlockModel>itemStagingStatus'}],formatter:'.formatter.status'}"/></cells>
+						<ObjectStatus text="{ItemBlockModel>itemStagingStatus}" state="{parts:['ItemBlockModel>itemStagingStatus'],formatter:'.formatter.status'}"/></cells>
+					<!--<ObjectStatus text="{ItemBlockModel>itemStagingStatus}"-->
+					<!--	state="{= ${ItemBlockModel>acceptOrReject} === 'A' ? 'Success' : ${ItemBlockModel>acceptOrReject} === 'R' ? 'Error' : 'None' }"/></cells>-->
 				</ColumnListItem>
 			</items>
 		</Table>
