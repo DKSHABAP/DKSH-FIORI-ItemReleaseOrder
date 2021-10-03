@@ -3,7 +3,7 @@
 	<edmx:DataServices m:DataServiceVersion="2.0">
 		<Schema xmlns="http://schemas.microsoft.com/ado/2008/09/edm" Namespace="ZDKSH_CC_HDR_ITEM_RELEASE_SRV" xml:lang="en" sap:schema-version="1">
 			<EntityType Name="SearchHelp_StorageLocation" sap:content-version="1">
-				<Key><PropertyRef Name="StorageLocation"/></Key><Property Name="StorageLocation" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="Storage Location"
+				<Key><PropertyRef Name="Code"/></Key><Property Name="Code" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="Storage Location"
 					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Description" Type="Edm.String" Nullable="false" MaxLength="500" sap:unicode="false" sap:label="Description"
 					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/></EntityType>
 			<EntityType Name="SearchHelp_BatchNo" sap:content-version="1">
@@ -116,41 +116,44 @@
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><NavigationProperty Name="navHeaderToValidateItem" Relationship="ZDKSH_CC_HDR_ITEM_RELEASE_SRV.HeaderToValidateItem"
 					FromRole="FromRole_HeaderToValidateItem" ToRole="ToRole_HeaderToValidateItem"/></EntityType>
 			<EntityType Name="SearchHelp_SalesOrg" sap:content-version="1">
-				<Key><PropertyRef Name="Salesorg"/></Key><Property Name="Salesorg" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="Sales Org." sap:creatable="false"
+				<Key><PropertyRef Name="Code"/></Key><Property Name="Code" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="Sales Org." sap:creatable="false"
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Description" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="Description" sap:creatable="false"
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Language" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="Language" sap:creatable="false"
-					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="isHeader" Type="Edm.Boolean" Nullable="false" sap:unicode="false" sap:label="isHeader" sap:creatable="false"
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/></EntityType>
 			<EntityType Name="SearchHelp_HeaderDeliveryBlock" sap:content-version="1">
-				<Key><PropertyRef Name="DeliveryBlock"/></Key><Property Name="DeliveryBlock" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="Delivery Block" sap:creatable="false"
-					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Language" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="Language" sap:creatable="false"
+				<Key><PropertyRef Name="Code"/></Key><Property Name="Code" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="Delivery Block" sap:creatable="false"
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Description" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="Name" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Language" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="Language" sap:creatable="false"
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/></EntityType>
 			<EntityType Name="SearchHelp_ItemDeliveryBlock" sap:content-version="1">
-				<Key><PropertyRef Name="DeliveryBlock"/></Key><Property Name="DeliveryBlock" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="Delivery block" sap:creatable="false"
-					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Language" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="Language" sap:creatable="false"
+				<Key><PropertyRef Name="Code"/></Key><Property Name="Code" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="Delivery block" sap:creatable="false"
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Description" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="Description" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Language" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="Language" sap:creatable="false"
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/></EntityType>
 			<EntityType Name="SearchHelp_MaterialGroup" sap:content-version="1">
-				<Key><PropertyRef Name="MaterialGroup"/></Key><Property Name="MaterialGroup" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="Material Group" sap:creatable="false"
+				<Key><PropertyRef Name="Code"/></Key><Property Name="Code" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="Material Group" sap:creatable="false"
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Description" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="Matl Grp Desc." sap:creatable="false"
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Language" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="Language" sap:creatable="false"
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/></EntityType>
 			<EntityType Name="SearchHelp_Division" sap:content-version="1">
-				<Key><PropertyRef Name="Division"/></Key><Property Name="Language" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="Language" sap:creatable="false"
-					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Division" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="Division" sap:creatable="false"
-					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Description" Type="Edm.String" Nullable="false" MaxLength="20" sap:unicode="false" sap:label="Name" sap:creatable="false"
-					sap:updatable="false" sap:sortable="false" sap:filterable="false"/></EntityType>
-			<EntityType Name="SearchHelp_DistChnl" sap:content-version="1">
-				<Key><PropertyRef Name="Distchl"/></Key><Property Name="Distchl" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="Distr. Channel" sap:creatable="false"
-					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Language" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="Language" sap:creatable="false"
-					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Description" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="Description" sap:creatable="false"
-					sap:updatable="false" sap:sortable="false" sap:filterable="false"/></EntityType>
-			<EntityType Name="SearchHelp_MaterialGroup4" sap:content-version="1">
-				<Key><PropertyRef Name="MaterialGroup4"/></Key><Property Name="MaterialGroup4" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="MaterialGroup 4" sap:creatable="false"
+				<Key><PropertyRef Name="Code"/></Key><Property Name="Code" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="Division" sap:creatable="false"
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Description" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="Name" sap:creatable="false"
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Language" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="Language" sap:creatable="false"
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/></EntityType>
+			<EntityType Name="SearchHelp_DistChnl" sap:content-version="1">
+				<Key><PropertyRef Name="Code"/></Key><Property Name="Code" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="Distr. Channel" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Description" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="Description" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Language" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="Language" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/></EntityType>
+			<EntityType Name="SearchHelp_MaterialGroup4" sap:content-version="1">
+				<Key><PropertyRef Name="Code"/></Key><Property Name="Code" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="MaterialGroup 4" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Description" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="Name" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Language" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="Language" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/></EntityType>
+			<EntityType Name="SearchHelp_OrderType" sap:content-version="1">
+				<Key><PropertyRef Name="Code"/></Key><Property Name="Code" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/><Property Name="Description" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/></EntityType>
 			<Association Name="HeaderToItem" sap:content-version="1"><End Type="ZDKSH_CC_HDR_ITEM_RELEASE_SRV.SoHeader" Multiplicity="1" Role="FromRole_HeaderToItem"/><End Type="ZDKSH_CC_HDR_ITEM_RELEASE_SRV.SoItem" Multiplicity="*" Role="ToRole_HeaderToItem"/>
 				<ReferentialConstraint>
 					<Principal Role="FromRole_HeaderToItem"><PropertyRef Name="docNumber"/></Principal>
@@ -180,6 +183,7 @@
 				sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/><EntitySet Name="SearchHelp_DivisionSet" EntityType="ZDKSH_CC_HDR_ITEM_RELEASE_SRV.SearchHelp_Division" sap:creatable="false"
 				sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/><EntitySet Name="SearchHelp_DistChnlSet" EntityType="ZDKSH_CC_HDR_ITEM_RELEASE_SRV.SearchHelp_DistChnl" sap:creatable="false"
 				sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/><EntitySet Name="SearchHelp_MaterialGroup4Set" EntityType="ZDKSH_CC_HDR_ITEM_RELEASE_SRV.SearchHelp_MaterialGroup4" sap:creatable="false"
+				sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/><EntitySet Name="SearchHelp_OrderTypeSet" EntityType="ZDKSH_CC_HDR_ITEM_RELEASE_SRV.SearchHelp_OrderType" sap:creatable="false"
 				sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
 				<AssociationSet Name="HeaderToItemSet" Association="ZDKSH_CC_HDR_ITEM_RELEASE_SRV.HeaderToItem" sap:creatable="false" sap:updatable="false"
 					sap:deletable="false" sap:content-version="1"><End EntitySet="SoHeaderSet" Role="FromRole_HeaderToItem"/><End EntitySet="SoItemSet" Role="ToRole_HeaderToItem"/></AssociationSet>

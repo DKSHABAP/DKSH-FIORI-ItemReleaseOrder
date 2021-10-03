@@ -1,6 +1,6 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:ui="sap.ui.table" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core">
-	<SelectDialog title="{i18n>OrderType}" confirm="handleAddItem($event, '/selectedOrderType', 'OrderType')"
-		cancel="handleCancel($event, 'OrderType')" liveChange="onLiveChange($event, 'Description', 'Code')"
+	<SelectDialog title="{i18n>OrderType}" confirm="handleAdd($event, '/orderType', 'Code', 'filterModel')"
+		cancel="handleCancel($event, 'OrderType')" liveChange="onLiveChange($event, 'Code', 'Description')"
 		items="{path: '/SearchHelp_OrderTypeSet'}" class="sapUiSizeCompact">
 		<StandardListItem title="{Description}" type="Active"/>
 	</SelectDialog>

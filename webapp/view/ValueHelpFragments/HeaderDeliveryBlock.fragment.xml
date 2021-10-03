@@ -1,7 +1,12 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
-	<SelectDialog title="{i18n>HeaderDeliveryBlock}" liveChange="onLiveChange($event, 'Description', 'DeliveryBlock')"
-		confirm="handleAdd($event, '/selectedHeaderDeliveryBlock', '', 'DeliveryBlock')" cancel="handleCancel($event, 'HeaderDeliveryBlock')"
-		items="{ValueHelpSet>/results}" class="sapUiSizeCompact">
-		<StandardListItem title="{ValueHelpSet>Description}" type="Active"/>
+	<!--<SelectDialog title="{i18n>HeaderDeliveryBlock}" liveChange="onLiveChange($event, 'Description', 'DeliveryBlock')"-->
+	<!--	confirm="handleAdd($event, '/selectedHeaderDeliveryBlock', '', 'DeliveryBlock')" cancel="handleCancel($event, 'HeaderDeliveryBlock')"-->
+	<!--	items="{ValueHelpSet>/results}" class="sapUiSizeCompact">-->
+	<!--	<StandardListItem title="{ValueHelpSet>Description}" type="Active"/>-->
+	<!--</SelectDialog>-->
+	<SelectDialog title="{i18n>HeaderDeliveryBlock}" liveChange="onLiveChange($event, 'Code', 'Description')"
+		confirm="handleAdd($event, '/headerDeliveryBlock', 'Code', 'filterModel')" cancel="handleCancel($event, 'HeaderDeliveryBlock')"
+		items="{path: '/SearchHelp_HeaderDeliveryBlockSet'}" class="sapUiSizeCompact">
+		<StandardListItem title="{Description}" type="Active"/>
 	</SelectDialog>
 </core:FragmentDefinition>

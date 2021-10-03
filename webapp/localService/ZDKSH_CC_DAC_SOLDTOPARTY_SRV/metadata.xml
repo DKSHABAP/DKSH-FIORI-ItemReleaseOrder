@@ -1,7 +1,8 @@
-<edmx:Edmx xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"
-	xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:sap="http://www.sap.com/Protocols/SAPData" Version="1.0">
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"
+	xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:sap="http://www.sap.com/Protocols/SAPData">
 	<edmx:DataServices m:DataServiceVersion="2.0">
-		<Schema xmlns="http://schemas.microsoft.com/ado/2008/09/edm" Namespace="ZDKSH_CC_DAC_SOLDTOPARTY_SRV" xml:lang="en" sap:schema-version="1">
+		<Schema Namespace="ZDKSH_CC_DAC_SOLDTOPARTY_SRV" xml:lang="en" sap:schema-version="1" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
 			<EntityType Name="TransactionNum" sap:content-version="1">
 				<Key><PropertyRef Name="salesOrg"/><PropertyRef Name="countryKey"/></Key><Property Name="salesOrg" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="salesOrg" sap:creatable="false"
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="countryKey" Type="Edm.String" Nullable="false" MaxLength="3" sap:unicode="false" sap:label="countryKey"
@@ -51,15 +52,15 @@
 			<EntityType Name="ZSoldToPartySH" sap:content-version="1">
 				<Key><PropertyRef Name="custNumEx"/><PropertyRef Name="CustCode"/></Key><Property Name="custNumEx" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="custNumEx" sap:creatable="false"
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="CustCode" Type="Edm.String" Nullable="false" MaxLength="500" sap:unicode="false" sap:label="Customer" sap:creatable="false"
-					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Name1" Type="Edm.String" Nullable="false" MaxLength="35" sap:unicode="false" sap:label="Name" sap:creatable="false"
-					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Name2" Type="Edm.String" Nullable="false" MaxLength="35" sap:unicode="false" sap:label="Name2" sap:creatable="false"
+					sap:updatable="false"/><Property Name="Name1" Type="Edm.String" Nullable="false" MaxLength="35" sap:unicode="false" sap:label="Name" sap:creatable="false"
+					sap:updatable="false"/><Property Name="Name2" Type="Edm.String" Nullable="false" MaxLength="35" sap:unicode="false" sap:label="Name2" sap:creatable="false"
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Distchl" Type="Edm.String" Nullable="false" MaxLength="500" sap:unicode="false" sap:label="Distribution Channel"
-					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="DCName" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="Distribution Channel Name" sap:creatable="false"
+					sap:creatable="false" sap:updatable="false"/><Property Name="DCName" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="Distribution Channel Name" sap:creatable="false"
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="SalesOrg" Type="Edm.String" Nullable="false" MaxLength="500" sap:unicode="false" sap:label="Sales org" sap:creatable="false"
-					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="SOrgName" Type="Edm.String" Nullable="false" MaxLength="20" sap:unicode="false" sap:label="Sales Org Name"
+					sap:updatable="false"/><Property Name="SOrgName" Type="Edm.String" Nullable="false" MaxLength="20" sap:unicode="false" sap:label="Sales Org Name"
 					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Flag" Type="Edm.String" Nullable="false" MaxLength="1" sap:unicode="false" sap:label="Flag" sap:creatable="false"
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Division" Type="Edm.String" Nullable="false" MaxLength="500" sap:unicode="false" sap:label="Division" sap:creatable="false"
-					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="DName" Type="Edm.String" Nullable="false" MaxLength="20" sap:unicode="false" sap:label="Diviision Name"
+					sap:updatable="false"/><Property Name="DName" Type="Edm.String" Nullable="false" MaxLength="20" sap:unicode="false" sap:label="Diviision Name"
 					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="languageID" Type="Edm.String" Nullable="false" MaxLength="2" sap:unicode="false" sap:label="languageID"
 					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="soldToParty" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="soldToParty"
 					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="shipToParty" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="shipToParty"
@@ -101,6 +102,10 @@
 				sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/><EntitySet Name="SoldToPartySet" EntityType="ZDKSH_CC_DAC_SOLDTOPARTY_SRV.SoldToParty" sap:creatable="false" sap:updatable="false"
 				sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/><EntitySet Name="ZSoldToPartySH" EntityType="ZDKSH_CC_DAC_SOLDTOPARTY_SRV.ZSoldToPartySH" sap:creatable="false" sap:updatable="false"
 				sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/><EntitySet Name="ZSoldToPartySet" EntityType="ZDKSH_CC_DAC_SOLDTOPARTY_SRV.ZSoldToParty" sap:creatable="false" sap:updatable="false"
-				sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/></EntityContainer><atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="self" href="./sap/ZDKSH_CC_DAC_SOLDTOPARTY_SRV/$metadata"/><atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="latest-version" href="./sap/ZDKSH_CC_DAC_SOLDTOPARTY_SRV/$metadata"/></Schema>
+				sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/></EntityContainer><atom:link rel="self"
+				href="https://webidecp-uk81qreeol.dispatcher.ap1.hana.ondemand.com/destinations/DKSHODataService/sap/opu/odata/sap/ZDKSH_CC_DAC_SOLDTOPARTY_SRV/$metadata"
+				xmlns:atom="http://www.w3.org/2005/Atom"/><atom:link rel="latest-version"
+				href="https://webidecp-uk81qreeol.dispatcher.ap1.hana.ondemand.com/destinations/DKSHODataService/sap/opu/odata/sap/ZDKSH_CC_DAC_SOLDTOPARTY_SRV/$metadata"
+				xmlns:atom="http://www.w3.org/2005/Atom"/></Schema>
 	</edmx:DataServices>
 </edmx:Edmx>

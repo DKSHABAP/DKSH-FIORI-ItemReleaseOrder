@@ -146,7 +146,6 @@ sap.ui.define([
 			oItemBlockModel.refresh();
 		},
 		onSaveEditItem: function (oEvent, sFragmentName, oItem) {
-			debugger;
 			var oView = this.getView(),
 				oSource = oEvent.getSource(),
 				sId = oSource.getParent().getParent().getId(),
@@ -167,7 +166,6 @@ sap.ui.define([
 				MessageToast.show(this.getText("ItemSelectList"));
 				return;
 			}
-			// oView.setBusy(true);
 			this._getTable("idList").setBusy(true);
 			this.onSaveEditItem["Payload"] = {};
 			for (var index in aHeadProperties) {
@@ -243,11 +241,21 @@ sap.ui.define([
 				// Update to ECC and hana DB
 				this.formatter.postJavaService.call(this, oLoadDataModel, "/DKSHJavaService/OdataServices/updateOnSaveOrEdit", JSON.stringify(
 					this.onSaveEditItem["Payload"])).then(function (oResponse) {
+					if (oLoadDataModel.getData().status === "FAILED") {
+						this._getTable("idList").setBusy(false);
+						MessageBox.error(this.getText("SaveFailedMessage"), {
+							title: "Error",
+							details: oLoadDataModel.getData().message,
+							contentWidth: "100px",
+							styleClass: sResponsivePaddingClasses
+						});
+						return;
+					}
 					this.oFragmentList[sFragmentName].open();
 					this._resetSavedItem(sFragmentName);
 				}.bind(this));
 			}.bind(this)).catch(function (oErrResp) {
-				this._getTable("idList").setBusy(true);
+				this._getTable("idList").setBusy(false);
 				MessageBox.error("Failed to update to ECC");
 			}.bind(this));
 		},
@@ -360,7 +368,7 @@ sap.ui.define([
 			}.bind(this);
 
 			// As discussed, java will set levelStatus = 4 when any item reached to last level or single level approver.
-			var sApprvMsg = ["(", oTable.getSelectedItems().length, ")", (oItem.salesDocItemList[0].levelStatus === "4") ?
+			var sApprvMsg = ["(", oTable.getSelectedItems().length, ")", (!oItem.salesDocItemList[0].nextLevel) ?
 				" Item(s) approved completely" : " Item(s) approved and sent to next approval level"
 			].join("");
 			MessageBox.show(sApprvMsg, {
@@ -373,62 +381,26 @@ sap.ui.define([
 			});
 		},
 		onRejectPress: function (oEvent, sFragment, oItem) {
-			debugger;
 			var oView = this.getView(),
 				oSource = oEvent.getSource(),
 				sId = oSource.getParent().getParent().getId(),
 				oTable = sap.ui.getCore().byId(sId),
-				aRejectModel = [],
-				// oModel = this.getOwnerComponent().getModel(),
-				sFragmentPath = this.getText("FragmentPath");
+				aRejectModel = [];
 
 			if (oTable.getSelectedItems().length === 0) {
 				MessageToast.show(this.getText("ItemSelectList"));
 				return;
 			}
-
 			for (var indx in oTable.getSelectedContexts()) {
 				var oSelectedContext = oTable.getSelectedContexts()[indx];
 				aRejectModel.push(Object.assign(oSelectedContext.getObject(), {
 					sPath: oSelectedContext.getPath()
 				}));
 			}
-
 			oView.setModel(new JSONModel(aRejectModel), "RejectDataModel");
 			oView.setBusy(true);
-			// Promise.all([this.formatter.fetchData.call(this, oModel, "/SearchHelp_RejectReasonSet")]).then(function (oRes) {
-			// 	if (!this.oFragmentList[sFragment]) {
-			// 		Fragment.load({
-			// 			id: oView.getId(),
-			// 			name: this.formatter.getFragmentPath(sFragmentPath, sFragment),
-			// 			controller: this
-			// 		}).then(function (oDialog) {
-			// 			this.oFragmentList[sFragment] = oDialog;
-			// 			oView.addDependent(oDialog);
-			// 			this.oFragmentList[sFragment].setModel(new JSONModel(oRes[0]), "ValueHelpSet");
-			// 			this.oFragmentList[sFragment].open();
-			// 			oView.setBusy(false);
-			// 		}.bind(this)).catch(function (oErr) {});
-			// 	} else {
-			// 		this.oFragmentList[sFragment].open();
-			// 		oView.setBusy(false);
-			// 	}
-			// }.bind(this)).catch(function (oErr) {
-			// 	var errMsg = JSON.parse(oErr.responseText).error.message.value;
-			// 	MessageBox.warning(errMsg);
-			// 	oView.setBusy(false);
-			// });
 			if (!this.oFragmentList[sFragment]) {
-				Fragment.load({
-					id: oView.getId(),
-					name: this.formatter.getFragmentPath(sFragmentPath, sFragment),
-					controller: this
-				}).then(function (oDialog) {
-					this.oFragmentList[sFragment] = oDialog;
-					oView.addDependent(oDialog);
-					this.oFragmentList[sFragment].open();
-					oView.setBusy(false);
-				}.bind(this)).catch(function (oErr) {});
+				this.loadFragment(sFragment);
 			} else {
 				this.oFragmentList[sFragment].open();
 				oView.setBusy(false);
@@ -496,7 +468,6 @@ sap.ui.define([
 			}
 		},
 		onDisplayMarkedItems: function (oEvent, sFragmentName, oItemModel) {
-			debugger;
 			var sFragmentPath = this.getText("MainFragmentPath");
 			if (!this.oFragmentList[sFragmentName]) {
 				this.oFragmentList[sFragmentName] = sap.ui.xmlfragment(sFragmentPath + sFragmentName, this);
@@ -521,161 +492,45 @@ sap.ui.define([
 		},
 		// On Search data
 		onSearchSalesHeader: function (oEvent, oFilterSaleOrder) {
-			var oView = this.getView(),
-				oSettingModel = oView.getModel("settings");
+			// var oView = this.getView();
+			// oSettingModel = oView.getModel("settings");
 
-			oSettingModel.setProperty("/selectedPage", 1);
+			// oSettingModel.setProperty("/selectedPage", 1);
 			this.formatter.fetchSaleOrder.call(this);
 		},
-		// Will integrate sadl cds view in future
-		valueHelpRequestOrderType: function (oEvent, sFragment, sPath, sAccess) {
-			var oView = this.getView(),
-				sFragmentPath = this.getText("FragmentPath");
-			if (!this.oFragmentList[sFragment]) {
-				Fragment.load({
-					id: oView.getId(),
-					name: this.formatter.getFragmentPath(sFragmentPath, sFragment),
-					controller: this
-				}).then(function (oDialog) {
-					this.oFragmentList[sFragment] = oDialog;
-					oView.addDependent(oDialog);
-					oView.setBusy(false);
-					this.oFragmentList[sFragment].open();
-				}.bind(this)).catch(function (oErr) {
-					oView().setBusy(false);
-					var errMsg = JSON.parse(oErr.responseText).error.message.value;
-					MessageBox.warning(errMsg);
-				}.bind(this));
-			} else {
-				oView.setBusy(false);
-				this.oFragmentList[sFragment].open();
-			}
-		},
-		valueHelpRequest: function (oEvent, sFragment, sPath, sAccess, filter1) {
-			var oView = this.getView(),
-				oUserAccessModel = oView.getModel("UserAccess"),
-				filter = [];
-
-			if (!oUserAccessModel.getData()[sAccess] && (sAccess)) {
+		valueHelpRequest: function (oEvent, sFragment, sField, sAccess, bCheckAccess) {
+			var oUserAccessModel = this.getView().getModel("UserAccess"),
+				aItemVH = ["StorageLocation", "BatchNo"],
+				aClearFragment = ["SoldToParty"];
+			debugger;
+			if (!oUserAccessModel.getData()[sAccess] && (sAccess) && bCheckAccess) {
 				MessageToast.show(this.getText("NoDataAccess"));
 				return;
 			}
-			filter.push(new Filter("Language", FilterOperator.EQ, (sap.ui.getCore().getConfiguration().getLanguage() === "th") ? "2" : "EN"));
-			if (sAccess) {
-				filter.push(new Filter(filter1, FilterOperator.EQ, oUserAccessModel.getData()[sAccess]));
-			}
-
-			var aFilters = [],
-				oFilter = new Filter({
-					filters: filter,
-					and: true
-				}),
-				oModel = this.getOwnerComponent().getModel(),
-				sFragmentPath = this.getText("FragmentPath");
-
 			this.valueHelpId = oEvent.getSource().getId();
-			aFilters.push(oFilter);
-			oView.setBusy(true);
-			if (!this.oFragmentList[sFragment]) {
-				Fragment.load({
-					id: oView.getId(),
-					name: this.formatter.getFragmentPath(sFragmentPath, sFragment),
-					controller: this
-				}).then(function (oDialog) {
-					Promise.all([this.formatter.fetchData.call(this, oModel, sPath, aFilters)]).
-					then(function (oRes) {
-						this.oFragmentList[sFragment] = oDialog;
-						oView.addDependent(oDialog);
-						this.oFragmentList[sFragment].setModel(new JSONModel(oRes[0]), "ValueHelpSet");
-						oView.setBusy(false);
-						this.oFragmentList[sFragment].open();
-					}.bind(this)).catch(function (oErrResp) {});
-				}.bind(this)).catch(function (oErr) {
-					oView().setBusy(false);
-					var errMsg = JSON.parse(oErr.responseText).error.message.value;
-					MessageBox.warning(errMsg);
-				}.bind(this));
-			} else {
-				oView.setBusy(false);
-				this.oFragmentList[sFragment].open();
-			}
-		},
-		ValueHelpRequestItem: function (oEvent, sFragment, sPath) {
-			var oView = this.getView(),
-				// Retrieve the item's record
-				oItemLevel = oEvent.getSource().getParent().getParent(),
-				oItemModel = oView.getModel("ItemBlockModel"),
-				oItemRow = oItemModel.getProperty(oItemLevel.getBindingContextPath()),
-				oModel = this.getOwnerComponent().getModel(),
-				sFragmentPath = this.getText("FragmentPath"),
-				aFilters = [];
-
-			this.sItemPath = oItemLevel.getBindingContextPath();
-			if (sFragment === "BatchNo") {
-				if (!oItemRow.sapMaterialNum) {
-					// Make sure material is populated, otherwise there is performance issue in odata
-					MessageToast.show("Make sure material number is populated");
-					return;
-				}
-				var oFilter = new Filter({
-					filters: this.setODataFilter([
-						"plant", "storageLoc", "sapMaterialNum"
-					], oItemRow),
-					and: true
-				});
-				aFilters.push(oFilter);
-			}
-
-			if (!this.oFragmentList[sFragment]) {
-				Fragment.load({
-					id: oView.getId(),
-					name: this.formatter.getFragmentPath(sFragmentPath, sFragment),
-					controller: this
-				}).then(function (oDialog) {
-					Promise.all([this.formatter.fetchData.call(this, oModel, sPath, aFilters)]).
-					then(function (oRes) {
-						this.oFragmentList[sFragment] = oDialog;
-						oView.addDependent(oDialog);
-						this.oFragmentList[sFragment].setModel(new JSONModel(oRes[0]), "ValueHelpSet");
-						this.oFragmentList[sFragment].open();
-					}.bind(this)).catch(function (oErr) {
-						var errMsg = JSON.parse(oErr.responseText).error.message.value;
-						MessageBox.warning(errMsg);
-					});
-				}.bind(this)).catch(function (oErr) {});
-			} else {
-				Promise.all([this.formatter.fetchData.call(this, oModel, sPath, aFilters)]).
-				then(function (oRes) {
-					this.oFragmentList[sFragment].setModel(new JSONModel(oRes[0]), "ValueHelpSet");
-					this.oFragmentList[sFragment].open();
-				}.bind(this)).catch(function (oErr) {
-					var errMsg = JSON.parse(oErr.responseText).error.message.value;
-					MessageBox.warning(errMsg);
+			this.vhFilter = "";
+			if (oUserAccessModel.getData()[sAccess]) {
+				var aValue = oUserAccessModel.getData()[sAccess].split("@");
+				// retrieve for blank code
+				aValue.push("");
+				this.vhFilter = new Filter({
+					filters: aValue.map(function (value) {
+						return new Filter(sField, FilterOperator.EQ, value);
+					}),
+					and: false
 				});
 			}
-		},
-		valueHelpRequestSoldToParty: function (oEvent, sFragment) {
-			var oView = this.getView(),
-				sFragmentPath = this.getText("FragmentPath");
-
-			this.valueHelpId = oEvent.getSource().getId();
-			if (!this.oFragmentList[sFragment]) {
-				Fragment.load({
-					id: oView.getId(),
-					name: this.formatter.getFragmentPath(sFragmentPath, sFragment),
-					controller: this
-				}).then(function (oDialog) {
-					this.oFragmentList[sFragment] = oDialog;
-					oView.addDependent(oDialog);
-					this.oFragmentList[sFragment].setModel(new JSONModel({
-						"totalRecords": 0
-					}), "SoldToPartyModel");
-					this.oFragmentList[sFragment].open();
-				}.bind(this)).catch(function (oErr) {});
-			} else {
-				this.oFragmentList[sFragment].open();
+			if (aItemVH.includes(sFragment)) {
+				var oItemLevel = oEvent.getSource().getParent().getParent();
+				this.sItemPath = oItemLevel.getBindingContextPath();
 			}
+			// Destroy fragment avoid duplicate id occur for sold to party
+			if (aClearFragment.includes(sFragment) && this.oFragmentList[sFragment]) {
+				this.oFragmentList[sFragment].destroy(true);
+			}
+			this.loadFragment(sFragment);
 		},
+		// Enhance this to db procedure/ annotation at backend next time
 		onSearchSoldToParty: function (oEvent, sFragment, sPath, sId) {
 			var oView = this.getView(),
 				oData = oView.getModel("filterModel").getData(),
@@ -736,44 +591,65 @@ sap.ui.define([
 			}
 		},
 		onLiveChange: function (oEvent, sFilter1, sFilter2) {
+			debugger;
 			var value = oEvent.getParameters().value,
 				filters = [],
-				oFilter = new Filter({
-					filters: [new Filter(sFilter1, FilterOperator.Contains, value), new Filter(sFilter2, FilterOperator.Contains, value)],
-					and: true
-				}),
 				oBinding = oEvent.getSource().getBinding("items");
 
-			filters.push(oFilter);
+			if (value) {
+				var oFilter = new Filter({
+					filters: [new Filter(sFilter1, FilterOperator.Contains, value), new Filter(sFilter2, FilterOperator.Contains, value)],
+					and: false
+				});
+			}
+			filters.push(oFilter ? oFilter : this.vhFilter);
 			oBinding.filter(filters);
 		},
-		handleAdd: function (oEvent, sPath, sPathSoldToPart, sProperty) {
-			var oView = this.getView(),
-				selectedObj = oEvent.getParameters().selectedContexts[0].getObject(),
-				oFilterModel = oView.getModel("filterModel");
+		handleAdd: function (oEvent, sPath, sProperty, sBindModel, sPathReset, sPathSoldParty) {
+			var selectedObj = oEvent.getParameters().selectedContexts[0].getObject(),
+				oModel = this.getView().getModel(sBindModel);
 
-			oEvent.getSource().getBinding("items").filter([]);
-			if (!selectedObj) {
-				return;
-			}
-			if (this.valueHelpId.includes("idSoldToPart")) {
-				oFilterModel.setProperty(sPathSoldToPart, selectedObj[sProperty]);
-			} else {
-				oFilterModel.setProperty(sPath, selectedObj[sProperty]);
-			}
-		},
-		handleAddItem: function (oEvent, sPathProperty, sProperty, sPathReset) {
-			var oView = this.getView(),
-				selectedObj = oEvent.getParameters().selectedContexts[0].getObject(),
-				oItemBlockModel = oView.getModel("ItemBlockModel");
-
+			debugger;
+			var sPathM = (this.valueHelpId.includes("idSoldToPart")) ? sPathSoldParty : sPath;
+			oModel.setProperty(sPathM, selectedObj[sProperty]);
+			// oModel.setProperty(sPath, selectedObj[sProperty]);
+			// Need to enhacne next time
+			// For storage and batch value help
 			if (this.sItemPath) {
-				oItemBlockModel.setProperty(this.sItemPath + sPathProperty, selectedObj[sProperty]);
-			}
-			if (sProperty === "StorageLocation") {
-				oItemBlockModel.setProperty(this.sItemPath + sPathReset, "");
+				var oSelectedObj = oEvent.getParameters().selectedContexts[0].getObject();
+				oModel.setProperty(this.sItemPath + sPath, oSelectedObj[sProperty]);
+				if (sPathReset) {
+					oModel.setProperty(this.sItemPath + sPathReset, "");
+				}
 			}
 		},
+		// handleAdd: function (oEvent, sPath, sPathSoldToPart, sProperty) {
+		// 	var oView = this.getView(),
+		// 		selectedObj = oEvent.getParameters().selectedContexts[0].getObject(),
+		// 		oFilterModel = oView.getModel("filterModel");
+
+		// 	oEvent.getSource().getBinding("items").filter([]);
+		// 	if (!selectedObj) {
+		// 		return;
+		// 	}
+		// 	if (this.valueHelpId.includes("idSoldToPart")) {
+		// 		oFilterModel.setProperty(sPathSoldToPart, selectedObj[sProperty]);
+		// 	} else {
+		// 		oFilterModel.setProperty(sPath, selectedObj[sProperty]);
+		// 	}
+		// },
+		// handleAddItem: function (oEvent, sPathProperty, sProperty, sPathReset) {
+		// 	var oView = this.getView(),
+		// 		selectedObj = oEvent.getParameters().selectedContexts[0].getObject(),
+		// 		oItemBlockModel = oView.getModel("ItemBlockModel");
+
+		// 	if (this.sItemPath) {
+		// 		oItemBlockModel.setProperty(this.sItemPath + sPathProperty, selectedObj[sProperty]);
+		// 	}
+		// 	if (sProperty === "StorageLocation") {
+		// 		oItemBlockModel.setProperty(this.sItemPath + sPathReset, "");
+		// 	}
+		// },
 		handleCloseValueHelp: function (oEvent, sFragmentName) {
 			if (this.oFragmentList[sFragmentName]) {
 				this.oFragmentList[sFragmentName].close();
@@ -824,20 +700,19 @@ sap.ui.define([
 			// Use create is easy to structure for deep entries
 			Promise.all([this.formatter.createData.call(this, oDataModel, "/ValidateBeforeSubmitSet", aEntry)]).then(function (oRes) {
 				// if found the data from frontend is not sync with backend, prompt error.
-				// if (oRes.isChanged) {
-				// 	if (!this.oFragmentList[sFragmentName]) {
-				// 		this.oFragmentList[sFragmentName] = sap.ui.xmlfragment(this.getText("MainFragmentPath") + sFragmentName, this);
-				// 		oView.addDependent(this.oFragmentList[sFragmentName]);
-				// 	}
-				// 	this.oFragmentList[sFragmentName].setModel(new JSONModel(oRes.navHeaderToValidateItem), "SubmitMessageModel");
-				// 	this.oFragmentList[sFragmentName].open();
-				// 	oView.setBusy(false);
-				// 	return;
-				// }
+				if (oRes.isChanged) {
+					if (!this.oFragmentList[sFragmentName]) {
+						this.oFragmentList[sFragmentName] = sap.ui.xmlfragment(this.getText("MainFragmentPath") + sFragmentName, this);
+						oView.addDependent(this.oFragmentList[sFragmentName]);
+					}
+					this.oFragmentList[sFragmentName].setModel(new JSONModel(oRes.navHeaderToValidateItem), "SubmitMessageModel");
+					this.oFragmentList[sFragmentName].open();
+					this._getTable("idList").setBusy(false);
+					return;
+				}
 				// Trigger endpoint for submission
 				var sUrl = "/DKSHJavaService/taskSubmit/processECCJobNew";
 				this.formatter.postJavaService.call(this, oLoadDataModel, sUrl, JSON.stringify(this.aDetailItem)).then(function (oJavaRes) {
-					debugger;
 					// Fetch the sale order 
 					// Can remove the model for performance perstrueve
 					if (oLoadDataModel.getData().status === "FAILED") {
@@ -854,16 +729,14 @@ sap.ui.define([
 					this._getTable("idList").setBusy(false);
 					MessageBox.information(this.getText("SubmitSuccessMessage"));
 				}.bind(this)).catch(function (oJavaErr) {
-					debugger;
 					var errMsg = JSON.parse(oJavaErr.responseText).error.message.value;
 					MessageBox.warning(errMsg);
-					oView.setBusy(false);
+					this._getTable("idList").setBusy(false);
 				}.bind(this));
-				oView.setBusy(false);
+				this._getTable("idList").setBusy(false);
 
 			}.bind(this)).catch(function (oErr) {
-				debugger;
-				oView.setBusy(false);
+				this._getTable("idList").setBusy(false);
 				var errMsg = JSON.parse(oErr.responseText).error.message.value;
 				MessageBox.warning(errMsg);
 			}.bind(this));
