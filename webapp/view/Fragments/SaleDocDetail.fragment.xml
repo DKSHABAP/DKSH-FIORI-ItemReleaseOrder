@@ -190,9 +190,14 @@
 						<!-- Net Price & Order Qty Sales & Doc Currency -->
 						<Text text="{ItemBlockModel>netWorth} ({ItemBlockModel>docCurrency})" textAlign="Right"/>
 						<!-- Storage Location -->
+						<!--<VBox>-->
+						<!--	<Input value="{ItemBlockModel>storageLoc}" tooltip="{ItemBlockModel>storageLoc}" showValueHelp="true"-->
+						<!--		valueHelpRequest="ValueHelpRequestItem($event, 'StorageLocation', '/SearchHelp_StorageLocationSet')" valueHelpOnly="true"-->
+						<!--		enabled="{= ${ItemBlockModel>editSLoc}}"/>-->
+						<!--</VBox>-->
 						<VBox>
 							<Input value="{ItemBlockModel>storageLoc}" tooltip="{ItemBlockModel>storageLoc}" showValueHelp="true"
-								valueHelpRequest="ValueHelpRequestItem($event, 'StorageLocation', '/SearchHelp_StorageLocationSet')" valueHelpOnly="true"
+								valueHelpRequest="valueHelpRequest($event, 'StorageLocation', 'Code', '', false)" valueHelpOnly="true"
 								enabled="{= ${ItemBlockModel>editSLoc}}"/>
 						</VBox>
 						<!-- Batch Num -->

@@ -4,8 +4,10 @@ sap.ui.define([
 	"dksh/connectclient/itemblockorder/formatter/formatter",
 	"sap/ui/model/json/JSONModel",
 	"sap/ui/model/Filter",
-	"sap/ui/model/FilterOperator"
-], function (Controller, UIComponent, formatter, JSONModel, Filter, FilterOperator) {
+	"sap/ui/model/FilterOperator",
+	"sap/ui/core/Fragment",
+	"sap/m/MessageBox"
+], function (Controller, UIComponent, formatter, JSONModel, Filter, FilterOperator, Fragment, MessageBox) {
 	"use strict";
 
 	return Controller.extend("dksh.connectclient.itemblockorder.controller.BaseController", {
@@ -23,22 +25,24 @@ sap.ui.define([
 				pagination: []
 			}), "settings");
 			oView.setModel(new JSONModel({
-				"selectedSoldToParty": "",
-				"selectedSalesDocNumInitial": "",
-				"selectedSalesDocNumEnd": "",
-				"selectedDistChannel": "",
-				"selectedSalesDocDateFrom": null,
-				"selectedSalesDocDateTo": null,
-				"selectedMatGrp4": "",
-				"selectedMatGrp": "",
-				"selectedSalesOrg": "",
-				"selectedDivision": "",
-				"selectCustomerPo": "",
-				"selectedDeliveryBlock": "",
-				"selectedShipToParty": "",
-				"selectedHeaderDeliveryBlock": "",
-				"selectedMaterialNum": "",
-				"selectedOrderType": "",
+				"soldtoParty": "",
+				"salesDocNumInitial": "",
+				"salesDocNumEnd": "",
+				"distChannel": "",
+				"initialDate": null,
+				"endDate": null,
+				"materialGroup4": "",
+				"materialGroup": "",
+				"salesOrg": "",
+				"division": "",
+				"customerPoNo": "",
+				"itemDeliveryBlock": "",
+				"shipToparty": "",
+				"headerDeliveryBlock": "",
+				"materialCode": "",
+				"salesTeam": "",
+				"salesTerritory": "",
+				"orderType": "",
 				"isAdmin": false
 			}), "filterModel");
 			oView.setModel(oMockData, "MockData");
@@ -91,6 +95,33 @@ sap.ui.define([
 				}
 			});
 			oModel.updateBindings(true);
+		},
+		loadFragment: function (sFragment) {
+			var sFragmentPath = this.getText("FragmentPath");
+			this.getView().setBusy(true);
+			Fragment.load({
+				id: this.getView().getId(),
+				name: this.formatter.getFragmentPath(sFragmentPath, sFragment),
+				controller: this
+			}).then(function (oDialog) {
+				this.oFragmentList[sFragment] = oDialog;
+				this.getView().addDependent(oDialog);
+				if (this.vhFilter) {
+					var oItemBinding = this.oFragmentList[sFragment].getBinding("items");
+					oItemBinding.filter(this.vhFilter);
+				}
+				if (sFragment === "SoldToParty") {
+					this.oFragmentList[sFragment].setModel(new JSONModel({
+						"totalRecords": 0
+					}), "SoldToPartyModel");
+				}
+				this.getView().setBusy(false);
+				this.oFragmentList[sFragment].open();
+			}.bind(this)).catch(function (oErr) {
+				this.getView().setBusy(false);
+				var errMsg = JSON.parse(oErr.responseText).error.message.value;
+				MessageBox.warning(errMsg);
+			}.bind(this));
 		},
 		displayWarning: function () {},
 		displayError: function () {}

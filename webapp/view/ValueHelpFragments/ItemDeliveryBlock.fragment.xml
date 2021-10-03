@@ -4,9 +4,9 @@
 		<StandardListItem title="{parts: ['ItemDeliveryBlockSet>DeliveryBlock','ItemDeliveryBlockSet>Text'], formatter:'.formatter.keyValueformat'}" type="Active"
 			tooltip="{parts: ['ItemDeliveryBlockSet>DeliveryBlock','ItemDeliveryBlockSet>Text'], formatter:'.formatter.keyValueformat'}"/>
 	</SelectDialog>-->
-	<SelectDialog title="{i18n>itemDeliveryBlockTitl}" liveChange="onLiveChange($event, 'Description', 'DeliveryBlock')"
-		confirm="handleAdd($event, '/selectedDeliveryBlock', '', 'DeliveryBlock')" cancel="handleCancel($event, 'ItemDeliveryBlock')"
-		items="{ValueHelpSet>/results}" class="sapUiSizeCompact">
-		<StandardListItem title="{ValueHelpSet>Description}" type="Active"/>
+	<SelectDialog title="{i18n>itemDeliveryBlockTitl}" liveChange="onLiveChange($event, 'Code', 'Description')"
+		confirm="handleAdd($event, '/itemDeliveryBlock', 'Code', 'filterModel')" cancel="handleCancel($event, 'ItemDeliveryBlock')"
+		items="{path: '/SearchHelp_ItemDeliveryBlockSet'}" class="sapUiSizeCompact">
+		<StandardListItem title="{Description}" type="Active"/>
 	</SelectDialog>
 </core:FragmentDefinition>

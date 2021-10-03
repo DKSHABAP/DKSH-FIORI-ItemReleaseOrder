@@ -13,20 +13,29 @@
 				<Input id="idSoldToPartDesc" tooltip="{filterModel>/SoldToPartName}" value="{filterModel>/SoldToPartName}"
 					liveChange="soldToPartyLiveChange" maxLength="35" showValueHelp="false" placeholder="{i18n>plchCustName}"/>
 				<Label text="{i18n>divisionCustIdFragLabel}" design="Bold" tooltip="{i18n>divisionCustIdFragLabel}"/>
-				<Input id="idSoldToPartDivision" tooltip="{filterModel>/SoldToPartDivision}" value="{filterModel>/SoldToPartDivision}"
-					liveChange="soldToPartyLiveChange" showValueHelp="true"
-					valueHelpRequest="valueHelpRequest($event, 'Division', '/SearchHelp_DivisionSet', 'ATR03', 'Division')" placeholder="{i18n>plchDiv}"
+				<!--<Input id="idSoldToPartDivision" tooltip="{filterModel>/SoldToPartDivision}" value="{filterModel>/SoldToPartDivision}"-->
+				<!--	liveChange="soldToPartyLiveChange" showValueHelp="true"-->
+				<!--	valueHelpRequest="valueHelpRequest($event, 'Division', '/SearchHelp_DivisionSet', 'ATR03', 'Division')" placeholder="{i18n>plchDiv}"-->
+				<!--	valueHelpOnly="true"/>-->
+				<Input id="idSoldToPartDivision" value="{filterModel>/SoldToPartDivision}" tooltip="{filterModel>/SoldToPartDivision}" maxLength="100"
+					placeholder="{i18n>plcDiv}" showValueHelp="true" valueHelpRequest="valueHelpRequest($event, 'Division', 'Code', 'ATR03', true)"
 					valueHelpOnly="true"/>
 				<core:Title/>
 				<Label text="{i18n>salesOrgCustIdFragLabel}" design="Bold" tooltip="{i18n>tltpSalesOrg}"/>
-				<Input id="idSoldToPartSaleOrh" tooltip="{filterModel>/SoldToPartSaleOrg}" value="{filterModel>/SoldToPartSaleOrg}"
-					liveChange="soldToPartyLiveChange" showValueHelp="true"
-					valueHelpRequest="valueHelpRequest($event, 'SalesOrg', '/SearchHelp_SalesOrgSet', 'ATR01', 'Salesorg')" placeholder="{i18n>plcSalesOrg}"
-					valueHelpOnly="true"/>
+				<!--<Input id="idSoldToPartSaleOrh" tooltip="{filterModel>/SoldToPartSaleOrg}" value="{filterModel>/SoldToPartSaleOrg}"-->
+				<!--	liveChange="soldToPartyLiveChange" showValueHelp="true"-->
+				<!--	valueHelpRequest="valueHelpRequest($event, 'SalesOrg', '/SearchHelp_SalesOrgSet', 'ATR01', 'Salesorg')" placeholder="{i18n>plcSalesOrg}"-->
+				<!--	valueHelpOnly="true"/>-->
+				<Input id="idSoldToPartSaleOrh" value="{filterModel>/SoldToPartSaleOrg}" tooltip="{filterModel>/SoldToPartSaleOrg}" maxLength="100"
+					liveChange="salesDocValidationHandle" placeholder="{i18n>plchSalesOrg}" showValueHelp="true"
+					valueHelpRequest="valueHelpRequest($event, 'SalesOrg', 'Code', 'ATR01', true)" valueHelpOnly="true"/>
 				<Label text="{i18n>distChanlCustIdFragLabel}" design="Bold" tooltip="{i18n>tltpDistChan}"/>
-				<Input id="idSoldToPartDistChn" tooltip="{filterModel>/SoldToPartDistChannel}" value="{filterModel>/SoldToPartDistChannel}"
-					liveChange="soldToPartyLiveChange" showValueHelp="true"
-					valueHelpRequest="valueHelpRequest($event, 'DistChan', '/SearchHelp_DistChnlSet', 'ATR02', 'Distchl')" placeholder="{i18n>plchDistChan}"
+				<!--<Input id="idSoldToPartDistChn" tooltip="{filterModel>/SoldToPartDistChannel}" value="{filterModel>/SoldToPartDistChannel}"-->
+				<!--	liveChange="soldToPartyLiveChange" showValueHelp="true"-->
+				<!--	valueHelpRequest="valueHelpRequest($event, 'DistChan', '/SearchHelp_DistChnlSet', 'ATR02', 'Distchl')" placeholder="{i18n>plchDistChan}"-->
+				<!--	valueHelpOnly="true"/>-->
+				<Input id="idSoldToPartDistChn" value="{filterModel>/SoldToPartDistChannel}" tooltip="{filterModel>/SoldToPartDistChannel}" maxLength="100"
+					placeholder="{i18n>plcDiv}" showValueHelp="true" valueHelpRequest="valueHelpRequest($event, 'DistChan', 'Code', 'ATR02', true)"
 					valueHelpOnly="true"/>
 				<Label/>
 				<Button icon="sap-icon://search" text="{i18n>Search}" tooltip="{i18n>Search}" type="Accept"
@@ -42,7 +51,7 @@
 				</Button>
 			</f:content>
 		</f:SimpleForm>
-		<Table inset="false" id="idSoldtoPartyTable" growing="true" growingThreshold="10" fixedLayout="true" items="{SoldToPartyModel>/results}"
+		<Table id="idSoldtoPartyTable" inset="false" growing="true" growingThreshold="10" fixedLayout="true" items="{SoldToPartyModel>/results}"
 			mode="SingleSelectMaster" selectionChange="onSTPSelectionChange" updateFinished="updateCountSoldtoPartyF4">
 			<headerToolbar>
 				<Toolbar>

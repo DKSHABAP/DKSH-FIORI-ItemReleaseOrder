@@ -70,93 +70,84 @@ sap.ui.define([
 			var oUserInfoModel = this.getView().getModel("UserInfo"),
 				oUserMangement = this.getView().getModel("UserManagement"),
 				oFilterSaleOrder = this.getView().getModel("filterModel").getData(),
-				// oSettingModel = this.getView().getModel("settings"),
-				dStart = oFilterSaleOrder.selectedSalesDocDateFrom,
-				dEnd = oFilterSaleOrder.selectedSalesDocDateTo,
-				oPayload = {
-					filter: {
-						isAdmin: false,
-						materialGroup: (oFilterSaleOrder.selectedMatGrp) ? oFilterSaleOrder.selectedMatGrp : "",
-						materialCode: (oFilterSaleOrder.selectedMaterialNum) ? oFilterSaleOrder.selectedMaterialNum : "",
-						itemDeliveryBlock: (oFilterSaleOrder.selectedDeliveryBlock) ? oFilterSaleOrder.selectedDeliveryBlock : "",
-						salesOrg: (oFilterSaleOrder.selectedSalesOrg) ? oFilterSaleOrder.selectedSalesOrg : "",
-						soldtoParty: (oFilterSaleOrder.selectedSoldToParty) ? oFilterSaleOrder.selectedSoldToParty : "",
-						division: (oFilterSaleOrder.selectedDivision) ? oFilterSaleOrder.selectedDivision : "",
-						distChannel: (oFilterSaleOrder.selectedDistChannel) ? oFilterSaleOrder.selectedDistChannel : "",
-						salesTeam: (oFilterSaleOrder.selectedSalesTeam) ? oFilterSaleOrder.selectedSalesTeam : "",
-						endDate: (dEnd) ? dStart.getFullYear() + '/' + ('0' + (dEnd.getMonth() + 1)).slice(-2) + '/' + ('0' + dEnd.getDate()).slice(-
-							2) : '',
-						initialDate: (dStart) ? dStart.getFullYear() + '/' + ('0' + (dStart.getMonth() + 1)).slice(-2) + '/' + ('0' + dStart.getDate()).slice(-
-							2) : '',
-						salesTerritory: (oFilterSaleOrder.selectedSalesTerritory) ? oFilterSaleOrder.selectedSalesTerritory : "",
-						customerPoNo: (oFilterSaleOrder.selectCustomerPo) ? oFilterSaleOrder.selectCustomerPo : "",
-						shipToparty: (oFilterSaleOrder.selectedShipToParty) ? oFilterSaleOrder.selectedShipToParty : "",
-						materialGroup4: (oFilterSaleOrder.selectedMatGrp4) ? oFilterSaleOrder.selectedMatGrp4 : "",
-						salesDocNumInitial: (oFilterSaleOrder.selectedSalesDocNumInitial) ? oFilterSaleOrder.selectedSalesDocNumInitial : "",
-						salesDocNumEnd: (oFilterSaleOrder.selectedSalesDocNumEnd) ? oFilterSaleOrder.selectedSalesDocNumEnd : "",
-						headerDeliveryBlock: (oFilterSaleOrder.selectedHeaderDeliveryBlock) ? oFilterSaleOrder.selectedHeaderDeliveryBlock : ""
-					},
-					currentUserInfo: {
-						taskOwner: oUserInfoModel.getProperty("/name"),
-						userId: oUserInfoModel.getProperty("/name")
-					},
-					isForItem: true
+				aProperties = ["isAdmin", "materialGroup", "materialCode", "materialGroup4", "salesOrg", "soldtoParty",
+					"division", "distChannel", "salesTeam", "salesTerritory", "endDate", "initialDate", "customerPoNo", "shipToparty",
+					"salesDocNumInitial", "salesDocNumEnd", "headerDeliveryBlock", "itemDeliveryBlock"
+				],
+				oReqPayload = {
+					filter: {}
 				};
-
+			for (var index in Object.keys(aProperties)) {
+				var sProperty = aProperties[index];
+				if ((sProperty === "endDate" || sProperty === "initialDate")) {
+					var dDate = oFilterSaleOrder[sProperty];
+					oReqPayload["filter"][sProperty] = (dDate) ? dDate.getFullYear() + '/' + ('0' + (dDate.getMonth() + 1)).slice(-2) + '/' + ('0' +
+						dDate.getDate()).slice(-
+						2) : '';
+					continue;
+				}
+				oReqPayload["filter"][sProperty] = oFilterSaleOrder[sProperty];
+			}
+			Object.assign(oReqPayload, {
+				currentUserInfo: {
+					taskOwner: oUserInfoModel.getProperty("/name"),
+					userId: oUserInfoModel.getProperty("/name")
+				},
+				isForItem: true
+			});
 			this.getView().setBusy(true);
 			var sUrl = "/DKSHJavaService/taskSubmit/getSalesBlockOrder/";
-			this.getView().getModel("ItemBlockModel").loadData(sUrl, JSON.stringify(oPayload), true, "POST", false, false, oHeader).then(function (
-					oRes) {
-					var oData = this.getView().getModel("ItemBlockModel").getData();
-					oUserMangement = this.getView().getModel("UserManagement");
-					// aPageNum = [],
-					// count = 0;
-					debugger;
-					// No data found
-					if (!oData.data.length === 0 || !oData) {
+			this.getView().getModel("ItemBlockModel").loadData(sUrl, JSON.stringify(oReqPayload), true, "POST", false, false, oHeader).then(
+					function (oRes) {
+						var oData = this.getView().getModel("ItemBlockModel").getData();
+						oUserMangement = this.getView().getModel("UserManagement");
+						// aPageNum = [],
+						// count = 0;
+						// No data found
+						if (oData.data.length === 0 || !oData) {
+							this.getView().setBusy(false);
+							return;
+						}
+						this.getView().getModel("ItemBlockModel").setProperty("/count", oData.data.length);
+						oData.data.map(function (data) {
+							var sSplitDate = data.postingDate.split("/");
+							data.postingDate = new Date(+sSplitDate[2], sSplitDate[1] - 1, +sSplitDate[0]);
+							Object.assign(data, {
+								loggedInUserPid: oUserMangement.getData().id,
+								loggedInUserId: oUserMangement.getData().userName,
+								expanded: false,
+								itemBtnEanbled: true
+							});
+						}.bind(this));
+						this.getView().getModel("ItemBlockModel").refresh();
+						// Set pagination
+						// var sNumPage = (Math.ceil(oData.count / oData.pageCount));
+						/*				for (var i = 0; i < new Array(sNumPage).length; i++) {
+											count++;
+											aPageNum.push({
+												pageNum: count.toString()
+											});
+										}*/
+						/*				for (var i = 0; i < sNumPage; i++) {
+											count++;
+											aPageNum.push({
+												pageNum: count.toString()
+											});
+										}*/
+						// Temporary logic to fix pagination as 5 (Max)
+						// for (var i = 0; i < 5; i++) {
+						// 	count++;
+						// 	if (count > sNumPage || count > 5) {
+						// 		break;
+						// 	}
+						// 	aPageNum.push({
+						// 		pageNum: count.toString()
+						// 	});
+						// }
+						// debugger;
+						// oSettingModel.setProperty("/pagination", aPageNum);
 						this.getView().setBusy(false);
-						return;
-					}
-					this.getView().getModel("ItemBlockModel").setProperty("/count", oData.data.length);
-					oData.data.map(function (data) {
-						var sSplitDate = data.postingDate.split("/");
-						data.postingDate = new Date(+sSplitDate[2], sSplitDate[1] - 1, +sSplitDate[0]);
-						Object.assign(data, {
-							loggedInUserPid: oUserMangement.getData().id,
-							loggedInUserId: oUserMangement.getData().userName,
-							expanded: false,
-							itemBtnEanbled: true
-						});
-					}.bind(this));
-					this.getView().getModel("ItemBlockModel").refresh();
-					// Set pagination
-					// var sNumPage = (Math.ceil(oData.count / oData.pageCount));
-					/*				for (var i = 0; i < new Array(sNumPage).length; i++) {
-										count++;
-										aPageNum.push({
-											pageNum: count.toString()
-										});
-									}*/
-					/*				for (var i = 0; i < sNumPage; i++) {
-										count++;
-										aPageNum.push({
-											pageNum: count.toString()
-										});
-									}*/
-					// Temporary logic to fix pagination as 5 (Max)
-					// for (var i = 0; i < 5; i++) {
-					// 	count++;
-					// 	if (count > sNumPage || count > 5) {
-					// 		break;
-					// 	}
-					// 	aPageNum.push({
-					// 		pageNum: count.toString()
-					// 	});
-					// }
-					// debugger;
-					// oSettingModel.setProperty("/pagination", aPageNum);
-					this.getView().setBusy(false);
-				}.bind(this))
+					}.bind(this))
 				.catch(function (oErr) {
 					this.getView().setBusy(false);
 				}.bind(this));
