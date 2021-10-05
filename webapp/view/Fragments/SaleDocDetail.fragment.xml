@@ -205,6 +205,9 @@
 							<Input value="{ItemBlockModel>batchNum}" tooltip="{ItemBlockModel>batchNum}" showValueHelp="true"
 								valueHelpRequest="ValueHelpRequestItem($event, 'BatchNo', '/SearchHelp_BatchNoSet')" valueHelpOnly="true"
 								enabled="{= ${ItemBlockModel>editBatchNo}}"/>
+							<!--<Input value="{ItemBlockModel>batchNum}" tooltip="{ItemBlockModel>batchNum}" showValueHelp="true"-->
+							<!--	valueHelpRequest="valueHelpRequest($event, 'BatchNo', 'BatchNo', '', false)" valueHelpOnly="true"-->
+							<!--	enabled="{= ${ItemBlockModel>editBatchNo}}"/>-->
 						</VBox>
 						<!-- Material Group -->
 						<Text text="{ItemBlockModel>materialGroup}" textAlign="Left"/>

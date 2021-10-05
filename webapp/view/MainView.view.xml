@@ -62,7 +62,7 @@
 			</Toolbar>
 		</f:footer>
 	</f:DynamicPage>-->
-	<Page showHeader="false" showFooter="true" class="sapUiSizeCompact" busy="false">
+	<Page showHeader="false" showFooter="true" class="sapUiSizeCompact">
 		<content>
 			<core:Fragment fragmentName="dksh.connectclient.itemblockorder.view.Fragments.SalesFilterFrag" type="XML"/>
 			<OverflowToolbar id="otb1" class="dkshToolbarStyle customTitle">

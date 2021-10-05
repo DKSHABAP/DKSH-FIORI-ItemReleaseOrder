@@ -96,7 +96,7 @@ sap.ui.define([
 			});
 			oModel.updateBindings(true);
 		},
-		loadFragment: function (sFragment) {
+		_loadFragment: function (sFragment, oEvent) {
 			var sFragmentPath = this.getText("FragmentPath");
 			this.getView().setBusy(true);
 			Fragment.load({
@@ -123,7 +123,35 @@ sap.ui.define([
 				MessageBox.warning(errMsg);
 			}.bind(this));
 		},
-		displayWarning: function () {},
-		displayError: function () {}
+		_displayWarning: function (oResponse) {
+			if (oResponse.responseText) {
+				var errMsg = JSON.parse(oResponse.responseText).error.message.value;
+				MessageBox.warning(errMsg);
+			} else {
+				MessageBox.warning(oResponse);
+			}
+			this.getView().setBusy(false);
+			this._getTable("idList").setBusy(false);
+		},
+		_displayError: function (oResponse, si18nKey) {
+			debugger;
+			var oResourceBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle();
+			if (oResponse.responseText) {
+				var sMessage = new DOMParser().parseFromString(oResponse.responseText, 'text/html').getElementsByTagName('h1')[0].outerText;
+				MessageBox.error("Something went wrong...\nPlease try to reload the page.", {
+					title: "Error",
+					details: oResourceBundle.getText("errorDetail", [oResponse.statusCode, sMessage]),
+					contentWidth: "110px"
+				});
+			} else {
+				MessageBox.error(this.getText(si18nKey), {
+					title: "Error",
+					details: oResponse,
+					contentWidth: "110px"
+				});
+			}
+			this.getView().setBusy(false);
+			this._getTable("idList").setBusy(false);
+		}
 	});
 });

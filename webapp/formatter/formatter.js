@@ -72,7 +72,7 @@ sap.ui.define([
 				oFilterSaleOrder = this.getView().getModel("filterModel").getData(),
 				aProperties = ["isAdmin", "materialGroup", "materialCode", "materialGroup4", "salesOrg", "soldtoParty",
 					"division", "distChannel", "salesTeam", "salesTerritory", "endDate", "initialDate", "customerPoNo", "shipToparty",
-					"salesDocNumInitial", "salesDocNumEnd", "headerDeliveryBlock", "itemDeliveryBlock"
+					"salesDocNumInitial", "salesDocNumEnd", "headerDeliveryBlock", "itemDeliveryBlock", "orderType"
 				],
 				oReqPayload = {
 					filter: {}
