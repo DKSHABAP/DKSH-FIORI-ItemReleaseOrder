@@ -252,15 +252,15 @@ sap.ui.define([
 			var a = new Date(pTimeStamp);
 			return a.toLocaleDateString();
 		},
-		setBlurVisibility: function (visiblity) {
-			if (visiblity === 13) {
-				return "";
-			} else if (visiblity === 14) {
-				return "BLUR";
-			} else if (visiblity === 15) {
-				return "BLURGreen";
-			}
-		},
+		// setBlurVisibility: function (visiblity) {
+		// 	if (visiblity === 13) {
+		// 		return "";
+		// 	} else if (visiblity === 14) {
+		// 		return "BLUR";
+		// 	} else if (visiblity === 15) {
+		// 		return "BLURGreen";
+		// 	}
+		// },
 		concateText: function (sCode, sText) {
 			if (sCode) {
 				sText = (sText) ? "(" + sText + ")" : "";
