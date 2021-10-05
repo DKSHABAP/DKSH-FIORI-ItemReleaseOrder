@@ -9,4 +9,9 @@
 	<!--	class="sapUiSizeCompact">-->
 	<!--	<StandardListItem title="{Description}" type="Active"/>-->
 	<!--</SelectDialog>-->
+	<!--<SelectDialog title="{i18n>BatchValueHelpTitle}" liveChange="onLiveChange($event, 'Description', 'BatchNo')"-->
+	<!--	confirm="handleAddItem($event, '/batchNum', 'BatchNo')" cancel="handleCancel($event, 'BatchNo')" items="{ValueHelpSet>/results}"-->
+	<!--	class="sapUiSizeCompact">-->
+	<!--	<StandardListItem title="{ValueHelpSet>Description}" type="Active"/>-->
+	<!--</SelectDialog>-->
 </core:FragmentDefinition>
