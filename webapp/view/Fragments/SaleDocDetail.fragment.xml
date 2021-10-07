@@ -145,6 +145,18 @@
 				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left">
 					<Label design="Bold" text="{i18n>MaterialGrp4}" tooltip="{i18n>MaterialGroup4}"/>
 				</Column>
+				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left" visible="false">
+					<Label design="Bold" text="{i18n>Disc1}" tooltip="{i18n>Disc1}"/>
+				</Column>
+				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left" visible="false">
+					<Label design="Bold" text="{i18n>Disc2}" tooltip="{i18n>Disc2}"/>
+				</Column>
+				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left" visible="false">
+					<Label design="Bold" text="{i18n>Disc3}" tooltip="{i18n>Disc3}"/>
+				</Column>
+				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left" visible="false">
+					<Label design="Bold" text="{i18n>Disc4}" tooltip="{i18n>Disc4}"/>
+				</Column>
 				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left">
 					<Label design="Bold" text="{i18n>ItemDlvBlock}" tooltip="{i18n>ItemDlvBlock}"/>
 				</Column>
@@ -213,6 +225,14 @@
 						<Text text="{ItemBlockModel>materialGroup}" textAlign="Left"/>
 						<!-- Material Group 4 -->
 						<Text text="{ItemBlockModel>materialGroup4}" textAlign="Left"/>
+						<!-- Discount 1 -->
+						<Text text="{ItemBlockModel>disc1}" textAlign="Left"/>
+						<!-- Discount 2 -->
+						<Text text="{ItemBlockModel>disc2}" textAlign="Left"/>
+						<!-- Discount 3 -->
+						<Text text="{ItemBlockModel>disc3}" textAlign="Left"/>
+						<!-- Discount 4 -->
+						<Text text="{ItemBlockModel>disc4}" textAlign="Left"/>
 						<!-- Item Delivery Block -->
 						<Text text="{parts:['ItemBlockModel>itemDlvBlock','ItemBlockModel>itemDlvBlockText'] ,formatter:'.formatter.concateText'}" textAlign="Left"/>
 						<!-- Item Category -->

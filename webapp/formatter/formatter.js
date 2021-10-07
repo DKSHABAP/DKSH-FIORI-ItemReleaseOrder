@@ -104,6 +104,7 @@ sap.ui.define([
 						// aPageNum = [],
 						// count = 0;
 						// No data found
+						debugger;
 						if (oData.data.length === 0 || !oData) {
 							this.getView().setBusy(false);
 							return;
@@ -116,7 +117,8 @@ sap.ui.define([
 								loggedInUserPid: oUserMangement.getData().id,
 								loggedInUserId: oUserMangement.getData().userName,
 								expanded: false,
-								itemBtnEanbled: true
+								itemBtnEanbled: true,
+								submitForHeader: false
 							});
 						}.bind(this));
 						this.getView().getModel("ItemBlockModel").refresh();
