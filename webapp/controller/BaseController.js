@@ -118,9 +118,7 @@ sap.ui.define([
 				this.getView().setBusy(false);
 				this.oFragmentList[sFragment].open();
 			}.bind(this)).catch(function (oErr) {
-				this.getView().setBusy(false);
-				var errMsg = JSON.parse(oErr.responseText).error.message.value;
-				MessageBox.warning(errMsg);
+				this._displayWarning(oErr).bind(this);
 			}.bind(this));
 		},
 		_displayWarning: function (oResponse) {
@@ -134,7 +132,6 @@ sap.ui.define([
 			this._getTable("idList").setBusy(false);
 		},
 		_displayError: function (oResponse, si18nKey) {
-			debugger;
 			var oResourceBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle();
 			if (oResponse.responseText) {
 				var sMessage = new DOMParser().parseFromString(oResponse.responseText, 'text/html').getElementsByTagName('h1')[0].outerText;
