@@ -188,7 +188,6 @@ sap.ui.define([
 				aFilters.push(oFilter);
 				this.onSaveEditItem["Payload"].listOfChangedItemData.push(oItem);
 			}
-			debugger;
 			// Validate if item has rejection or SO blocked prior update item to ECC
 			Promise.all([this.formatter.fetchData.call(this, oModel, "/ValidateItemsBeforeSaveSet", aFilters)]).
 			then(function (oRes) {
@@ -331,23 +330,24 @@ sap.ui.define([
 						oSelectedContext.getModel().setProperty([sPath, "/reasonForRejectionText"].join(""), "");
 						oSelectedContext.getModel().setProperty([sPath, "/comments"].join(""), "");
 					}
+					oTable.removeSelections();
 				}
 			}.bind(this);
 
 			// As discussed, java will set levelStatus = 4 when any item reached to last level or single level approver.
 			var sApprvMsg = ["(", oTable.getSelectedItems().length, ")", (!oItem.salesDocItemList[0].nextLevel) ?
-				" Item(s) approved completely" : " Item(s) approved and sent to next approval level"
+				" Item(s) approved completely" : " Item(s) approved"
 			].join("");
 			MessageBox.show(sApprvMsg, {
 				icon: MessageBox.Icon.INFORMATION,
-				title: "Sales Document: " + oItem.requestId,
+				title: "Sales Document: " + oItem.salesOrderNum,
 				actions: [MessageBox.Action.YES, MessageBox.Action.CANCEL],
 				onClose: fnCloseApprove,
 				initialFocus: MessageBox.Action.CANCEL,
 				styleClass: sResponsivePaddingClasses
 			});
 		},
-		onRejectPress: function (oEvent, sFragment, oItem) {
+		onRejectPress: function (oEvent, sFragment, oItem, oModel) {
 			var oView = this.getView(),
 				oSource = oEvent.getSource(),
 				sId = oSource.getParent().getParent().getId(),
@@ -366,6 +366,7 @@ sap.ui.define([
 			}
 			oView.setModel(new JSONModel(aRejectModel), "RejectDataModel");
 			oView.setBusy(true);
+			this.onRejectPress["Table"] = oTable;
 			if (!this.oFragmentList[sFragment]) {
 				this._loadFragment(sFragment);
 				this.oFragmentList[sFragment].open();
@@ -386,6 +387,7 @@ sap.ui.define([
 				oItemBlockModel.setProperty([oItem.sPath, "/itemStagingStatus"].join(""), "Pending for Rejection");
 				oItemBlockModel.setProperty([oItem.sPath, "/reasonForRejectionText"].join(""), sRejectText);
 			}
+			this.onRejectPress["Table"].removeSelections();
 			this.handleCloseValueHelp(oEvent, "Reject");
 		},
 		onRejectCommonReasonChange: function (oEvent) {
@@ -460,9 +462,7 @@ sap.ui.define([
 		},
 		// On Search data
 		onSearchSalesHeader: function (oEvent, oFilterSaleOrder) {
-			// var oView = this.getView();
 			// oSettingModel = oView.getModel("settings");
-
 			// oSettingModel.setProperty("/selectedPage", 1);
 			this.formatter.fetchSaleOrder.call(this);
 		},
@@ -589,7 +589,7 @@ sap.ui.define([
 				});
 			}
 		},
-		handleAddItem: function (oEvent, sPathProperty, sProperty, sPathReset) {
+		handleAddItem: function (oEvent, sPathProperty, sProperty, oValue) {
 			var oView = this.getView(),
 				selectedObj = oEvent.getParameters().selectedContexts[0].getObject(),
 				oItemBlockModel = oView.getModel("ItemBlockModel");
@@ -597,8 +597,9 @@ sap.ui.define([
 			if (this.sItemPath) {
 				oItemBlockModel.setProperty(this.sItemPath + sPathProperty, selectedObj[sProperty]);
 			}
-			if (sProperty === "StorageLocation") {
-				oItemBlockModel.setProperty(this.sItemPath + sPathReset, "");
+			// Set storage location based on batch no
+			if (sProperty === "BatchNo") {
+				oItemBlockModel.setProperty(this.sItemPath + "/storageLoc", selectedObj["storageLoc"]);
 			}
 		},
 		/* =========================================================================================*/
@@ -736,9 +737,6 @@ sap.ui.define([
 						initialFocus: MessageBox.Action.OK,
 						styleClass: sResponsivePaddingClasses
 					});
-					// this.formatter.fetchSaleOrder.call(this);
-					// this._getTable("idList").setBusy(false);
-					// MessageBox.information(this.getText("SubmitSuccessMessage"));
 				}.bind(this)).catch(function () {
 					this._displayError.bind(this);
 				});

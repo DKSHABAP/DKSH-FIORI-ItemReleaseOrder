@@ -49,7 +49,8 @@
 				</items>
 			</Table>
 			<Label text="{i18n>commentsText}" design="Bold" class="sapUiMediumMarginTop"/>
-			<TextArea change="onAddRejectComments($event, ${RejectDataModel>/})" showExceededText="true" width="100%"/>
+			<TextArea change="onAddRejectComments($event, ${RejectDataModel>/})" value="{RejectDataModel>/0/comments}" showExceededText="true"
+				width="100%"/>
 		</VBox>
 		<buttons>
 			<Button text="{i18n>ok}" press="onOkRejectPress($event, ${RejectDataModel>/})"/>
