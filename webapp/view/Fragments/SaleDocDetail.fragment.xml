@@ -86,7 +86,7 @@
 					<ToolbarSpacer/>
 					<SearchField width="30%" liveChange="onItemTableFreeSearch"></SearchField>
 					<Button icon="sap-icon://edit" type="Transparent" tooltip="{i18n>Edit}" press="onPressEditItem"
-						visible="{= ${ItemBlockModel>itemBtnEanbled}}" enabled="{= ${ItemBlockModel>itemBtnEanbled}}"/>
+						visible="{= ${ItemBlockModel>itemBtnEanbled}}" enabled="{= ${ItemBlockModel>itemBtnEanbled} &amp;&amp; ${ItemBlockModel>levelNum} === 'L1'}"/>
 					<Button type="Transparent" text="{i18n>Save}" visible="{= !${ItemBlockModel>itemBtnEanbled}}"
 						enabled="{= !${ItemBlockModel>itemBtnEanbled}}" press="onSaveEditItem($event, 'SavedMessage', ${ItemBlockModel>})"/>
 					<Button type="Transparent" text="{i18n>Cancel}" visible="{= !${ItemBlockModel>itemBtnEanbled}}"
@@ -94,7 +94,7 @@
 					<Button icon="sap-icon://accept" type="Accept" tooltip="{i18n>Approve}" class="dkshAcceptBtnStyle"
 						enabled="{= ${ItemBlockModel>itemBtnEanbled}}" press="onApprovePress($event, ${ItemBlockModel>})"/>
 					<Button icon="sap-icon://decline" type="Reject" tooltip="{i18n>Reject}" class="dkshRejectBtnStyle"
-						enabled="{= ${ItemBlockModel>itemBtnEanbled}}" press="onRejectPress($event, 'Reject', ${ItemBlockModel>})"/>
+						enabled="{= ${ItemBlockModel>itemBtnEanbled}}" press="onRejectPress($event, 'Reject', ${ItemBlockModel>}, ${ItemBlockModel>/})"/>
 					<Button icon="sap-icon://upload" type="Transparent" tooltip="{i18n>Submit}" enabled="{= ${ItemBlockModel>itemBtnEanbled}}"
 						press="onItemSubmission($event, ${ItemBlockModel>}, 'SubmitErrorMessage')"/>
 					<Button icon="sap-icon://display" type="Transparent" tooltip="{i18n>DisplayActions}" enabled="{= ${ItemBlockModel>itemBtnEanbled}}"

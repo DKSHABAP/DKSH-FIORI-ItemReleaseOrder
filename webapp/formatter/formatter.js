@@ -104,11 +104,11 @@ sap.ui.define([
 						// aPageNum = [],
 						// count = 0;
 						// No data found
-						debugger;
 						if (oData.data.length === 0 || !oData) {
 							this.getView().setBusy(false);
 							return;
 						}
+						debugger;
 						this.getView().getModel("ItemBlockModel").setProperty("/count", oData.data.length);
 						oData.data.map(function (data) {
 							var sSplitDate = data.postingDate.split("/");
