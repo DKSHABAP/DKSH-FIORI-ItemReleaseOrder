@@ -369,7 +369,6 @@ sap.ui.define([
 			this.onRejectPress["Table"] = oTable;
 			if (!this.oFragmentList[sFragment]) {
 				this._loadFragment(sFragment);
-				this.oFragmentList[sFragment].open();
 			} else {
 				this.oFragmentList[sFragment].open();
 				oView.setBusy(false);
@@ -704,6 +703,7 @@ sap.ui.define([
 			// Use create is easy to structure for deep entries
 			Promise.all([this.formatter.createData.call(this, oDataModel, "/ValidateBeforeSubmitSet", aEntry)]).then(function (oRes) {
 				// if found the data from frontend is not sync with backend, prompt error.
+				debugger;
 				if (oRes[0].isChanged) {
 					if (!this.oFragmentList[sFragmentName]) {
 						this.oFragmentList[sFragmentName] = sap.ui.xmlfragment(this.getText("MainFragmentPath") + sFragmentName, this);
