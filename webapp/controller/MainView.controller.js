@@ -477,8 +477,10 @@ sap.ui.define([
 			}
 			this.valueHelpId = oEvent.getSource().getId();
 			this.vhFilter = "";
-			if (oUserAccessModel.getData()[sAccess]) {
-				var aValue = oUserAccessModel.getData()[sAccess].split("@");
+			var sIAccess = oUserAccessModel.getData()[sAccess];
+			if (sIAccess) {
+				if(sIAccess.length>0 && sIAccess!=="*"){
+				var aValue = sIAccess.split("@");
 				// retrieve for blank code
 				aValue.push("");
 				this.vhFilter = new Filter({
@@ -487,6 +489,7 @@ sap.ui.define([
 					}),
 					and: false
 				});
+				}
 			}
 			if (aItemVH.includes(sFragment)) {
 				var oItemLevel = oEvent.getSource().getParent().getParent();
