@@ -101,8 +101,7 @@ sap.ui.define([
 					function (oRes) {
 						var oData = this.getView().getModel("ItemBlockModel").getData();
 						oUserMangement = this.getView().getModel("UserManagement");
-						// aPageNum = [],
-						// count = 0;
+
 						// No data found
 						if (oData.data.length === 0 || !oData) {
 							this.getView().setBusy(false);
@@ -111,10 +110,6 @@ sap.ui.define([
 						debugger;
 						this.getView().getModel("ItemBlockModel").setProperty("/count", oData.data.length);
 						oData.data.map(function (data) {
-							// var sSplitDate = data.postingDate.split("/");
-							// data.postingDate = new Date(+sSplitDate[2], sSplitDate[1] - 1, +sSplitDate[0]);
-							// var sSplitDate = new Date(data.salesOrderDateTxt).toLocaleDateString().split("/");
-							// data.creationDate = new Date(+sSplitDate[2], sSplitDate[1] - 1, +sSplitDate[0]);
 							data.creationDate = new Date(data.salesOrderDateTxt);
 							Object.assign(data, {
 								loggedInUserPid: oUserMangement.getData().id,
@@ -125,32 +120,6 @@ sap.ui.define([
 							});
 						}.bind(this));
 						this.getView().getModel("ItemBlockModel").refresh();
-						// Set pagination
-						// var sNumPage = (Math.ceil(oData.count / oData.pageCount));
-						/*				for (var i = 0; i < new Array(sNumPage).length; i++) {
-											count++;
-											aPageNum.push({
-												pageNum: count.toString()
-											});
-										}*/
-						/*				for (var i = 0; i < sNumPage; i++) {
-											count++;
-											aPageNum.push({
-												pageNum: count.toString()
-											});
-										}*/
-						// Temporary logic to fix pagination as 5 (Max)
-						// for (var i = 0; i < 5; i++) {
-						// 	count++;
-						// 	if (count > sNumPage || count > 5) {
-						// 		break;
-						// 	}
-						// 	aPageNum.push({
-						// 		pageNum: count.toString()
-						// 	});
-						// }
-						// debugger;
-						// oSettingModel.setProperty("/pagination", aPageNum);
 						this.getView().setBusy(false);
 					}.bind(this))
 				.catch(function (oErr) {
