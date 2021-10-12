@@ -101,7 +101,7 @@
 			<!--	</items>-->
 			<!--</List>-->
 			<List id="idList" growing="true" growingScrollToLoad="true"
-				items="{path: 'ItemBlockModel>/data', templateShareable: false, sorter : { path: 'postingDate', descending : 'true' } }"
+				items="{path: 'ItemBlockModel>/data', templateShareable: false, sorter : [{ path: 'creationDate', descending: true }, { path: 'salesOrderNum', descending: true }] }"
 				noDataText="No pending release found" class="sapUiSizeCompact">
 				<items>
 					<CustomListItem>
@@ -116,7 +116,7 @@
 									<Label text="{ItemBlockModel>levelNum}" design="Bold"/>
 									<ToolbarSpacer/>
 									<Label
-										text="{ path: 'ItemBlockModel>postingDate', type: 'sap.ui.model.odata.type.Date', formatOptions: { strictParsing: true, UTC: true, pattern: 'dd/MM/yyyy' } }"
+										text="{ path: 'ItemBlockModel>creationDate', type: 'sap.ui.model.type.Date', formatOptions: { strictParsing: true, UTC: false, pattern: 'dd/MM/yyyy' } }"
 										design="Bold"/>
 								</OverflowToolbar>
 							</headerToolbar>

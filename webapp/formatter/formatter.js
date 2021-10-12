@@ -111,8 +111,11 @@ sap.ui.define([
 						debugger;
 						this.getView().getModel("ItemBlockModel").setProperty("/count", oData.data.length);
 						oData.data.map(function (data) {
-							var sSplitDate = data.postingDate.split("/");
-							data.postingDate = new Date(+sSplitDate[2], sSplitDate[1] - 1, +sSplitDate[0]);
+							// var sSplitDate = data.postingDate.split("/");
+							// data.postingDate = new Date(+sSplitDate[2], sSplitDate[1] - 1, +sSplitDate[0]);
+							// var sSplitDate = new Date(data.salesOrderDateTxt).toLocaleDateString().split("/");
+							// data.creationDate = new Date(+sSplitDate[2], sSplitDate[1] - 1, +sSplitDate[0]);
+							data.creationDate = new Date(data.salesOrderDateTxt);
 							Object.assign(data, {
 								loggedInUserPid: oUserMangement.getData().id,
 								loggedInUserId: oUserMangement.getData().userName,

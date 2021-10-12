@@ -2,7 +2,7 @@
 	<Dialog icon="sap-icon://hint" title="Status" showHeader="true" draggable="true" contentWidth="40%">
 		<VBox>
 			<Table inset="false" fixedLayout="true"
-				items="{path: 'SubmitMessageModel>/results', filter: { path: 'isChanged', operator: 'EQ', value1: true }, sorter: {path: 'salesItemOrderNo'}}"
+				items="{path: 'SubmitMessageModel>/results', filter: [{ path: 'isChanged', operator: 'EQ', value1: true }], sorter: {path: 'salesItemOrderNo'}}"
 				backgroundDesign="Solid" class="sapUiSizeCompact">
 				<columns>
 					<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left" width="140px">
