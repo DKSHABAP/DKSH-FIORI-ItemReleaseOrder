@@ -477,8 +477,7 @@ sap.ui.define([
 			this.valueHelpId = oEvent.getSource().getId();
 			this.vhFilter = "";
 			var sIAccess = oUserAccessModel.getData()[sAccess];
-			if (sIAccess) {
-				if(sIAccess.length>0 && sIAccess!=="*"){
+			if (sIAccess && sIAccess !== "*") {
 				var aValue = sIAccess.split("@");
 				// retrieve for blank code
 				aValue.push("");
@@ -488,7 +487,6 @@ sap.ui.define([
 					}),
 					and: false
 				});
-				}
 			}
 			if (aItemVH.includes(sFragment)) {
 				var oItemLevel = oEvent.getSource().getParent().getParent();
@@ -645,7 +643,6 @@ sap.ui.define([
 				sPathM = (this.valueHelpId.includes("idSoldToPart")) ? sPathSoldParty : sPath;
 
 			oModel.setProperty(sPathM, selectedObj[sProperty]);
-			// oModel.setProperty(sPath, selectedObj[sProperty]);
 			// Need to enhacne next time
 			// For storage and batch value help
 			if (this.sItemPath) {
@@ -740,8 +737,8 @@ sap.ui.define([
 						initialFocus: MessageBox.Action.OK,
 						styleClass: sResponsivePaddingClasses
 					});
-				}.bind(this)).catch(function () {
-					this._displayError.bind(this);
+				}.bind(this)).catch(function (oErr) {
+					this._displayError(oErr).bind(this);
 				});
 			}.bind(this)).catch(this._displayWarning.bind(this));
 		},
@@ -794,37 +791,6 @@ sap.ui.define([
 			oFilterModel.setProperty("/selectedSoldToParty", oData.CustCode);
 			this.handleCancel(oEvent, "SoldToParty");
 		},
-		// onPageClick: function (oEvent) {
-		// 	var sPageNum = +oEvent.getSource().getBindingContext("settings").getObject().pageNum,
-		// 		oSettingModel = this.getView().getModel("settings");
-		// 	oSettingModel.setProperty("/selectedPage", sPageNum);
-		// 	this.formatter.fetchSaleOrder.call(this);
-		// },
-		// onScrollLeft: function (oEvent) {
-		// 	var oSettingModel = this.getView().getModel("settings"),
-		// 		sPageNum = +oSettingModel.getProperty("/selectedPage");
-
-		// 	sPageNum--;
-		// 	if (sPageNum >= 1) {
-		// 		oSettingModel.setProperty("/selectedPage", sPageNum);
-		// 		this.formatter.fetchSaleOrder.call(this);
-		// 	}
-		// },
-		// onScrollRight: function (oEvent) {
-		// 	var oSettingModel = this.getView().getModel("settings"),
-		// 		sPageNum = +oSettingModel.getProperty("/selectedPage"),
-		// 		maxPage = oSettingModel.getProperty("/pagination").length;
-
-		// 	/*			if (sPageNum++ < maxPage) {
-		// 					oSettingModel.setProperty("/selectedPage", sPageNum);
-		// 					this.formatter.fetchSaleOrder.call(this);
-		// 				}*/
-		// 	// Set 5 pages for now
-		// 	if (sPageNum++ < 5) {
-		// 		oSettingModel.setProperty("/selectedPage", sPageNum);
-		// 		this.formatter.fetchSaleOrder.call(this);
-		// 	}
-		// },
 		onPressRefresh: function () {
 			this.formatter.fetchSaleOrder.call(this);
 		},
