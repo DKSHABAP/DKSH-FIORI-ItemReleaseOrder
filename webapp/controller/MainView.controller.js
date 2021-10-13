@@ -461,14 +461,13 @@ sap.ui.define([
 		},
 		// On Search data
 		onSearchSalesHeader: function (oEvent, oFilterSaleOrder) {
-			// oSettingModel = oView.getModel("settings");
-			// oSettingModel.setProperty("/selectedPage", 1);
 			this.formatter.fetchSaleOrder.call(this);
 		},
 		valueHelpRequest: function (oEvent, sFragment, sField, sAccess, bCheckAccess) {
 			var oUserAccessModel = this.getView().getModel("UserAccess"),
 				aItemVH = ["StorageLocation", "BatchNo"],
-				aClearFragment = ["SoldToParty"];
+				aClearFragment = ["SoldToParty"],
+				aValue = [];
 			debugger;
 			if (!oUserAccessModel.getData()[sAccess] && (sAccess) && bCheckAccess) {
 				MessageToast.show(this.getText("NoDataAccess"));
@@ -477,10 +476,12 @@ sap.ui.define([
 			this.valueHelpId = oEvent.getSource().getId();
 			this.vhFilter = "";
 			var sIAccess = oUserAccessModel.getData()[sAccess];
-			if (sIAccess && sIAccess !== "*") {
-				var aValue = sIAccess.split("@");
-				// retrieve for blank code
+			if (sIAccess) {
+				aValue = (sIAccess !== "*") ? sIAccess.split("@") : [];
+
 				aValue.push("");
+			}
+			if (aValue.length > 0) {
 				this.vhFilter = new Filter({
 					filters: aValue.map(function (value) {
 						return new Filter(sField, FilterOperator.EQ, value);
@@ -488,6 +489,7 @@ sap.ui.define([
 					and: false
 				});
 			}
+
 			if (aItemVH.includes(sFragment)) {
 				var oItemLevel = oEvent.getSource().getParent().getParent();
 				this.sItemPath = oItemLevel.getBindingContextPath();
@@ -624,6 +626,7 @@ sap.ui.define([
 			}
 		},
 		onLiveChange: function (oEvent, sFilter1, sFilter2) {
+			debugger;
 			var value = oEvent.getParameters().value,
 				filters = [],
 				oBinding = oEvent.getSource().getBinding("items");

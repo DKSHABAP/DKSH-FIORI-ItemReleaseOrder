@@ -118,13 +118,15 @@ sap.ui.define([
 				this.getView().setBusy(false);
 				this.oFragmentList[sFragment].open();
 			}.bind(this)).catch(function (oErr) {
-				this._displayWarning(oErr).bind(this);
+				this._displayError(oErr);
 			}.bind(this));
 		},
 		_displayWarning: function (oResponse) {
 			if (oResponse.responseText) {
 				var errMsg = JSON.parse(oResponse.responseText).error.message.value;
 				MessageBox.warning(errMsg);
+			} else if (oResponse.message) {
+				MessageBox.warning(oResponse.message);
 			} else {
 				MessageBox.warning(oResponse);
 			}
@@ -140,6 +142,8 @@ sap.ui.define([
 					details: oResourceBundle.getText("errorDetail", [oResponse.statusCode, sMessage]),
 					contentWidth: "110px"
 				});
+			} else if (oResponse.message) {
+				MessageBox.error(oResponse.message);
 			} else {
 				MessageBox.error(this.getText(si18nKey), {
 					title: "Error",
