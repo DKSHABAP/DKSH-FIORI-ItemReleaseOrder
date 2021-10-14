@@ -108,7 +108,7 @@ sap.ui.define([
 							this.getView().setBusy(false);
 							return;
 						}
-						debugger;
+						//debugger;
 						this.getView().getModel("ItemBlockModel").setProperty("/count", oData.data.length);
 						oData.data.map(function (data) {
 							var sSplitDate = data.postingDate.split("/");

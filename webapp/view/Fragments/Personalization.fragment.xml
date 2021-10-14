@@ -66,10 +66,10 @@
 					<items>
 						<ColumnListItem>
 							<cells >
-								<!--								<HBox>
+								<HBox>
 									<CheckBox selected="{FilterPersonalization>status}" select="onChangeCheckbox" enabled="{FilterPersonalization>/enableCheckBox}"/>
 									<Text text="{FilterPersonalization>enabledKey}" class="sapUiTinyMarginTop"/>
-								</HBox>-->
+								</HBox>
 							</cells>
 						</ColumnListItem>
 					</items>
