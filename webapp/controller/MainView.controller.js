@@ -278,7 +278,8 @@ sap.ui.define([
 				return;
 			}
 
-			oView.setBusy(true);
+			// oView.setBusy(true);
+			this._getTable("idList").setBusy(true);
 			// Call oData to simulate the price for the material
 			for (var indx in Object.keys(aDataProperties)) {
 				var sDataProperty = aDataProperties[indx];
@@ -302,7 +303,8 @@ sap.ui.define([
 					}
 				}
 				oItemBlockModel.refresh();
-				oView.setBusy(false);
+				// oView.setBusy(false);
+				this._getTable("idList").setBusy(false);
 			}.bind(this)).catch(this._displayWarning.bind(this));
 		},
 		onApprovePress: function (oEvent, oItem) {
@@ -348,6 +350,7 @@ sap.ui.define([
 			});
 		},
 		onRejectPress: function (oEvent, sFragment, oItem, oModel) {
+			debugger;
 			var oView = this.getView(),
 				oSource = oEvent.getSource(),
 				sId = oSource.getParent().getParent().getId(),
@@ -375,6 +378,7 @@ sap.ui.define([
 			}
 		},
 		onOkRejectPress: function (oEvent, aItems, aSet) {
+			debugger;
 			var oView = this.getView(),
 				oItemBlockModel = oView.getModel("ItemBlockModel");
 
@@ -478,10 +482,9 @@ sap.ui.define([
 			var sIAccess = oUserAccessModel.getData()[sAccess];
 			if (sIAccess) {
 				aValue = (sIAccess !== "*") ? sIAccess.split("@") : [];
-
-				aValue.push("");
 			}
 			if (aValue.length > 0) {
+				aValue.push("");
 				this.vhFilter = new Filter({
 					filters: aValue.map(function (value) {
 						return new Filter(sField, FilterOperator.EQ, value);
