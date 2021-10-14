@@ -378,7 +378,6 @@ sap.ui.define([
 			}
 		},
 		onOkRejectPress: function (oEvent, aItems, aSet) {
-			debugger;
 			var oView = this.getView(),
 				oItemBlockModel = oView.getModel("ItemBlockModel");
 
@@ -472,7 +471,7 @@ sap.ui.define([
 				aItemVH = ["StorageLocation", "BatchNo"],
 				aClearFragment = ["SoldToParty"],
 				aValue = [];
-			debugger;
+
 			if (!oUserAccessModel.getData()[sAccess] && (sAccess) && bCheckAccess) {
 				MessageToast.show(this.getText("NoDataAccess"));
 				return;
@@ -535,7 +534,10 @@ sap.ui.define([
 				});
 				this.oFragmentList[sFragment].setModel(new JSONModel(oRes), "SoldToPartyModel");
 				oTable.setBusy(false);
-			}.bind(this)).catch(this._displayWarning.bind(this));
+			}.bind(this)).catch(function (oErr) {
+				this._displayWarning(oErr);
+				oTable.setBusy(false);
+			}.bind(this));
 			/*			this._getSmartTable("idSoldToPartSmartTable").rebindTable();*/
 		},
 		/* Start - Need to enhance*/
@@ -628,20 +630,27 @@ sap.ui.define([
 				oBinding.filter(null);
 			}
 		},
-		onLiveChange: function (oEvent, sFilter1, sFilter2) {
-			debugger;
+		onLiveChange: function (oEvent, sCode, sDescription) {
 			var value = oEvent.getParameters().value,
-				filters = [],
-				oBinding = oEvent.getSource().getBinding("items");
-
-			if (value) {
-				var oFilter = new Filter({
-					filters: [new Filter(sFilter1, FilterOperator.Contains, value), new Filter(sFilter2, FilterOperator.Contains, value)],
+				oBinding = oEvent.getSource().getBinding("items"),
+				aFilter = [];
+			if (this.vhFilter) {
+				aFilter.push(new Filter({
+					filters: this.vhFilter.aFilters.map(function (obj) {
+						return obj;
+					}),
 					and: false
-				});
+				}));
 			}
-			filters.push(oFilter ? oFilter : this.vhFilter);
-			oBinding.filter(filters);
+			if (value) {
+				aFilter.push(new Filter({
+					filters: [new Filter(sCode, FilterOperator.Contains, value), new Filter(sDescription, FilterOperator.Contains, value)],
+					and: false
+				}));
+			}
+			oBinding.filter(new Filter(aFilter, true));
+			// oFilters.push(oFilter ? oFilter : this.vhFilter);
+			// oBinding.filter(oFilters);
 		},
 		handleAdd: function (oEvent, sPath, sProperty, sBindModel, sPathReset, sPathSoldParty) {
 			var selectedObj = oEvent.getParameters().selectedContexts[0].getObject(),
@@ -709,7 +718,6 @@ sap.ui.define([
 			// Use create is easy to structure for deep entries
 			Promise.all([this.formatter.createData.call(this, oDataModel, "/ValidateBeforeSubmitSet", aEntry)]).then(function (oRes) {
 				// if found the data from frontend is not sync with backend, prompt error.
-				debugger;
 				if (oRes[0].isChanged) {
 					if (!this.oFragmentList[sFragmentName]) {
 						this.oFragmentList[sFragmentName] = sap.ui.xmlfragment(this.getText("MainFragmentPath") + sFragmentName, this);
