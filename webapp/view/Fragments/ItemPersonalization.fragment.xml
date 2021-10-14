@@ -4,7 +4,7 @@
 			<VBox >
 				<Toolbar>
 					<Label text="{i18n>Variant}" visible="{oItemLevelPersonalizationModel>/results/selectVarVisible}"/>
-					<Select items="{oItemLevelPersonalizationModel>/results/personalizationItemBlockData/variantName}" selectedKey="{oItemLevelPersonalizationModel>/results/personalizationData/currentVariant}" width="50%" change="onSelectvarian" visible="{FilterPersonalization>/results/selectVarVisible}">
+					<Select items="{oItemLevelPersonalizationModel>/results/personalizationItemData/variantName}" selectedKey="{oItemLevelPersonalizationModel>/results/personalizationItemData/currentVariant}" width="50%" change="onSelectvarianItem" visible="{FilterPersonalization>/results/selectVarVisible}">
 						<core:Item key="{oItemLevelPersonalizationModel>name}" text="{oItemLevelPersonalizationModel>name}"/>
 					</Select>
 					<Label text="{i18n>VariantName}" required="true" visible="{oItemLevelPersonalizationModel>/results/nameVarVisible}"/>
@@ -23,8 +23,8 @@
 							<cells>
 								<HBox>
 									<!--"-->
-									<CheckBox selected="{oItemLevelPersonalizationModel>status}"/>
-									<Text text="{oItemLevelPersonalizationModel>enabledKey}"/>
+									<CheckBox selected="{oItemLevelPersonalizationModel>status}" select="onChangeCheckboxHeader" enabled="{oItemLevelPersonalizationModel>/results/enableCheckBox}"/>
+									<Text text="{oItemLevelPersonalizationModel>/header/userPersonaDto/enabledKey}"/>
 								</HBox>
 							</cells>
 						</ColumnListItem>
@@ -38,8 +38,8 @@
 						<ColumnListItem visible="{path: 'oItemLevelPersonalizationModel>key', formatter:'.formatter.hideMultipleFilter'}">
 							<cells>
 								<HBox>
-									<CheckBox selected="{oItemLevelPersonalizationModel>status}" select="onChangeFieldCheckbox"/>
-									<Text text="{oItemLevelPersonalizationModel>enabledKey}"/>
+									<CheckBox selected="{oItemLevelPersonalizationModel>status}" select="onChangeCheckboxItem" enabled="{oItemLevelPersonalizationModel>/results/enableCheckBox}"/>
+									<Text text="{oItemLevelPersonalizationModel>/item/userPersonaDto/enabledKey}"/>
 								</HBox>
 							</cells>
 						</ColumnListItem>

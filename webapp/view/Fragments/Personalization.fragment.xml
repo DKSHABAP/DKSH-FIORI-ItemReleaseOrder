@@ -46,12 +46,12 @@
 				<!--<headerToolbar>-->
 				<Toolbar>
 					<Label text="{i18n>Variant}" visible="{FilterPersonalization>/selectVarVisible}"/>
-					<Select items="{FilterPersonalization>/results/variantName}" selectedKey="{FilterPersonalization>/results/currentVariant}" width="50%"
+					<Select items="{FilterPersonalization>/results/userPersonaDto/variantName}" selectedKey="{FilterPersonalization>/results/currentVariant}" width="50%"
 						change="onSelectvarian" visible="{FilterPersonalization>/selectVarVisible}">
 						<core:Item key="{FilterPersonalization>name}" text="{FilterPersonalization>name}"/>
 					</Select>
 					<Label text="{i18n>VariantName}" required="true" visible="{FilterPersonalization>/nameVarVisible}"/>
-					<Input value="{FilterPersonalization>/newVariantName}" placeholder="{i18n>VariantName}"
+					<Input value="{FilterPersonalization>/results/newVariantName}" placeholder="{i18n>VariantName}"
 						valueState="{FilterPersonalization>/varinatNameValueState}" visible="{FilterPersonalization>/nameVarVisible}" width="50%"/>
 					<ToolbarSpacer></ToolbarSpacer>
 					<Button icon="sap-icon://add-activity" press="onVariantCreate" tooltip="{i18n>Create}"
