@@ -80,7 +80,7 @@
 			<Button text="{i18n>OK}" press="onVariantOK" tooltip="{i18n>OK}" visible="{FilterPersonalization>/okPersBtnVisible}"/>
 			<Button text="{i18n>Save}" press="onVariantSave" tooltip="{i18n>Save}" visible="{FilterPersonalization>/savePersBtnVisible}"/>
 			<Button text="{i18n>Delete}" press="onVariantDelete" tooltip="{i18n>cancelbtntext}" visible="{FilterPersonalization>/deletePersBtnVisible}"/>
-			<Button text="{i18n>cancelbtntext}" press="handleCloseValueHelp($event, 'Personalization')" tooltip="{i18n>cancelbtntext}"/>
+			<Button text="{i18n>Cancel}" press="handleCloseValueHelp($event, 'Personalization')" tooltip="{i18n>cancelbtntext}"/>
 		</buttons>
 	</Dialog>
 </core:FragmentDefinition>

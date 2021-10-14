@@ -53,7 +53,7 @@
 			<Button text="{i18n>cancel}" press="onPersonalizationClose" tooltip="Cancel" type="Default"/>
 			<Button text="{i18n>Save}" press="onVariantSaveItem" tooltip="{i18n>Save}" visible="{oItemLevelPersonalizationModel>/savePersBtnVisible}"/>
 			<Button text="{i18n>Delete}" press="onVariantDeleteItem" tooltip="{i18n>cancelbtntext}" visible="{oItemLevelPersonalizationModel>/deletePersBtnVisible}"/>
-			<Button text="{i18n>cancelbtntext}" press="handleCloseValueHelp($event, 'Personalization')" tooltip="{i18n>cancelbtntext}"/>
+			<Button text="{i18n>cancel}" press="handleCloseValueHelp($event, 'Personalization')" tooltip="{i18n>cancelbtntext}"/>
 		</buttons>
 	</Dialog>
 </core:FragmentDefinition>

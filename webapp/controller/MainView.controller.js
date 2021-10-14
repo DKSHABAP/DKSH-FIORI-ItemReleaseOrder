@@ -22,7 +22,7 @@ sap.ui.define([
 				this.formatter.fetchSaleOrder.call(this);
 			}.bind(this)).catch(this._displayError.bind(this));
 			//STRY0012026 Start Item Personalization settings for application users - Release Item
-			this.initializeItemPersonalization();
+		//	this.initializeItemPersonalization();
 			//STRY0012026 End Item Personalization settings for application users - Release Item
 
 
@@ -33,7 +33,8 @@ sap.ui.define([
 			var ListPersonalizationModel = new sap.ui.model.json.JSONModel();
 			that.getView().setModel(ListPersonalizationModel, "ListPersonalizationModel");
 			if (!this.ItemPresonalizationFrag) {
-				this.ItemPresonalizationFrag = sap.ui.xmlfragment("com.dkhs.view.Fragments.ItemPersonalization", this);
+				//this.ItemPresonalizationFrag = sap.ui.xmlfragment("com.dkhs.view.Fragments.ItemPersonalization", this);
+				this.ItemPresonalizationFrag = sap.ui.xmlfragment("dksh.connectclient.itemblockorder.view.Fragments.ItemPersonalization", this);
 				this.getView().addDependent(this.ItemPresonalizationFrag);
 				this.ItemPresonalizationFrag.addStyleClass("sapUiSizeCompact");
 				that.ItemPresonalizationFrag.setModel(new sap.ui.model.json.JSONModel(), "oItemLevelPersonalizationModel");
@@ -159,7 +160,7 @@ sap.ui.define([
 			var PersonalizationModel = new sap.ui.model.json.JSONModel();
 			if (!this.FilterPersonalization) 
 			{
-				this.FilterPersonalization = sap.ui.xmlfragment("dksh.connectclient.itemblockorder.Fragments.Personalization", this);
+				this.FilterPersonalization = sap.ui.xmlfragment("dksh.connectclient.itemblockorder.view.Fragments.Personalization", this);
 				this.getView().addDependent(this.FilterPersonalization);
 			}
 			that.getView().setModel(PersonalizationModel, "PersonalizationModel");
@@ -198,7 +199,7 @@ sap.ui.define([
 						that.FilterPersonalization.setModel(FilterPersonalization, "FilterPersonalization");
 						that.FilterPersonalization.getModel("FilterPersonalization").refresh();
 						that.FilterPersonalization.getModel("FilterPersonalization").setProperty("/results/action", "");
-					    this._loadFragment("Personalization").bind(this);
+					   	that.FilterPersonalization.open();
 					}
 				} //Method to get Logged in user PID
 			});
@@ -676,7 +677,7 @@ sap.ui.define([
 		     this.selectedItemObjects = [];
 		     if (!this.oItemLevelPersonalizationModel) 
 			{
-				this.oItemLevelPersonalizationModel = sap.ui.xmlfragment("dksh.connectclient.itemblockorder.Fragments.ItemPersonalization", this);
+				this.oItemLevelPersonalizationModel = sap.ui.xmlfragment("dksh.connectclient.itemblockorder.view.Fragments.ItemPersonalization", this);
 				this.getView().addDependent(this.oItemLevelPersonalizationModel);
 			}
 			var screen = "Web";
@@ -713,7 +714,7 @@ sap.ui.define([
 						that.oItemLevelPersonalizationModel.setModel(oItemLevelPersonalizationModel, "oItemLevelPersonalizationModel");
 						that.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").refresh();
 						that.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").setProperty("/results/action", "");
-					    this._loadFragment("ItemPersonalization").bind(this);
+					   	that.FilterPersonalization.open();
 					}
 				} //Method to get Logged in user PID
 			});
