@@ -79,8 +79,8 @@
 		<!--<Table inset="false" fixedLayout="true" items="{path: 'ItemBlockModel>/salesDocItemList', templateShareable: false}"-->
 		<!--	mode="MultiSelect" selectionChange="onChangeSelectionItem" backgroundDesign="Solid">-->
 		<Table inset="false" fixedLayout="true" growing="true" growingThreshold="20"
-			items="{path: 'ItemBlockModel>salesDocItemList', templateShareable: false}" mode="MultiSelect" selectionChange="onChangeSelectionItem"
-			backgroundDesign="Solid">
+			items="{path: 'ItemBlockModel>salesDocItemList', templateShareable: false, sorter: [{ path: 'salesItemOrderNo', descending: false }]}"
+			mode="MultiSelect" selectionChange="onChangeSelectionItem" backgroundDesign="Solid">
 			<headerToolbar>
 				<OverflowToolbar>
 					<ToolbarSpacer/>
