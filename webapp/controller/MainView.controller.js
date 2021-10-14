@@ -460,7 +460,17 @@ sap.ui.define([
 			if (oTable.getSelectedItems().length === 0) {
 				return;
 			}
+			var aSelectedContext = oTable.getSelectedContexts();
 			oTable.removeSelections();
+			aSelectedContext.map(function (oContexts) {
+				var sPath = oContexts.getPath(),
+					oItemBlockModel = oContexts.getModel("ItemBlockModel");
+				if (oContexts.getProperty([sPath, "/acceptOrReject"].join(""))) {
+					oItemBlockModel.setProperty(sPath + "/acceptOrReject", null);
+					oItemBlockModel.setProperty(sPath + "/itemStagingStatus", this.getText("PendingApproval"));
+				}
+			}.bind(this));
+			oTable.getModel().updateBindings(false);
 		},
 		// On Search data
 		onSearchSalesHeader: function (oEvent, oFilterSaleOrder) {
