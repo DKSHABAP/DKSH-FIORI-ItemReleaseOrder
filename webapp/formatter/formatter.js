@@ -212,7 +212,7 @@ sap.ui.define([
 				status = "Success";
 			} else if (val === "Rejected" || val === "Pending for Rejection" || val === "Rejected by Previous Level") {
 				status = "Error";
-			} else if (val === "Pending Approval" || val === "Pending Approval by previous level") {
+			} else if (val === this.getText("PendingApproval") || val === "Pending Approval by previous level") {
 				status = "Information";
 			}
 			return status;
