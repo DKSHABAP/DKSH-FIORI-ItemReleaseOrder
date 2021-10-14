@@ -207,14 +207,15 @@ sap.ui.define([
 		},
 		status: function (val) {
 			if (val === "Display Only") {
-				return "Warning";
+				var status = "Warning";
 			} else if (val === "Approved") {
-				return "Success";
+				status = "Success";
 			} else if (val === "Rejected" || val === "Pending for Rejection" || val === "Rejected by Previous Level") {
-				return "Error";
+				status = "Error";
 			} else if (val === "Pending Approval" || val === "Pending Approval by previous level") {
-				return "Information";
+				status = "Information";
 			}
+			return status;
 		},
 		messageStatus: function (isValid) {
 			return (isValid) ? "sap-icon://message-success" : "sap-icon://message-error";
