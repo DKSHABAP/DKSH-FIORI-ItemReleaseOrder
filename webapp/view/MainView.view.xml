@@ -126,20 +126,5 @@
 				</items>
 			</List>
 		</content>
-		<!--<footer type="Transparent">-->
-		<!--	<Toolbar design="Transparent" height="150%">-->
-		<!--		<ToolbarSpacer/>-->
-		<!--		<FlexBox alignItems="Center" width="auto" justifyContent="Center" fitContainer="false">-->
-		<!--			<Button id="idPrevButton" icon="sap-icon://close-command-field" class="navigateButtonClass sapUiSizeCompact" press="onScrollLeft"-->
-		<!--				type="Transparent"/>-->
-		<!--			<HBox items="{settings>/pagination}" alignContent="Start" justifyContent="Center" width="100%" fitContainer="false">-->
-		<!--				<Link text="{settings>pageNum}" press="onPageClick" class="paginationNumbers"/>-->
-		<!--			</HBox>-->
-		<!--			<Button id="idNextButton" icon="sap-icon://open-command-field" class="navigateButtonClass sapUiSizeCompact" press="onScrollRight"-->
-		<!--				type="Transparent"/>-->
-		<!--		</FlexBox>-->
-		<!--		<ToolbarSpacer/>-->
-		<!--	</Toolbar>-->
-		<!--</footer>-->
 	</Page>
 </mvc:View>
