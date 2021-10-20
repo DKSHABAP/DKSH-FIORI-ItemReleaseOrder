@@ -21,7 +21,6 @@
 						</f:FormElement>
 						<f:FormElement label="{i18n>DeliveryBlock}">
 							<f:fields>
-								<!--<Text text="{ItemBlockModel>deliveryBlockCode} ({ItemBlockModel>deliveryBlockCodeText})" class="sapUiTinyMarginBegin"/>-->
 								<Text
 									text="{parts:[{path:'ItemBlockModel>deliveryBlockCode'},{path:'ItemBlockModel>deliveryBlockCodeText'}],formatter:'.formatter.concateText'}"
 									class="sapUiTinyMarginBegin"/>
@@ -47,7 +46,6 @@
 					<f:formElements>
 						<f:FormElement label="{i18n>distributionChnlFilter}">
 							<f:fields>
-								<!--<Text text="{ItemBlockModel>distributionChannel}" class="sapUiTinyMarginBegin"/>-->
 								<Text text="{parts:[{path:'ItemBlockModel>distributionChannel'},{path:'ItemBlockModel>distrChanText'}],formatter:'.formatter.concateText'}"
 									class="sapUiTinyMarginBegin"/>
 							</f:fields>
@@ -76,8 +74,6 @@
 				</f:FormContainer>
 			</f:formContainers>
 		</f:Form>
-		<!--<Table inset="false" fixedLayout="true" items="{path: 'ItemBlockModel>/salesDocItemList', templateShareable: false}"-->
-		<!--	mode="MultiSelect" selectionChange="onChangeSelectionItem" backgroundDesign="Solid">-->
 		<Table inset="false" fixedLayout="true" growing="true" growingThreshold="20"
 			items="{path: 'ItemBlockModel>salesDocItemList', templateShareable: false, sorter: [{ path: 'salesItemOrderNo', descending: false }]}"
 			mode="MultiSelect" selectionChange="onChangeSelectionItem" backgroundDesign="Solid">
@@ -202,11 +198,6 @@
 						<!-- Net Price & Order Qty Sales & Doc Currency -->
 						<Text text="{ItemBlockModel>netWorth} ({ItemBlockModel>docCurrency})" textAlign="Right"/>
 						<!-- Storage Location -->
-						<!--<VBox>-->
-						<!--	<Input value="{ItemBlockModel>storageLoc}" tooltip="{ItemBlockModel>storageLoc}" showValueHelp="true"-->
-						<!--		valueHelpRequest="ValueHelpRequestItem($event, 'StorageLocation', '/SearchHelp_StorageLocationSet')" valueHelpOnly="true"-->
-						<!--		enabled="{= ${ItemBlockModel>editSLoc}}"/>-->
-						<!--</VBox>-->
 						<VBox>
 							<Input value="{ItemBlockModel>storageLoc}" tooltip="{ItemBlockModel>storageLoc}" showValueHelp="true"
 								valueHelpRequest="valueHelpRequest($event, 'StorageLocation', 'Code', '', false)" valueHelpOnly="true"
@@ -217,9 +208,6 @@
 							<Input value="{ItemBlockModel>batchNum}" tooltip="{ItemBlockModel>batchNum}" showValueHelp="true"
 								valueHelpRequest="ValueHelpRequestItem($event, 'BatchNo', '/SearchHelp_BatchNoSet')" valueHelpOnly="true"
 								enabled="{= ${ItemBlockModel>editBatchNo}}"/>
-							<!--<Input value="{ItemBlockModel>batchNum}" tooltip="{ItemBlockModel>batchNum}" showValueHelp="true"-->
-							<!--	valueHelpRequest="valueHelpRequest($event, 'BatchNo', 'BatchNo', '', false)" valueHelpOnly="true"-->
-							<!--	enabled="{= ${ItemBlockModel>editBatchNo}}"/>-->
 						</VBox>
 						<!-- Material Group -->
 						<Text text="{ItemBlockModel>materialGroup}" textAlign="Left"/>
@@ -241,8 +229,6 @@
 						<Text text="{ItemBlockModel>oldMatCode}" textAlign="Left"/>
 						<!-- Item Staging Status -->
 						<ObjectStatus text="{ItemBlockModel>itemStagingStatus}" state="{parts:['ItemBlockModel>itemStagingStatus'],formatter:'.formatter.status'}"/></cells>
-					<!--<ObjectStatus text="{ItemBlockModel>itemStagingStatus}"-->
-					<!--	state="{= ${ItemBlockModel>acceptOrReject} === 'A' ? 'Success' : ${ItemBlockModel>acceptOrReject} === 'R' ? 'Error' : 'None' }"/></cells>-->
 				</ColumnListItem>
 			</items>
 		</Table>

@@ -1,7 +1,11 @@
-<edmx:Edmx xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"
-	xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:sap="http://www.sap.com/Protocols/SAPData" Version="1.0">
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"
+	xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:sap="http://www.sap.com/Protocols/SAPData">
+	<edmx:Reference
+		Uri="https://webidecp-uk81qreeol.dispatcher.ap1.hana.ondemand.com/destinations/DKSHODataService/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='LOCAL')/$value"
+		xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx"><edmx:Include Namespace="com.sap.vocabularies.Common.v1" Alias="Common"/></edmx:Reference>
 	<edmx:DataServices m:DataServiceVersion="2.0">
-		<Schema xmlns="http://schemas.microsoft.com/ado/2008/09/edm" Namespace="ZDKSH_CC_HDR_ITEM_RELEASE_SRV" xml:lang="en" sap:schema-version="1">
+		<Schema Namespace="ZDKSH_CC_HDR_ITEM_RELEASE_SRV" xml:lang="en" sap:schema-version="1" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
 			<EntityType Name="SearchHelp_StorageLocation" sap:content-version="1">
 				<Key><PropertyRef Name="Code"/></Key><Property Name="Code" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="Storage Location"
 					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Description" Type="Edm.String" Nullable="false" MaxLength="500" sap:unicode="false" sap:label="Description"
@@ -154,6 +158,9 @@
 				<Key><PropertyRef Name="Code"/></Key><Property Name="Code" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="Description" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/></EntityType>
+			<EntityType Name="ZTHSD_DV_SOLD_TO_PARTYType" sap:label="Sold to party" sap:content-version="1">
+				<Key><PropertyRef Name="stp_id"/><PropertyRef Name="stp_division"/><PropertyRef Name="stp_distchnl"/><PropertyRef Name="stp_soldorg"/></Key><Property Name="stp_id" Type="Edm.String" Nullable="false" MaxLength="10" sap:display-format="UpperCase"/><Property Name="stp_division" Type="Edm.String" Nullable="false" MaxLength="2" sap:display-format="UpperCase" sap:label="Division"/><Property Name="stp_distchnl" Type="Edm.String" Nullable="false" MaxLength="2" sap:display-format="UpperCase"
+					sap:label="Distribution Channel"/><Property Name="stp_soldorg" Type="Edm.String" Nullable="false" MaxLength="4" sap:display-format="UpperCase" sap:label="Sales Organization"/><Property Name="stp_name" Type="Edm.String" MaxLength="35" sap:label="Name"/><Property Name="division_text" Type="Edm.String" MaxLength="20" sap:label="Division"/><Property Name="dist_chnl_text" Type="Edm.String" MaxLength="20" sap:label="Distribution Channel"/><Property Name="sold_org_text" Type="Edm.String" MaxLength="20" sap:label="Sales Org"/></EntityType>
 			<Association Name="HeaderToItem" sap:content-version="1"><End Type="ZDKSH_CC_HDR_ITEM_RELEASE_SRV.SoHeader" Multiplicity="1" Role="FromRole_HeaderToItem"/><End Type="ZDKSH_CC_HDR_ITEM_RELEASE_SRV.SoItem" Multiplicity="*" Role="ToRole_HeaderToItem"/>
 				<ReferentialConstraint>
 					<Principal Role="FromRole_HeaderToItem"><PropertyRef Name="docNumber"/></Principal>
@@ -166,7 +173,8 @@
 					<Dependent Role="ToRole_HeaderToValidateItem"><PropertyRef Name="salesHeaderNo"/></Dependent>
 				</ReferentialConstraint>
 			</Association>
-			<EntityContainer Name="ZDKSH_CC_HDR_ITEM_RELEASE_SRV_Entities" m:IsDefaultEntityContainer="true" sap:supported-formats="atom json xlsx"><EntitySet Name="SearchHelp_StorageLocationSet" EntityType="ZDKSH_CC_HDR_ITEM_RELEASE_SRV.SearchHelp_StorageLocation" sap:creatable="false"
+			<EntityContainer Name="ZDKSH_CC_HDR_ITEM_RELEASE_SRV_Entities" m:IsDefaultEntityContainer="true" sap:supported-formats="atom json xlsx"><EntitySet Name="ZTHSD_DV_SOLD_TO_PARTY" EntityType="ZDKSH_CC_HDR_ITEM_RELEASE_SRV.ZTHSD_DV_SOLD_TO_PARTYType" sap:creatable="false"
+				sap:updatable="false" sap:deletable="false" sap:searchable="true" sap:content-version="1"/><EntitySet Name="SearchHelp_StorageLocationSet" EntityType="ZDKSH_CC_HDR_ITEM_RELEASE_SRV.SearchHelp_StorageLocation" sap:creatable="false"
 				sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/><EntitySet Name="SearchHelp_BatchNoSet" EntityType="ZDKSH_CC_HDR_ITEM_RELEASE_SRV.SearchHelp_BatchNo" sap:creatable="false"
 				sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/><EntitySet Name="SearchHelp_RejectReasonSet" EntityType="ZDKSH_CC_HDR_ITEM_RELEASE_SRV.SearchHelp_RejectReason" sap:creatable="false"
 				sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/><EntitySet Name="ItemSimulationSet" EntityType="ZDKSH_CC_HDR_ITEM_RELEASE_SRV.ItemSimulation" sap:creatable="false" sap:updatable="false"
@@ -189,6 +197,10 @@
 					sap:deletable="false" sap:content-version="1"><End EntitySet="SoHeaderSet" Role="FromRole_HeaderToItem"/><End EntitySet="SoItemSet" Role="ToRole_HeaderToItem"/></AssociationSet>
 				<AssociationSet Name="HeaderToValidateItemSet" Association="ZDKSH_CC_HDR_ITEM_RELEASE_SRV.HeaderToValidateItem" sap:creatable="false"
 					sap:updatable="false" sap:deletable="false" sap:content-version="1"><End EntitySet="ValidateBeforeSubmitSet" Role="FromRole_HeaderToValidateItem"/><End EntitySet="ValidateSubmitedItemSet" Role="ToRole_HeaderToValidateItem"/></AssociationSet>
-			</EntityContainer><atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="self" href="./sap/ZDKSH_CC_HDR_ITEM_RELEASE_SRV/$metadata"/><atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="latest-version" href="./sap/ZDKSH_CC_HDR_ITEM_RELEASE_SRV/$metadata"/></Schema>
+			</EntityContainer><atom:link rel="self"
+				href="https://webidecp-uk81qreeol.dispatcher.ap1.hana.ondemand.com/destinations/DKSHODataService/sap/opu/odata/sap/ZDKSH_CC_HDR_ITEM_RELEASE_SRV/$metadata"
+				xmlns:atom="http://www.w3.org/2005/Atom"/><atom:link rel="latest-version"
+				href="https://webidecp-uk81qreeol.dispatcher.ap1.hana.ondemand.com/destinations/DKSHODataService/sap/opu/odata/sap/ZDKSH_CC_HDR_ITEM_RELEASE_SRV/$metadata"
+				xmlns:atom="http://www.w3.org/2005/Atom"/></Schema>
 	</edmx:DataServices>
 </edmx:Edmx>

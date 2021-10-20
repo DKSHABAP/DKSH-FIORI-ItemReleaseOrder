@@ -316,8 +316,6 @@ sap.ui.define([
 				MessageToast.show(this.getText("ItemSelectList"));
 				return;
 			}
-			// Need to enhance logic if it's final level or not
-			debugger;
 			this.onApprovePress["Table"] = oTable;
 			var fnCloseApprove = function (oAction) {
 				oTable = this.onApprovePress["Table"];
@@ -472,7 +470,6 @@ sap.ui.define([
 			}.bind(this));
 			oTable.getModel().updateBindings(false);
 		},
-		// On Search data
 		onSearchSalesHeader: function (oEvent, oFilterSaleOrder) {
 			this.formatter.fetchSaleOrder.call(this);
 		},
@@ -486,6 +483,7 @@ sap.ui.define([
 				MessageToast.show(this.getText("NoDataAccess"));
 				return;
 			}
+			debugger;
 			this.valueHelpId = oEvent.getSource().getId();
 			this.vhFilter = "";
 			var sIAccess = oUserAccessModel.getData()[sAccess];
@@ -512,43 +510,30 @@ sap.ui.define([
 			}
 			this._loadFragment(sFragment, oEvent);
 		},
-		onSearchSoldToParty: function (oEvent, sFragment, sPath, sId) {
-			var oView = this.getView(),
-				oData = oView.getModel("filterModel").getData(),
-				oTable = this._getTable(sId),
-				oModel = oView.getModel("_SoldToParty"),
-				aFilters = [];
+		onSearchSoldToParty: function (oEvent, sFragment, sId) {
+			debugger;
+			this._setBindFilterStp(sId);
+			this.oFragmentList[sFragment].setModel(new JSONModel({}), "SoldToPartyModel");
+		},
+		onLiveSearchSoldToParty: function (oEvent, sId) {
+			var sValue = oEvent.getParameters().newValue;
+			var oFilterData = this.getView().getModel("filterModel").getData(),
+				bCheck = true;
 
-			if (!oData.SoldToPartId && !oData.SoldToPartName && !oData.SoldToPartSaleOrg && !oData.SoldToPartDivision && !oData.SoldToPartDistChannel) {
-				MessageBox.information(this.getText("ItemSelectFilter"));
+			if (!oFilterData.stp_id && !oFilterData.stp_name && !oFilterData.stp_soldorg && !oFilterData.stp_division && !oFilterData.stp_distchnl) {
+				bCheck = false;
+			}
+			if (!oEvent.getParameters().clearButtonPressed && sValue && bCheck) {
+				this._setBindFilterStp(sId, sValue);
 				return;
 			}
-			oTable.setBusy(true);
-			var oFilter = new Filter({
-				filters: this.setODataFilter([
-					"CustCode", "Name1", "SalesOrg", "Division", "Distchl", "languageID"
-				], {
-					"CustCode": oData.SoldToPartId,
-					"Name1": oData.SoldToPartName,
-					"SalesOrg": oData.SoldToPartSaleOrg,
-					"Division": oData.SoldToPartDivision,
-					"Distchl": oData.SoldToPartDistChannel,
-					"languageID": "E"
-				}),
-				and: true
-			});
-			aFilters.push(oFilter);
-			this.formatter.fetchData.call(this, oModel, sPath, aFilters).then(function (oRes) {
-				Object.assign(oRes, {
-					"totalRecords": oRes.results.length
-				});
-				this.oFragmentList[sFragment].setModel(new JSONModel(oRes), "SoldToPartyModel");
-				oTable.setBusy(false);
-			}.bind(this)).catch(function (oErr) {
-				this._displayWarning(oErr);
-				oTable.setBusy(false);
-			}.bind(this));
-			/*			this._getSmartTable("idSoldToPartSmartTable").rebindTable();*/
+			if (bCheck) {
+				this._setBindFilterStp(sId);
+			}
+		},
+		onResetSoldToParty: function (oEvent) {
+			var oFilterModel = this.getView().getModel("filterModel");
+			this.resetModel(oFilterModel, ["stp_id", "stp_name", "stp_soldorg", "stp_division", "stp_distchnl"]);
 		},
 		/* Start - Need to enhance*/
 		/* =========================================================================================*/
@@ -620,26 +605,6 @@ sap.ui.define([
 			}
 		},
 		/* =========================================================================================*/
-		onLiveSearchSoldToParty: function (oEvent, sId) {
-			var sValue = oEvent.getParameters().newValue,
-				oBinding = this._getTable(sId).getBinding("items"),
-				aFilters = [];
-
-			if (!oEvent.getParameters().clearButtonPressed && sValue) {
-				var oFilterString = new Filter({
-						filters: this.setBindingFilter(["CustCode", "Name1", "DName", "DCName", "SOrgName"],
-							sValue, oBinding),
-						and: false
-					}),
-					aBindingFilters = new Filter({
-						filters: [oFilterString]
-					});
-				aFilters.push(aBindingFilters);
-				oBinding.filter(aFilters);
-			} else {
-				oBinding.filter(null);
-			}
-		},
 		onLiveChange: function (oEvent, sCode, sDescription) {
 			var value = oEvent.getParameters().value,
 				oBinding = oEvent.getSource().getBinding("items"),
@@ -659,13 +624,11 @@ sap.ui.define([
 				}));
 			}
 			oBinding.filter(new Filter(aFilter, true));
-			// oFilters.push(oFilter ? oFilter : this.vhFilter);
-			// oBinding.filter(oFilters);
 		},
 		handleAdd: function (oEvent, sPath, sProperty, sBindModel, sPathReset, sPathSoldParty) {
 			var selectedObj = oEvent.getParameters().selectedContexts[0].getObject(),
 				oModel = this.getView().getModel(sBindModel),
-				sPathM = (this.valueHelpId.includes("idSoldToPart")) ? sPathSoldParty : sPath;
+				sPathM = (this.valueHelpId.includes("idstp")) ? sPathSoldParty : sPath;
 
 			oModel.setProperty(sPathM, selectedObj[sProperty]);
 			// Need to enhacne next time
@@ -695,7 +658,6 @@ sap.ui.define([
 			}
 		},
 		onItemSubmission: function (oEvent, aItem, sFragmentName) {
-			debugger;
 			var oView = this.getView(),
 				oDataModel = oView.getModel(),
 				oLoadDataModel = oView.getModel("LoadDataModel"),
@@ -805,18 +767,21 @@ sap.ui.define([
 				}.bind(this)).catch(this._displayWarning.bind(this));
 			}
 		},
+		onUpdateFinished: function (oEvent, sFragment) {
+			if (this.oFragmentList[sFragment]) {
+				this.oFragmentList[sFragment].getModel("SoldToPartyModel").setProperty("/totalRecords", oEvent.getParameter("total"));
+			}
+		},
 		onSubmitSoldtoParty: function (oEvent) {
-			var oView = this.getView(),
-				oTable = this._getTable("idSoldtoPartyTable"),
-				oFilterModel = oView.getModel("filterModel"),
-				sPath = oTable.getSelectedContexts()[0].sPath,
-				oData = oTable.getModel("SoldToPartyModel").getProperty(sPath);
+			var oTable = this._getTable("idSTPTable"),
+				oFilterModel = this.getView().getModel("filterModel"),
+				sPath = oTable.getSelectedContextPaths()[0],
+				oItem = oTable.getModel().getProperty(sPath);
 
-			oFilterModel.setProperty("/selectedSoldToParty", oData.CustCode);
-			oFilterModel.setProperty("/soldtoParty", oData.CustCode);
-			oFilterModel.setProperty("/distChannel", oData.Distchl);
-			oFilterModel.setProperty("/division", oData.Division);
-			oFilterModel.setProperty("/salesOrg", oData.SalesOrg);
+			oFilterModel.setProperty("/soldtoParty", oItem.stp_id);
+			oFilterModel.setProperty("/distChannel", oItem.stp_distchnl);
+			oFilterModel.setProperty("/division", oItem.stp_division);
+			oFilterModel.setProperty("/salesOrg", oItem.stp_soldorg);
 			this.handleCancel(oEvent, "SoldToParty");
 		},
 		onPressRefresh: function () {
@@ -827,13 +792,6 @@ sap.ui.define([
 
 			oFilterModel.setData({});
 			oFilterModel.updateBindings(true);
-		},
-		onResetSoldToParty: function (oEvent) {
-			var oFilterModel = this.getView().getModel("filterModel");
-			this.resetModel(oFilterModel, ["SoldToPartId", "SoldToPartName", "SoldToPartSaleOrg", "SoldToPartDivision", "SoldToPartDistChannel"]);
-		},
-		_getTable: function (sId) {
-			return this.getView().byId(sId);
 		}
 	});
 
