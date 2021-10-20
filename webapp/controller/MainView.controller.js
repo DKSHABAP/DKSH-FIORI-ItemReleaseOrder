@@ -511,9 +511,13 @@ sap.ui.define([
 			this._loadFragment(sFragment, oEvent);
 		},
 		onSearchSoldToParty: function (oEvent, sFragment, sId) {
-			debugger;
 			this._setBindFilterStp(sId);
-			this.oFragmentList[sFragment].setModel(new JSONModel({}), "SoldToPartyModel");
+			if (!this.oFragmentList[sFragment]) {
+				this.oFragmentList[sFragment].setModel(new JSONModel({}), "SoldToPartyModel");
+			} else {
+				var oSoldToPartyModel = this.oFragmentList[sFragment].getModel("SoldToPartyModel");
+				oSoldToPartyModel.setProperty("/totalRecords", oSoldToPartyModel.getProperty("/totalRecords"));
+			}
 		},
 		onLiveSearchSoldToParty: function (oEvent, sId) {
 			var sValue = oEvent.getParameters().newValue;
