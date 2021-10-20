@@ -813,6 +813,10 @@ sap.ui.define([
 				oData = oTable.getModel("SoldToPartyModel").getProperty(sPath);
 
 			oFilterModel.setProperty("/selectedSoldToParty", oData.CustCode);
+			oFilterModel.setProperty("/soldtoParty", oData.CustCode);
+			oFilterModel.setProperty("/distChannel", oData.Distchl);
+			oFilterModel.setProperty("/division", oData.Division);
+			oFilterModel.setProperty("/salesOrg", oData.SalesOrg);
 			this.handleCancel(oEvent, "SoldToParty");
 		},
 		onPressRefresh: function () {
