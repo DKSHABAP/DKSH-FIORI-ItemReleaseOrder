@@ -110,8 +110,8 @@
 								<OverflowToolbar>
 									<Label text="{i18n>ApproveBlockSalesOrder}"/>
 									<Label text="{ItemBlockModel>salesOrderNum}" design="Bold"/>
-									<Label text="{i18n>descSet}"/>
-									<Label text="{ItemBlockModel>decisionSetId}" design="Bold"/>
+									<!--<Label text="{i18n>descSet}"/>-->
+									<!--<Label text="{ItemBlockModel>decisionSetId}" design="Bold"/>-->
 									<Label text="{i18n>level}"/>
 									<Label text="{ItemBlockModel>levelNum}" design="Bold"/>
 									<ToolbarSpacer/>
