@@ -40,18 +40,18 @@
 			<Button text="{i18n>cancel}" press="handleCloseValueHelp($event, 'Personalization')" tooltip="Cancel" type="Default"/>
 		</buttons>
 	</Dialog>-->
-	<Dialog title="{i18n>Personalization}" class="sapUiSizeCompact custBox" contentWidth="30%">
+	<Dialog title="{i18n>personalization}" class="sapUiSizeCompact custBox" contentWidth="30%">
 		<content>
 			<VBox>
 				<!--<headerToolbar>-->
 				<Toolbar>
 					<Label text="{i18n>Variant}" visible="{FilterPersonalization>/selectVarVisible}"/>
-					<Select items="{FilterPersonalization>/results/userPersonaDto/variantName}" selectedKey="{FilterPersonalization>/results/currentVariant}" width="50%"
+					<Select items="{FilterPersonalization>/results/variantName}" selectedKey="{FilterPersonalization>/results/currentVariant}" width="50%"
 						change="onSelectvarian" visible="{FilterPersonalization>/selectVarVisible}">
 						<core:Item key="{FilterPersonalization>name}" text="{FilterPersonalization>name}"/>
 					</Select>
 					<Label text="{i18n>VariantName}" required="true" visible="{FilterPersonalization>/nameVarVisible}"/>
-					<Input value="{FilterPersonalization>/results/newVariantName}" placeholder="{i18n>VariantName}"
+					<Input value="{FilterPersonalization>/newVariantName}" placeholder="{i18n>VariantName}"
 						valueState="{FilterPersonalization>/varinatNameValueState}" visible="{FilterPersonalization>/nameVarVisible}" width="50%"/>
 					<ToolbarSpacer></ToolbarSpacer>
 					<Button icon="sap-icon://add-activity" press="onVariantCreate" tooltip="{i18n>Create}"
@@ -77,10 +77,10 @@
 			</VBox>
 		</content>
 		<buttons>
-			<Button text="{i18n>OK}" press="onVariantOK" tooltip="{i18n>OK}" visible="{FilterPersonalization>/okPersBtnVisible}"/>
+			<Button text="{i18n>ok}" press="onVariantOK" tooltip="{i18n>ok}" visible="{FilterPersonalization>/okPersBtnVisible}"/>
 			<Button text="{i18n>Save}" press="onVariantSave" tooltip="{i18n>Save}" visible="{FilterPersonalization>/savePersBtnVisible}"/>
 			<Button text="{i18n>Delete}" press="onVariantDelete" tooltip="{i18n>cancelbtntext}" visible="{FilterPersonalization>/deletePersBtnVisible}"/>
-			<Button text="{i18n>Cancel}" press="handleCloseValueHelp($event, 'Personalization')" tooltip="{i18n>cancelbtntext}"/>
+			<Button text="{i18n>Cancel}" press="onPersonlizationClose" tooltip="{i18n>cancelbtntext}"/>
 		</buttons>
 	</Dialog>
 </core:FragmentDefinition>

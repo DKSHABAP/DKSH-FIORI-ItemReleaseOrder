@@ -247,6 +247,19 @@ sap.ui.define([
 		messageStatus: function (isValid) {
 			return (isValid) ? "sap-icon://message-success" : "sap-icon://message-error";
 		},
+		
+		//STRY0012026 Start Item Personalization settings for application users - Release Item
+		hideMultipleFilter: function (key) {
+			if (key === "salesDocNumEnd" || key === "endDate" || key === "approvalType" || key === "storageLocText") {
+				return false;
+			} else {
+				return true;
+			}
+		},
+		
+		//STRY0012026 Start Item Personalization settings for application users - Release Item
+		
+		
 		dateFormatter: function (pTimeStamp) {
 			if (!pTimeStamp) {
 				return;
