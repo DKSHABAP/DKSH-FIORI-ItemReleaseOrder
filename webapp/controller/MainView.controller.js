@@ -22,7 +22,7 @@ sap.ui.define([
 				this.formatter.fetchSaleOrder.call(this);
 			}.bind(this)).catch(this._displayError.bind(this));
 			//STRY0012026 Start Item Personalization settings for application users - Release Item
-		//	this.initializeItemPersonalization();
+		    this.getUserDetails();
 			//STRY0012026 End Item Personalization settings for application users - Release Item
 
 
@@ -144,6 +144,12 @@ sap.ui.define([
 				success: function (data, textStatus, xhr) {
 					var userModel = new sap.ui.model.json.JSONModel(data);
 					that.getView().setModel(userModel, "userapi");
+					var PersonalizationModel = new sap.ui.model.json.JSONModel();
+					that.getView().setModel(PersonalizationModel, "PersonalizationModel");
+					that._getFilterPersonalizationDetails();
+				   var ListPersonalizationModel = new sap.ui.model.json.JSONModel();
+					that.getView().setModel(ListPersonalizationModel, "ListPersonalizationModel");
+					that._getItemPersonalizationDetails();
 					
 				},
 				error: function (data) {
@@ -165,7 +171,7 @@ sap.ui.define([
 				this.getView().addDependent(this.FilterPersonalization);
 			}
 			that.getView().setModel(PersonalizationModel, "PersonalizationModel");
-			this.getUserDetails();
+		//	this.getUserDetails();
 			var screen = "Web";
 			var oHeader = {
 				"Content-Type": "application/json;charset=utf-8"
@@ -200,10 +206,13 @@ sap.ui.define([
 						that.FilterPersonalization.setModel(FilterPersonalization, "FilterPersonalization");
 						that.FilterPersonalization.getModel("FilterPersonalization").refresh();
 						that.FilterPersonalization.getModel("FilterPersonalization").setProperty("/results/action", "");
-					   	that.FilterPersonalization.open();
+					 
 					}
-				} //Method to get Logged in user PID
-			});
+				} 
+				that.FilterPersonalization.open();//Method to get Logged in user PID
+			}
+			  	
+			);
 			oModel.attachRequestFailed(function (oEvent) {
 				MessageBox.error(oEvent.getSource().getData().message);
 			});
@@ -219,12 +228,60 @@ sap.ui.define([
 			}, "FilterPersonalization");
 			this._loadFragment("Personalization").bind(this);*/
 		},
-		
+		//for Item
 	    onPersonalizationOK: function () {
-			
+				var that = this;
+			var ListPersonalizationModel = this.getView().getModel("ListPersonalizationModel");
+			if (!this.oItemLevelPersonalizationModel) {
+				this.oItemLevelPersonalizationModel = sap.ui.xmlfragment("dksh.connectclient.itemblockorder.view.Fragments.ItemPersonalization", this);
+				this.getView().addDependent(this.oItemLevelPersonalizationModel);
+			}
+			var oItemLevelPersonalizationModel = new sap.ui.model.json.JSONModel({
+				"results": this.getView().getModel("ListPersonalizationModel").getData()
+			});
+			this.oItemLevelPersonalizationModel.setModel(oItemLevelPersonalizationModel, "oItemLevelPersonalizationModel");
+			this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").setProperty("/results/selectVarVisible", true);
+			this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").setProperty("/results/nameVarVisible", false);
+			this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").setProperty("/results/enableCheckBox", false);
+			this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").refresh();
+			this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").setProperty("/okPersBtnVisible", true);
+			this.getView().getModel("ListPersonalizationModel").setProperty("/savePersBtnVisible", false);
+			this.getView().getModel("ListPersonalizationModel").setProperty("/cancelPersBtnVisible", true);
+			this.getView().getModel("ListPersonalizationModel").setProperty("/deletePersBtnVisible", false);
+			this.getView().getModel("ListPersonalizationModel").setProperty("/createPersBtnVisible", true);
+			this.getView().getModel("ListPersonalizationModel").setProperty("/editPersBtnVisible", true);
+			this.getView().getModel("ListPersonalizationModel").setProperty("/varinatNameValueState", "None");
+			this.selectedObjects = [];
+			this.getView().getModel("ListPersonalizationModel").refresh();
 			this.oItemLevelPersonalizationModel.close();
 		},
+		
+		//for search
 		onVariantOK: function () {
+			var that = this;
+			var PersonalizationModel = this.getView().getModel("PersonalizationModel");
+			if (!this.FilterPersonalization) {
+				this.FilterPersonalization = sap.ui.xmlfragment("incture.com.ConnectClient_Inventory.Fragments.FilterPersonalization", this);
+				this.getView().addDependent(this.FilterPersonalization);
+			}
+			var FilterPersonalization = new sap.ui.model.json.JSONModel({
+				"results": this.getView().getModel("PersonalizationModel").getData()
+			});
+			this.FilterPersonalization.setModel(FilterPersonalization, "FilterPersonalization");
+			this.FilterPersonalization.getModel("FilterPersonalization").setProperty("/results/selectVarVisible", true);
+			this.FilterPersonalization.getModel("FilterPersonalization").setProperty("/results/nameVarVisible", false);
+			this.FilterPersonalization.getModel("FilterPersonalization").setProperty("/results/enableCheckBox", false);
+			this.FilterPersonalization.getModel("FilterPersonalization").refresh();
+			
+			this.FilterPersonalization.getModel("FilterPersonalization").setProperty("/okPersBtnVisible", true);
+			this.getView().getModel("PersonalizationModel").setProperty("/savePersBtnVisible", false);
+			this.getView().getModel("PersonalizationModel").setProperty("/cancelPersBtnVisible", true);
+			this.getView().getModel("PersonalizationModel").setProperty("/deletePersBtnVisible", false);
+			this.getView().getModel("PersonalizationModel").setProperty("/createPersBtnVisible", true);
+			this.getView().getModel("PersonalizationModel").setProperty("/editPersBtnVisible", true);
+			this.getView().getModel("PersonalizationModel").setProperty("/varinatNameValueState", "None");
+			this.selectedObjects = [];
+			this.getView().getModel("PersonalizationModel").refresh();
 		    
 			this.FilterPersonalization.close();
 		},
@@ -337,6 +394,7 @@ sap.ui.define([
 			oModel.attachRequestCompleted(function (success) {
 				if (success.getSource().getData().userPersonaDto !== null) {
 					that.getView().getModel("PersonalizationModel").setProperty("/personalizationFilterBlockData", success.getSource().getData());
+					that.getView().getModel("PersonalizationModel").refresh();
 					var FilterPersonalization = new sap.ui.model.json.JSONModel({});
 					FilterPersonalization.setData({
 						"enableCheckBox": false,
@@ -383,7 +441,7 @@ sap.ui.define([
 			oModel.loadData("/DKSHJavaService2/variant/getVariantReleaseOrder", JSON.stringify(payload), true, "POST", false, false, oHeader);
 			oModel.attachRequestCompleted(function (success) {
 				if (success.getSource().getData().userPersonaDto !== null) {
-					that.getView().getModel("ListPersonalizationModel").setProperty("/personalizationItemBlockData", success.getSource().getData());
+					that.getView().getModel("ListPersonalizationModel").setProperty("/personalizationItemData", success.getSource().getData());
 					var oItemLevelPersonalizationModel = new sap.ui.model.json.JSONModel({});
 					oItemLevelPersonalizationModel.setData({
 						"enableCheckBox": false,
@@ -412,7 +470,7 @@ sap.ui.define([
 		},
 		onChangeCheckboxItem: function (oEvent) {
 			var personalizationItemData = this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").getData().results.item.userPersonaDto;
-			var path = parseInt(oEvent.getSource().getBindingContext("oItemLevelPersonalizationModel").getPath().split("/")[3]);
+			var path = parseInt(oEvent.getSource().getBindingContext("oItemLevelPersonalizationModel").getPath().split("/")[4]);
 			if (oEvent.getSource().getSelected() === true) {
 				for (var j = 0; j < personalizationItemData.length; j++) {
 					if (j === path) {
@@ -433,7 +491,7 @@ sap.ui.define([
 		},
 	    onChangeCheckboxHeader: function (oEvent) {
 			var personalizationHeaderData = this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").getData().results.header.userPersonaDto;
-			var path = parseInt(oEvent.getSource().getBindingContext("oItemLevelPersonalizationModel").getPath().split("/")[3]);
+			var path = parseInt(oEvent.getSource().getBindingContext("oItemLevelPersonalizationModel").getPath().split("/")[4]);
 			if (oEvent.getSource().getSelected() === true) {
 				for (var j = 0; j < personalizationHeaderData.length; j++) {
 					if (j === path) {
@@ -502,7 +560,7 @@ sap.ui.define([
 				busyDialog.close();
 				var success = success.getSource().getData().userPersonaDto;
 				if (that.FilterPersonalization.getModel("FilterPersonalization").getProperty("/results/action") === "Edit") {
-					that.getView().getModel("PersonalizationModel").setProperty("/personalizationFilterData/userPersonaDto", success);
+					that.getView().getModel("PersonalizationModel").setProperty("/personalizationFilterBlockData/userPersonaDto", success);
 					that.FilterPersonalization.getModel("FilterPersonalization").setProperty(
 						"/results/userPersonaDto", success);
 					that.FilterPersonalization.getModel("FilterPersonalization").refresh();
@@ -521,7 +579,7 @@ sap.ui.define([
 						that.FilterPersonalization.getModel("FilterPersonalization").refresh();
 					}
 				} else {
-					that.getView().getModel("PersonalizationModel").setProperty("/personalizationItemBlockData/userPersonaDto", success);
+					that.getView().getModel("PersonalizationModel").setProperty("/personalizationFilterBlockData/userPersonaDto", success);
 					that.FilterPersonalization.getModel("FilterPersonalization").setProperty(
 						"/results/userPersonaDto", success);
 					that.FilterPersonalization.getModel("FilterPersonalization").refresh();
@@ -558,11 +616,15 @@ sap.ui.define([
 				false, oHeader);
 			oModel.attachRequestCompleted(function (success) {
 				busyDialog.close();
-				var success = success.getSource().getData().userPersonaDto;
+				var successheader = success.getSource().getData().header.userPersonaDto;
+				var successitem = success.getSource().getData().item.userPersonaDto;
 				if (that.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").getProperty("/results/action") === "Edit") {
-					that.getView().getModel("ListPersonalizationModel").setProperty("/personalizationItemData/userPersonaDto", success);
+					that.getView().getModel("ListPersonalizationModel").setProperty("/personalizationItemData/header/userPersonaDto", successheader);
+					that.getView().getModel("ListPersonalizationModel").setProperty("/personalizationItemData/item/userPersonaDto", successitem);
 					that.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").setProperty(
-						"/results/userPersonaDto", success);
+						"/results/header/userPersonaDto", successheader);
+					that.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").setProperty(
+						"/results/item/userPersonaDto", successitem);
 					that.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").refresh();
 					that.getView().getModel("ListPersonalizationModel").refresh();
 					if (that.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").getProperty(
@@ -579,9 +641,15 @@ sap.ui.define([
 						that.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").refresh();
 					}
 				} else {
-					that.getView().getModel("ListPersonalizationModel").setProperty("/personalizationItemBlockData/userPersonaDto", success);
+					//that.getView().getModel("ListPersonalizationModel").setProperty("/personalizationItemBlockData/userPersonaDto", success);
+				    that.getView().getModel("ListPersonalizationModel").setProperty("/personalizationItemData/header/userPersonaDto", successheader);
+					that.getView().getModel("ListPersonalizationModel").setProperty("/personalizationItemData/item/userPersonaDto", successitem);
+					//that.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").setProperty(
+					//	"/results/userPersonaDto", success);
 					that.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").setProperty(
-						"/results/userPersonaDto", success);
+						"/results/header/userPersonaDto", successheader);
+					that.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").setProperty(
+						"/results/item/userPersonaDto", successitem);
 					that.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").refresh();
 					that.getView().getModel("ListPersonalizationModel").refresh();
 				}
@@ -642,7 +710,7 @@ sap.ui.define([
 			});
 		},
 		onVariantSaveItem: function (oEvent) {
-			if (this.selectedHeaderObjects.length === 0 || this.selectedItemObjects.length ===0) {
+			if (this.selectedHeaderObjects.length === 0 && this.selectedItemObjects.length ===0) {
 				MessageToast.show(this.getView().getModel("i18n").getProperty("saveAfterEdit"));
 				return;
 			}
@@ -661,15 +729,20 @@ sap.ui.define([
 					}
 					this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").setProperty("/varinatNameValueState", "None");
 					var VariantName = ListPersonalizationModel.getData().newVariantName;
+					if(!this.selectedHeaderObjects.length === 0)	
+					{
 					for (var i = 0; i < this.selectedHeaderObjects.length; i++) {
 						this.selectedHeaderObjects[i].variantId = VariantName;
 						this.selectedHeaderObjects[i].applicationTab	= "keyHeaderReleaseBlock";
 					}
+					}
+				if(!this.selectedItemObjects.length === 0)
+				   {
 					for (var k = 0; k < this.selectedItemObjects.length; k++) {
 						this.selectedItemObjects[k].variantId = VariantName;
 						this.selectedItemObjects[k].applicationTab	= "keyItemReleaseBlock";
 					}
-
+                  }
 				} else {
 					this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").setProperty("/varinatNameValueState", "Error");
 					sap.m.MessageBox.error(this.getView().getModel("i18n").getProperty("enterVariant"));
@@ -747,14 +820,14 @@ sap.ui.define([
 			var that = this;
 			var oPersDeleteModel = new sap.ui.model.json.JSONModel();
 			var headerdata = this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").getProperty("/results/header");
-			var itemdata = this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").getProperty("/results/item");
+			var itemdata = this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").getProperty("/results/item/");
 			var payload = {
 				
 			//	"applicationId": "keyHeaderReleaseBlock@keyItemReleaseBlock",
 				"header": headerdata,
 			     "item": itemdata,
 			     "userId": this.getView().getModel("userapi").getProperty("/name"),
-				"varaintId": this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").getProperty(
+				"variantId": this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").getProperty(
 					"/results/header/userPersonaDto")[0].variantId
 			};
 			var oHeader = {
@@ -788,7 +861,7 @@ sap.ui.define([
             var that = this;
 			var oModel = new sap.ui.model.json.JSONModel();
 			that.getView().setModel(oModel, "oModel");
-			this.getUserDetails();
+		//	this.getUserDetails();
 			var ListPersonalizationModel = new sap.ui.model.json.JSONModel();
 			 this.selectedHeaderObjects = [];
 		     this.selectedItemObjects = [];
@@ -798,9 +871,19 @@ sap.ui.define([
 				this.oItemLevelPersonalizationModel = sap.ui.xmlfragment("dksh.connectclient.itemblockorder.view.Fragments.ItemPersonalization", this);
 				this.getView().addDependent(this.oItemLevelPersonalizationModel);
 			}
-			
+		
 		
 			that.getView().setModel(ListPersonalizationModel, "ListPersonalizationModel");
+				/*var oItemLevelPersonalizationModel = new sap.ui.model.json.JSONModel({
+				"results": this.getView().getModel("ListPersonalizationModel").getData()
+			});
+			this.oItemLevelPersonalizationModel.setModel(oItemLevelPersonalizationModel, "oItemLevelPersonalizationModel");
+			this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").setProperty("/results/enableCheckBox", false);
+			this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").setProperty("/results/selectVarVisible", true);
+			this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").setProperty("/results/nameVarVisible", false);
+			this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").refresh();
+			this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").refresh();
+			this.oItemLevelPersonalizationModel.open();*/
 			var screen = "Web";
 			var oHeader = {
 				"Content-Type": "application/json;charset=utf-8"
@@ -838,10 +921,11 @@ sap.ui.define([
 					   	that.oItemLevelPersonalizationModel.open();
 					}
 				} //Method to get Logged in user PID
-			});
-			oModel.attachRequestFailed(function (oEvent) {
-				MessageBox.error(oEvent.getSource().getData().message);
-			});
+			}
+			);
+		oModel.attachRequestFailed(function (oEvent) {
+		MessageBox.error(oEvent.getSource().getData().message);
+		});
 		
 		
 		
