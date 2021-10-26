@@ -19,7 +19,7 @@
 								<Text text="{ItemBlockModel>orderType}" class="sapUiTinyMarginBegin"/>
 							</f:fields>
 						</f:FormElement>
-                      <f:FormElement label="{i18n>DeliveryBlock}" visible ="{ListPersonalizationModel>/personalizationItemData/header/userPersonaDto/5/status}">
+                 <f:FormElement label="{i18n>DeliveryBlock}" visible ="{ListPersonalizationModel>/personalizationItemData/header/userPersonaDto/5/status}">
 							<f:fields visible ="{ListPersonalizationModel>/personalizationItemData/header/userPersonaDto/5/status}">
 								<!--<Text text="{ItemBlockModel>deliveryBlockCode} ({ItemBlockModel>deliveryBlockCodeText})" class="sapUiTinyMarginBegin"/>-->
 								<Text

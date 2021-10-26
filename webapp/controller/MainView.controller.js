@@ -1193,8 +1193,10 @@ sap.ui.define([
 				MessageToast.show(this.getText("ItemSelectList"));
 				return;
 			}
+
 			// Need to enhance logic if it's final level or not
 			//debugger;
+
 
 			this.onApprovePress["Table"] = oTable;
 			var fnCloseApprove = function (oAction) {
@@ -1228,7 +1230,9 @@ sap.ui.define([
 			});
 		},
 		onRejectPress: function (oEvent, sFragment, oItem, oModel) {
+
 		//	debugger;
+
 			var oView = this.getView(),
 				oSource = oEvent.getSource(),
 				sId = oSource.getParent().getParent().getId(),
@@ -1356,15 +1360,19 @@ sap.ui.define([
 		valueHelpRequest: function (oEvent, sFragment, sField, sAccess, bCheckAccess) {
 			var oUserAccessModel = this.getView().getModel("UserAccess"),
 				aItemVH = ["StorageLocation", "BatchNo"],
+
             	aClearFragment = ["SoldToParty"],
 				aValue = [];
+
 
 
 			if (!oUserAccessModel.getData()[sAccess] && (sAccess) && bCheckAccess) {
 				MessageToast.show(this.getText("NoDataAccess"));
 				return;
 			}
+
 		//	debugger;
+
 			this.valueHelpId = oEvent.getSource().getId();
 			this.vhFilter = "";
 			var sIAccess = oUserAccessModel.getData()[sAccess];
@@ -1544,7 +1552,9 @@ sap.ui.define([
 		},
 		onItemSubmission: function (oEvent, aItem, sFragmentName) {
 
+
 		//	debugger;
+
 
 			var oView = this.getView(),
 				oDataModel = oView.getModel(),
