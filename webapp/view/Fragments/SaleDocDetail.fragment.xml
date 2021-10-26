@@ -9,18 +9,19 @@
 			<f:formContainers>
 				<f:FormContainer expandable="true">
 					<f:formElements>
-						<f:FormElement label="{i18n>SalesDocument}">
-							<f:fields>
+						<f:FormElement label="{i18n>SalesDocument}" visible ="{ListPersonalizationModel>/personalizationItemData/header/userPersonaDto/0/status}">
+							<f:fields visible ="{ListPersonalizationModel>/personalizationItemData/header/userPersonaDto/0/status}">
 								<Text text="{ItemBlockModel>salesOrderNum}" class="sapUiTinyMarginBegin"/>
 							</f:fields>
 						</f:FormElement>
-						<f:FormElement label="{i18n>OrderType}">
-							<f:fields>
+						<f:FormElement label="{i18n>OrderType} " visible ="{ListPersonalizationModel>/personalizationItemData/header/userPersonaDto/3/status}">
+							<f:fields visible ="{ListPersonalizationModel>/personalizationItemData/header/userPersonaDto/3/status}">
 								<Text text="{ItemBlockModel>orderType}" class="sapUiTinyMarginBegin"/>
 							</f:fields>
 						</f:FormElement>
-						<f:FormElement label="{i18n>DeliveryBlock}">
-							<f:fields>
+                 <f:FormElement label="{i18n>DeliveryBlock}" visible ="{ListPersonalizationModel>/personalizationItemData/header/userPersonaDto/5/status}">
+							<f:fields visible ="{ListPersonalizationModel>/personalizationItemData/header/userPersonaDto/5/status}">
+								<!--<Text text="{ItemBlockModel>deliveryBlockCode} ({ItemBlockModel>deliveryBlockCodeText})" class="sapUiTinyMarginBegin"/>-->
 								<Text
 									text="{parts:[{path:'ItemBlockModel>deliveryBlockCode'},{path:'ItemBlockModel>deliveryBlockCodeText'}],formatter:'.formatter.concateText'}"
 									class="sapUiTinyMarginBegin"/>
@@ -30,13 +31,13 @@
 				</f:FormContainer>
 				<f:FormContainer>
 					<f:formElements>
-						<f:FormElement label="{i18n>SalesDocDate}">
-							<f:fields>
+						<f:FormElement label="{i18n>SalesDocDate}" visible ="{ListPersonalizationModel>/personalizationItemData/header/userPersonaDto/1/status}">
+							<f:fields visible ="{ListPersonalizationModel>/personalizationItemData/header/userPersonaDto/1/status}">
 								<Text text="{path: 'ItemBlockModel>salesOrderDate', formatter:'.formatter.dateFormatter'}" class="sapUiTinyMarginBegin"/>
 							</f:fields>
 						</f:FormElement>
-						<f:FormElement label="{i18n>CustomerPONo}">
-							<f:fields>
+						<f:FormElement label="{i18n>CustomerPONo}" visible ="{ListPersonalizationModel>/personalizationItemData/header/userPersonaDto/4/status}">
+							<f:fields visible ="{ListPersonalizationModel>/personalizationItemData/header/userPersonaDto/4/status}">
 								<Text text="{ItemBlockModel>customerPo}" class="sapUiTinyMarginBegin"/>
 							</f:fields>
 						</f:FormElement>
@@ -44,14 +45,15 @@
 				</f:FormContainer>
 				<f:FormContainer>
 					<f:formElements>
-						<f:FormElement label="{i18n>distributionChnlFilter}">
-							<f:fields>
+						<f:FormElement label="{i18n>distributionChnlFilter}" visible ="{ListPersonalizationModel>/personalizationItemData/header/userPersonaDto/10/status}">
+							<f:fields visible ="{ListPersonalizationModel>/personalizationItemData/header/userPersonaDto/10/status}">
+								<!--<Text text="{ItemBlockModel>distributionChannel}" class="sapUiTinyMarginBegin"/>-->
 								<Text text="{parts:[{path:'ItemBlockModel>distributionChannel'},{path:'ItemBlockModel>distrChanText'}],formatter:'.formatter.concateText'}"
 									class="sapUiTinyMarginBegin"/>
 							</f:fields>
 						</f:FormElement>
-						<f:FormElement label="{i18n>SoldToParty}">
-							<f:fields>
+						<f:FormElement label="{i18n>SoldToParty}" visible ="{ListPersonalizationModel>/personalizationItemData/header/userPersonaDto/2/status}">
+							<f:fields visible ="{ListPersonalizationModel>/personalizationItemData/header/userPersonaDto/2/status}">
 								<Text text="{ItemBlockModel>soldToParty} ({ItemBlockModel>soldToPartyText})" class="sapUiTinyMarginBegin"/>
 							</f:fields>
 						</f:FormElement>
@@ -59,14 +61,14 @@
 				</f:FormContainer>
 				<f:FormContainer>
 					<f:formElements>
-						<f:FormElement label="{i18n>CreditStatus}">
-							<f:fields>
+						<f:FormElement label="{i18n>CreditStatus}" visible ="{ListPersonalizationModel>/personalizationItemData/header/userPersonaDto/11/status}">
+							<f:fields visible ="{ListPersonalizationModel>/personalizationItemData/header/userPersonaDto/11/status}">
 								<Link text="{ItemBlockModel>creditBlock}" press="handleCreditBlockPress($event, ${ItemBlockModel>salesOrderNum})"
 									class="sapUiTinyMarginBegin"/>
 							</f:fields>
 						</f:FormElement>
-						<f:FormElement label="{i18n>ShipToParty}">
-							<f:fields>
+						<f:FormElement label="{i18n>ShipToParty}" visible ="{ListPersonalizationModel>/personalizationItemData/header/userPersonaDto/9/status}">
+							<f:fields visible ="{ListPersonalizationModel>/personalizationItemData/header/userPersonaDto/9/status}">
 								<Text text="{ItemBlockModel>shipToParty} ({ItemBlockModel>shipToPartyText})" class="sapUiTinyMarginBegin"/>
 							</f:fields>
 						</f:FormElement>
@@ -74,9 +76,11 @@
 				</f:FormContainer>
 			</f:formContainers>
 		</f:Form>
+		<!--<Table inset="false" fixedLayout="true" items="{path: 'ItemBlockModel>/salesDocItemList', templateShareable: false}"-->
+		<!--	mode="MultiSelect" selectionChange="onChangeSelectionItem" backgroundDesign="Solid">-->
 		<Table inset="false" fixedLayout="true" growing="true" growingThreshold="20"
-			items="{path: 'ItemBlockModel>salesDocItemList', templateShareable: false, sorter: [{ path: 'salesItemOrderNo', descending: false }]}"
-			mode="MultiSelect" selectionChange="onChangeSelectionItem" backgroundDesign="Solid">
+			items="{path: 'ItemBlockModel>salesDocItemList', templateShareable: false}" mode="MultiSelect" selectionChange="onChangeSelectionItem"
+			backgroundDesign="Solid">
 			<headerToolbar>
 				<OverflowToolbar>
 					<ToolbarSpacer/>
@@ -100,69 +104,69 @@
 				</OverflowToolbar>
 			</headerToolbar>
 			<columns>
-				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left" class="{'version-modal-header': condition, 'failure': !condition}">
+				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left" visible ="{ListPersonalizationModel>/personalizationItemData/item/userPersonaDto/7/status}">
 					<HBox>
 						<Label design="Bold" text="{i18n>ItemNo}" tooltip="{i18n>ItemNo}"/>
 						<Button icon="sap-icon://drill-down" type="Transparent" tooltip="{i18n>Sort}" press="onDetailTableSortPress($event, 'salesItemOrderNo')"
 							class="dkshAcceptBtnStyle"/>
 					</HBox>
 				</Column>
-				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left">
+				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left" visible = "{ListPersonalizationModel>/personalizationItemData/header/userPersonaDto/1/status}">
 					<Label design="Bold" text="{i18n>Material}" tooltip="{i18n>Material}"/>
 				</Column>
-				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Right">
+				<Column  demandPopin="true" minScreenWidth="Tablet" hAlign="Right" visible ="{ListPersonalizationModel>/personalizationItemData/item/userPersonaDto/8/status}">
 					<Label design="Bold" text="{i18n>Quantity}" tooltip="{i18n>Quantity}"/>
 				</Column>
-				<Column demandPopin="true" width="4em" minScreenWidth="Tablet" hAlign="Left">
+				<Column  demandPopin="true" width="4em" minScreenWidth="Tablet" hAlign="Left" visible ="{ListPersonalizationModel>/personalizationItemData/item/userPersonaDto/9/status}">
 					<Label design="Bold" text="{i18n>UoM}" tooltip="{i18n>tltpUom}"/>
 				</Column>
-				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Right">
+				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Right"  visible ="{ListPersonalizationModel>/personalizationItemData/item/userPersonaDto/10/status}">
 					<Label design="Bold" text="{i18n>UnitPrice}" tooltip="{i18n>UnitPrice}"/>
 				</Column>
-				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Right">
+				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Right" visible ="{ListPersonalizationModel>/personalizationItemData/item/userPersonaDto/0/status}">
 					<Label design="Bold" text="{i18n>listPrice}" tooltip="{i18n>listPrice}"/>
 				</Column>
-				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Right">
+				<Column  demandPopin="true" minScreenWidth="Tablet" hAlign="Right" visible ="{ListPersonalizationModel>/personalizationItemData/item/userPersonaDto/11/status}">
 					<HBox alignItems="End">
 						<Label design="Bold" text="{i18n>Amount}" tooltip="{i18n>Amount}" textAlign="Right"/>
 						<Button icon="sap-icon://drill-down" type="Transparent" tooltip="{i18n>Sort}" press="onDetailTableSortPress($event, 'netWorth')"
 							class="dkshAcceptBtnStyle"/>
 					</HBox>
 				</Column>
-				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left">
+				<Column  demandPopin="true" minScreenWidth="Tablet" hAlign="Left" visible ="{ListPersonalizationModel>/personalizationItemData/item/userPersonaDto/3/status}" >
 					<Label design="Bold" text="{i18n>StorageLoc}" tooltip="{i18n>tltpStoLoc}"/>
 				</Column>
-				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left">
+				<Column  demandPopin="true" minScreenWidth="Tablet" hAlign="Left" visible ="{ListPersonalizationModel>/personalizationItemData/item/userPersonaDto/2/status}">
 					<Label design="Bold" text="{i18n>BatchNo}" tooltip="{i18n>BatchNo}"/>
 				</Column>
-				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left">
+				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left" visible ="{ListPersonalizationModel>/personalizationItemData/item/userPersonaDto/4/status}">
 					<Label design="Bold" text="{i18n>MaterialGrp}" tooltip="{i18n>MaterialGroup}"/>
 				</Column>
-				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left">
+				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left" visible ="{ListPersonalizationModel>/personalizationItemData/item/userPersonaDto/5/status}">
 					<Label design="Bold" text="{i18n>MaterialGrp4}" tooltip="{i18n>MaterialGroup4}"/>
 				</Column>
-				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left" visible="false">
+				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left" visible ="{ListPersonalizationModel>/personalizationItemData/item/userPersonaDto/16/status}">
 					<Label design="Bold" text="{i18n>Disc1}" tooltip="{i18n>Disc1}"/>
 				</Column>
-				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left" visible="false">
+				<Column  demandPopin="true" minScreenWidth="Tablet" hAlign="Left" visible ="{ListPersonalizationModel>/personalizationItemData/item/userPersonaDto/17/status}">
 					<Label design="Bold" text="{i18n>Disc2}" tooltip="{i18n>Disc2}"/>
 				</Column>
-				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left" visible="false">
+				<Column  demandPopin="true" minScreenWidth="Tablet" hAlign="Left" visible ="{ListPersonalizationModel>/personalizationItemData/item/userPersonaDto/18/status}">
 					<Label design="Bold" text="{i18n>Disc3}" tooltip="{i18n>Disc3}"/>
 				</Column>
-				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left" visible="false">
+				<Column  demandPopin="true" minScreenWidth="Tablet" hAlign="Left" visible ="{ListPersonalizationModel>/personalizationItemData/item/userPersonaDto/19/status}">
 					<Label design="Bold" text="{i18n>Disc4}" tooltip="{i18n>Disc4}"/>
 				</Column>
-				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left">
+				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left" visible ="{ListPersonalizationModel>/personalizationItemData/item/userPersonaDto/13/status}">
 					<Label design="Bold" text="{i18n>ItemDlvBlock}" tooltip="{i18n>ItemDlvBlock}"/>
 				</Column>
-				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left">
+				<Column  demandPopin="true" minScreenWidth="Tablet" hAlign="Left" visible ="{ListPersonalizationModel>/personalizationItemData/item/userPersonaDto/6/status}">
 					<Label design="Bold" text="{i18n>itemcategoryCol}" tooltip="{i18n>itemcategoryColTooltip}"/>
 				</Column>
-				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left">
+				<Column  demandPopin="true" minScreenWidth="Tablet" hAlign="Left" visible ="{ListPersonalizationModel>/personalizationItemData/item/userPersonaDto/12/status}">
 					<Label design="Bold" text="{i18n>oldMatCodeCol}" tooltip="{i18n>oldMatCodeColTooltip}"/>
 				</Column>
-				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left">
+				<Column  demandPopin="true" minScreenWidth="Tablet" hAlign="Left" visible ="{ListPersonalizationModel>/personalizationItemData/item/userPersonaDto/14/status}">
 					<Label design="Bold" text="{i18n>ItemStatus}" tooltip="{i18n>oldMatCodeColTooltip}"/>
 				</Column>
 			</columns>
@@ -198,6 +202,11 @@
 						<!-- Net Price & Order Qty Sales & Doc Currency -->
 						<Text text="{ItemBlockModel>netWorth} ({ItemBlockModel>docCurrency})" textAlign="Right"/>
 						<!-- Storage Location -->
+						<!--<VBox>-->
+						<!--	<Input value="{ItemBlockModel>storageLoc}" tooltip="{ItemBlockModel>storageLoc}" showValueHelp="true"-->
+						<!--		valueHelpRequest="ValueHelpRequestItem($event, 'StorageLocation', '/SearchHelp_StorageLocationSet')" valueHelpOnly="true"-->
+						<!--		enabled="{= ${ItemBlockModel>editSLoc}}"/>-->
+						<!--</VBox>-->
 						<VBox>
 							<Input value="{ItemBlockModel>storageLoc}" tooltip="{ItemBlockModel>storageLoc}" showValueHelp="true"
 								valueHelpRequest="valueHelpRequest($event, 'StorageLocation', 'Code', '', false)" valueHelpOnly="true"
@@ -208,6 +217,9 @@
 							<Input value="{ItemBlockModel>batchNum}" tooltip="{ItemBlockModel>batchNum}" showValueHelp="true"
 								valueHelpRequest="ValueHelpRequestItem($event, 'BatchNo', '/SearchHelp_BatchNoSet')" valueHelpOnly="true"
 								enabled="{= ${ItemBlockModel>editBatchNo}}"/>
+							<!--<Input value="{ItemBlockModel>batchNum}" tooltip="{ItemBlockModel>batchNum}" showValueHelp="true"-->
+							<!--	valueHelpRequest="valueHelpRequest($event, 'BatchNo', 'BatchNo', '', false)" valueHelpOnly="true"-->
+							<!--	enabled="{= ${ItemBlockModel>editBatchNo}}"/>-->
 						</VBox>
 						<!-- Material Group -->
 						<Text text="{ItemBlockModel>materialGroup}" textAlign="Left"/>
@@ -229,6 +241,8 @@
 						<Text text="{ItemBlockModel>oldMatCode}" textAlign="Left"/>
 						<!-- Item Staging Status -->
 						<ObjectStatus text="{ItemBlockModel>itemStagingStatus}" state="{parts:['ItemBlockModel>itemStagingStatus'],formatter:'.formatter.status'}"/></cells>
+					<!--<ObjectStatus text="{ItemBlockModel>itemStagingStatus}"-->
+					<!--	state="{= ${ItemBlockModel>acceptOrReject} === 'A' ? 'Success' : ${ItemBlockModel>acceptOrReject} === 'R' ? 'Error' : 'None' }"/></cells>-->
 				</ColumnListItem>
 			</items>
 		</Table>

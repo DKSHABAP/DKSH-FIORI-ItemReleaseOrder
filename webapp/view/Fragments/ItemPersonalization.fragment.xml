@@ -1,0 +1,59 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form" xmlns:l="sap.ui.layout">
+	<Dialog title="{i18n>personalization}" class="sapUiSizeCompact custBox" contentWidth="30%">
+		<content>
+			<VBox >
+				<Toolbar>
+					<Label text="{i18n>Variant}" visible="{oItemLevelPersonalizationModel>/selectVarVisible}"/>
+					<Select items="{oItemLevelPersonalizationModel>/results/variantName}" selectedKey="{oItemLevelPersonalizationModel>/results/currentVariant}" width="50%" change="onSelectvarianItem" visible="{oItemLevelPersonalizationModel>/selectVarVisible}">
+						<core:Item key="{oItemLevelPersonalizationModel>name}" text="{oItemLevelPersonalizationModel>name}"/>
+					</Select>
+					<Label text="{i18n>VariantName}" required="true" visible="{oItemLevelPersonalizationModel>/nameVarVisible}"/>
+					<Input value="{oItemLevelPersonalizationModel>/newVariantName}" placeholder="{i18n>VariantName}" valueState="{oItemLevelPersonalizationModel>/varinatNameValueState}" visible="{oItemLevelPersonalizationModel>/nameVarVisible}" width="50%"/>
+					<ToolbarSpacer></ToolbarSpacer>
+					<Button icon="sap-icon://add-activity" press="onVariantCreateItem" tooltip="{i18n>Create}" visible="{oItemLevelPersonalizationModel>/results/createPersBtnVisible}"/>
+					<Button icon="sap-icon://edit" press="onVariantEditItem" tooltip="{i18n>Edit}" visible="{oItemLevelPersonalizationModel>/results/editPersBtnVisible}"/>
+				</Toolbar>
+				
+				<Table headerText="Header Level" id="idProductsTable" inset="false" items="{oItemLevelPersonalizationModel>/results/header/userPersonaDto}">
+					<columns>
+						<Column ></Column>
+					</columns>
+					<items>
+						<ColumnListItem>
+							<cells>
+								<HBox>
+									<!--"-->
+									<CheckBox selected="{oItemLevelPersonalizationModel>status}" select="onChangeCheckboxHeader" enabled="{oItemLevelPersonalizationModel>/enableCheckBox}"/>
+									<Text text="{oItemLevelPersonalizationModel>enabledKey}"/>
+								</HBox>
+							</cells>
+						</ColumnListItem>
+					</items>
+				</Table>
+				<Table headerText="Item Level"  id="__table1"  inset="false" items="{oItemLevelPersonalizationModel>/results/item/userPersonaDto}">
+					<columns>
+						<Column ></Column>
+					</columns>
+					<items>
+						<ColumnListItem>
+							<cells>
+								<HBox>
+									<CheckBox selected="{oItemLevelPersonalizationModel>status}" select="onChangeCheckboxItem" enabled="{oItemLevelPersonalizationModel>/enableCheckBox}"/>
+									<Text text="{oItemLevelPersonalizationModel>enabledKey}"/>
+								</HBox>
+							</cells>
+						</ColumnListItem>
+					</items>
+				</Table>
+			</VBox>
+		</content>
+		<buttons>
+			<Button text="{i18n>ok}" press="onPersonalizationOK" tooltip="OK"/>
+			<!--<Button text="{i18n>reset2DefaultBtn}" press="onPersonalizationReset" tooltip="Reset" type="Default"/>-->
+			<Button text="{i18n>cancel}" press="onPersonalizationCloseItem" tooltip="Cancel" type="Default"/>
+			<Button text="{i18n>Save}" press="onVariantSaveItem" tooltip="{i18n>Save}" visible="{oItemLevelPersonalizationModel>/savePersBtnVisible}"/>
+			<Button text="{i18n>Delete}" press="onVariantDeleteItem" tooltip="{i18n>cancelbtntext}" visible="{oItemLevelPersonalizationModel>/deletePersBtnVisible}"/>
+			<!--<Button text="{i18n>cancel}" press="handleCloseValueHelp($event, 'Personalization')" tooltip="{i18n>cancelbtntext}"/>-->
+		</buttons>
+	</Dialog>
+</core:FragmentDefinition>
