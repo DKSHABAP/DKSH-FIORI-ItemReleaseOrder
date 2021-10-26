@@ -111,62 +111,62 @@
 							class="dkshAcceptBtnStyle"/>
 					</HBox>
 				</Column>
-				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left" visible = "{ListPersonalizationModel>/personalizationItemData/header/userPersonaDto/0/status}">
+				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left" visible = "{ListPersonalizationModel>/personalizationItemData/header/userPersonaDto/1/status}">
 					<Label design="Bold" text="{i18n>Material}" tooltip="{i18n>Material}"/>
 				</Column>
-				<Column  demandPopin="true" minScreenWidth="Tablet" hAlign="Right">
+				<Column  demandPopin="true" minScreenWidth="Tablet" hAlign="Right" visible ="{ListPersonalizationModel>/personalizationItemData/item/userPersonaDto/8/status}">
 					<Label design="Bold" text="{i18n>Quantity}" tooltip="{i18n>Quantity}"/>
 				</Column>
-				<Column  demandPopin="true" width="4em" minScreenWidth="Tablet" hAlign="Left">
+				<Column  demandPopin="true" width="4em" minScreenWidth="Tablet" hAlign="Left" visible ="{ListPersonalizationModel>/personalizationItemData/item/userPersonaDto/9/status}">
 					<Label design="Bold" text="{i18n>UoM}" tooltip="{i18n>tltpUom}"/>
 				</Column>
-				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Right">
+				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Right"  visible ="{ListPersonalizationModel>/personalizationItemData/item/userPersonaDto/10/status}">
 					<Label design="Bold" text="{i18n>UnitPrice}" tooltip="{i18n>UnitPrice}"/>
 				</Column>
-				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Right">
+				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Right" visible ="{ListPersonalizationModel>/personalizationItemData/item/userPersonaDto/0/status}">
 					<Label design="Bold" text="{i18n>listPrice}" tooltip="{i18n>listPrice}"/>
 				</Column>
-				<Column  demandPopin="true" minScreenWidth="Tablet" hAlign="Right">
+				<Column  demandPopin="true" minScreenWidth="Tablet" hAlign="Right" visible ="{ListPersonalizationModel>/personalizationItemData/item/userPersonaDto/11/status}">
 					<HBox alignItems="End">
 						<Label design="Bold" text="{i18n>Amount}" tooltip="{i18n>Amount}" textAlign="Right"/>
 						<Button icon="sap-icon://drill-down" type="Transparent" tooltip="{i18n>Sort}" press="onDetailTableSortPress($event, 'netWorth')"
 							class="dkshAcceptBtnStyle"/>
 					</HBox>
 				</Column>
-				<Column  demandPopin="true" minScreenWidth="Tablet" hAlign="Left" >
+				<Column  demandPopin="true" minScreenWidth="Tablet" hAlign="Left" visible ="{ListPersonalizationModel>/personalizationItemData/item/userPersonaDto/3/status}" >
 					<Label design="Bold" text="{i18n>StorageLoc}" tooltip="{i18n>tltpStoLoc}"/>
 				</Column>
-				<Column  demandPopin="true" minScreenWidth="Tablet" hAlign="Left">
+				<Column  demandPopin="true" minScreenWidth="Tablet" hAlign="Left" visible ="{ListPersonalizationModel>/personalizationItemData/item/userPersonaDto/2/status}">
 					<Label design="Bold" text="{i18n>BatchNo}" tooltip="{i18n>BatchNo}"/>
 				</Column>
-				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left">
+				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left" visible ="{ListPersonalizationModel>/personalizationItemData/item/userPersonaDto/4/status}">
 					<Label design="Bold" text="{i18n>MaterialGrp}" tooltip="{i18n>MaterialGroup}"/>
 				</Column>
-				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left">
+				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left" visible ="{ListPersonalizationModel>/personalizationItemData/item/userPersonaDto/5/status}">
 					<Label design="Bold" text="{i18n>MaterialGrp4}" tooltip="{i18n>MaterialGroup4}"/>
 				</Column>
-				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left" visible="false">
+				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left" visible ="{ListPersonalizationModel>/personalizationItemData/item/userPersonaDto/16/status}">
 					<Label design="Bold" text="{i18n>Disc1}" tooltip="{i18n>Disc1}"/>
 				</Column>
-				<Column  demandPopin="true" minScreenWidth="Tablet" hAlign="Left" visible="false">
+				<Column  demandPopin="true" minScreenWidth="Tablet" hAlign="Left" visible ="{ListPersonalizationModel>/personalizationItemData/item/userPersonaDto/17/status}">
 					<Label design="Bold" text="{i18n>Disc2}" tooltip="{i18n>Disc2}"/>
 				</Column>
-				<Column  demandPopin="true" minScreenWidth="Tablet" hAlign="Left" visible="false">
+				<Column  demandPopin="true" minScreenWidth="Tablet" hAlign="Left" visible ="{ListPersonalizationModel>/personalizationItemData/item/userPersonaDto/18/status}">
 					<Label design="Bold" text="{i18n>Disc3}" tooltip="{i18n>Disc3}"/>
 				</Column>
-				<Column  demandPopin="true" minScreenWidth="Tablet" hAlign="Left" visible="false">
+				<Column  demandPopin="true" minScreenWidth="Tablet" hAlign="Left" visible ="{ListPersonalizationModel>/personalizationItemData/item/userPersonaDto/19/status}">
 					<Label design="Bold" text="{i18n>Disc4}" tooltip="{i18n>Disc4}"/>
 				</Column>
-				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left">
+				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left" visible ="{ListPersonalizationModel>/personalizationItemData/item/userPersonaDto/13/status}">
 					<Label design="Bold" text="{i18n>ItemDlvBlock}" tooltip="{i18n>ItemDlvBlock}"/>
 				</Column>
-				<Column  demandPopin="true" minScreenWidth="Tablet" hAlign="Left">
+				<Column  demandPopin="true" minScreenWidth="Tablet" hAlign="Left" visible ="{ListPersonalizationModel>/personalizationItemData/item/userPersonaDto/6/status}">
 					<Label design="Bold" text="{i18n>itemcategoryCol}" tooltip="{i18n>itemcategoryColTooltip}"/>
 				</Column>
-				<Column  demandPopin="true" minScreenWidth="Tablet" hAlign="Left">
+				<Column  demandPopin="true" minScreenWidth="Tablet" hAlign="Left" visible ="{ListPersonalizationModel>/personalizationItemData/item/userPersonaDto/12/status}">
 					<Label design="Bold" text="{i18n>oldMatCodeCol}" tooltip="{i18n>oldMatCodeColTooltip}"/>
 				</Column>
-				<Column  demandPopin="true" minScreenWidth="Tablet" hAlign="Left">
+				<Column  demandPopin="true" minScreenWidth="Tablet" hAlign="Left" visible ="{ListPersonalizationModel>/personalizationItemData/item/userPersonaDto/14/status}">
 					<Label design="Bold" text="{i18n>ItemStatus}" tooltip="{i18n>oldMatCodeColTooltip}"/>
 				</Column>
 			</columns>

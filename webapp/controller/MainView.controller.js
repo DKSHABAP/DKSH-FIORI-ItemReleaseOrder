@@ -164,6 +164,8 @@ sap.ui.define([
 			var oModel = new sap.ui.model.json.JSONModel();
 			that.getView().setModel(oModel, "oModel");
 			this.selectedObjects = [];
+		    this.selectedHeaderObjects = [];
+		     this.selectedItemObjects = [];
 			var PersonalizationModel = new sap.ui.model.json.JSONModel();
 			if (!this.FilterPersonalization) 
 			{
@@ -252,8 +254,11 @@ sap.ui.define([
 			this.getView().getModel("ListPersonalizationModel").setProperty("/editPersBtnVisible", true);
 			this.getView().getModel("ListPersonalizationModel").setProperty("/varinatNameValueState", "None");
 			this.selectedObjects = [];
+		     this.selectedHeaderObjects = [];
+		     this.selectedItemObjects = [];
 			this.getView().getModel("ListPersonalizationModel").refresh();
 			this.oItemLevelPersonalizationModel.close();
+			this._getItemPersonalizationDetails();
 		},
 		
 		//for search
@@ -284,6 +289,7 @@ sap.ui.define([
 			this.getView().getModel("PersonalizationModel").refresh();
 		    
 			this.FilterPersonalization.close();
+			this._getFilterPersonalizationDetails();
 		},
 		
 		/*	onPressPersonalization: function () {
@@ -297,6 +303,8 @@ sap.ui.define([
 		
 			onPersonalizationCloseItem: function () {
 			this.selectedObjects = [];
+			this.selectedHeaderObjects = [];
+		     this.selectedItemObjects = [];
 			this.oItemLevelPersonalizationModel.close();
 		},
 		onVariantCreate: function () {
@@ -413,6 +421,7 @@ sap.ui.define([
 						that.FilterPersonalization.setModel(FilterPersonalization, "FilterPersonalization");
 						that.FilterPersonalization.getModel("FilterPersonalization").refresh();
 						that.FilterPersonalization.getModel("FilterPersonalization").setProperty("/results/action", "");
+						that.getView().getModel("PersonalizationModel").refresh();
 					   	
 					}
 				} //Method to get Logged in user PID
@@ -509,6 +518,7 @@ sap.ui.define([
 				}
 			}
 			this.selectedHeaderObjects = personalizationHeaderData;
+			
 		},
 		onChangeCheckbox: function (oEvent) {
 			var personalizationData = this.FilterPersonalization.getModel("FilterPersonalization").getData().results.userPersonaDto;
@@ -716,6 +726,8 @@ sap.ui.define([
 			}
 			var that = this;
 			var oModel = new sap.ui.model.json.JSONModel();
+		var personalizationheaderData = this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").getData().results.header.userPersonaDto;
+		var personalizationItemData = this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").getData().results.item.userPersonaDto;
 			var ListPersonalizationModel = this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel");
 			if (ListPersonalizationModel.getProperty("/results/action") === "Create") {
 				if (ListPersonalizationModel.getData().newVariantName !== undefined && ListPersonalizationModel.getData().newVariantName !==
@@ -736,12 +748,22 @@ sap.ui.define([
 						this.selectedHeaderObjects[i].applicationTab	= "keyHeaderReleaseBlock";
 					}
 					}
+					//to fix update null issue from Java Endpoint
+					else{
+                  	
+                  	this.selectedHeaderObjects = personalizationheaderData;
+                  }
 				if(!this.selectedItemObjects.length === 0)
 				   {
 					for (var k = 0; k < this.selectedItemObjects.length; k++) {
 						this.selectedItemObjects[k].variantId = VariantName;
 						this.selectedItemObjects[k].applicationTab	= "keyItemReleaseBlock";
 					}
+                  }
+                  	//to fix update null issue from Java Endpoint
+                  else{
+                  	
+                  	this.selectedItemObjects = personalizationItemData;
                   }
 				} else {
 					this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").setProperty("/varinatNameValueState", "Error");
@@ -768,6 +790,8 @@ sap.ui.define([
 			oModel.attachRequestCompleted(function (success) {
 				busyDialog.close();
 				that.selectedObjects = [];
+			    that.selectedHeaderObjects = [];
+		        that.selectedItemObjects = [];
 				that.oItemLevelPersonalizationModel.close();
 				sap.m.MessageBox.success(that.getView().getModel("i18n").getProperty("created"), {
 					actions: [sap.m.MessageBox.Action.OK],
