@@ -1155,7 +1155,8 @@ sap.ui.define([
 				return;
 			}
 
-			oView.setBusy(true);
+			// oView.setBusy(true);
+			this._getTable("idList").setBusy(true);
 			// Call oData to simulate the price for the material
 			for (var indx in Object.keys(aDataProperties)) {
 				var sDataProperty = aDataProperties[indx];
@@ -1179,7 +1180,8 @@ sap.ui.define([
 					}
 				}
 				oItemBlockModel.refresh();
-				oView.setBusy(false);
+				// oView.setBusy(false);
+				this._getTable("idList").setBusy(false);
 			}.bind(this)).catch(this._displayWarning.bind(this));
 		},
 		onApprovePress: function (oEvent, oItem) {
@@ -1193,6 +1195,7 @@ sap.ui.define([
 			}
 			// Need to enhance logic if it's final level or not
 			//debugger;
+
 			this.onApprovePress["Table"] = oTable;
 			var fnCloseApprove = function (oAction) {
 				oTable = this.onApprovePress["Table"];
@@ -1225,6 +1228,7 @@ sap.ui.define([
 			});
 		},
 		onRejectPress: function (oEvent, sFragment, oItem, oModel) {
+		//	debugger;
 			var oView = this.getView(),
 				oSource = oEvent.getSource(),
 				sId = oSource.getParent().getParent().getId(),
@@ -1246,7 +1250,6 @@ sap.ui.define([
 			this.onRejectPress["Table"] = oTable;
 			if (!this.oFragmentList[sFragment]) {
 				this._loadFragment(sFragment);
-				this.oFragmentList[sFragment].open();
 			} else {
 				this.oFragmentList[sFragment].open();
 				oView.setBusy(false);
@@ -1335,28 +1338,40 @@ sap.ui.define([
 			if (oTable.getSelectedItems().length === 0) {
 				return;
 			}
+			var aSelectedContext = oTable.getSelectedContexts();
 			oTable.removeSelections();
+			aSelectedContext.map(function (oContexts) {
+				var sPath = oContexts.getPath(),
+					oItemBlockModel = oContexts.getModel("ItemBlockModel");
+				if (oContexts.getProperty([sPath, "/acceptOrReject"].join(""))) {
+					oItemBlockModel.setProperty(sPath + "/acceptOrReject", null);
+					oItemBlockModel.setProperty(sPath + "/itemStagingStatus", this.getText("PendingApproval"));
+				}
+			}.bind(this));
+			oTable.getModel().updateBindings(false);
 		},
-		// On Search data
 		onSearchSalesHeader: function (oEvent, oFilterSaleOrder) {
-			// oSettingModel = oView.getModel("settings");
-			// oSettingModel.setProperty("/selectedPage", 1);
 			this.formatter.fetchSaleOrder.call(this);
 		},
 		valueHelpRequest: function (oEvent, sFragment, sField, sAccess, bCheckAccess) {
 			var oUserAccessModel = this.getView().getModel("UserAccess"),
 				aItemVH = ["StorageLocation", "BatchNo"],
-				aClearFragment = ["SoldToParty"];
-		//	debugger;
+            	aClearFragment = ["SoldToParty"],
+				aValue = [];
+
+
 			if (!oUserAccessModel.getData()[sAccess] && (sAccess) && bCheckAccess) {
 				MessageToast.show(this.getText("NoDataAccess"));
 				return;
 			}
+		//	debugger;
 			this.valueHelpId = oEvent.getSource().getId();
 			this.vhFilter = "";
-			if (oUserAccessModel.getData()[sAccess]) {
-				var aValue = oUserAccessModel.getData()[sAccess].split("@");
-				// retrieve for blank code
+			var sIAccess = oUserAccessModel.getData()[sAccess];
+			if (sIAccess) {
+				aValue = (sIAccess !== "*") ? sIAccess.split("@") : [];
+			}
+			if (aValue.length > 0) {
 				aValue.push("");
 				this.vhFilter = new Filter({
 					filters: aValue.map(function (value) {
@@ -1365,6 +1380,7 @@ sap.ui.define([
 					and: false
 				});
 			}
+
 			if (aItemVH.includes(sFragment)) {
 				var oItemLevel = oEvent.getSource().getParent().getParent();
 				this.sItemPath = oItemLevel.getBindingContextPath();
@@ -1375,40 +1391,34 @@ sap.ui.define([
 			}
 			this._loadFragment(sFragment, oEvent);
 		},
-		onSearchSoldToParty: function (oEvent, sFragment, sPath, sId) {
-			var oView = this.getView(),
-				oData = oView.getModel("filterModel").getData(),
-				oTable = this._getTable(sId),
-				oModel = oView.getModel("_SoldToParty"),
-				aFilters = [];
+		onSearchSoldToParty: function (oEvent, sFragment, sId) {
+			this._setBindFilterStp(sId);
+			if (!this.oFragmentList[sFragment]) {
+				this.oFragmentList[sFragment].setModel(new JSONModel({}), "SoldToPartyModel");
+			} else {
+				var oSoldToPartyModel = this.oFragmentList[sFragment].getModel("SoldToPartyModel");
+				oSoldToPartyModel.setProperty("/totalRecords", oSoldToPartyModel.getProperty("/totalRecords"));
+			}
+		},
+		onLiveSearchSoldToParty: function (oEvent, sId) {
+			var sValue = oEvent.getParameters().newValue;
+			var oFilterData = this.getView().getModel("filterModel").getData(),
+				bCheck = true;
 
-			if (!oData.SoldToPartId && !oData.SoldToPartName && !oData.SoldToPartSaleOrg && !oData.SoldToPartDivision && !oData.SoldToPartDistChannel) {
-				MessageBox.information(this.getText("ItemSelectFilter"));
+			if (!oFilterData.stp_id && !oFilterData.stp_name && !oFilterData.stp_soldorg && !oFilterData.stp_division && !oFilterData.stp_distchnl) {
+				bCheck = false;
+			}
+			if (!oEvent.getParameters().clearButtonPressed && sValue && bCheck) {
+				this._setBindFilterStp(sId, sValue);
 				return;
 			}
-			oTable.setBusy(true);
-			var oFilter = new Filter({
-				filters: this.setODataFilter([
-					"CustCode", "Name1", "SalesOrg", "Division", "Distchl", "languageID"
-				], {
-					"CustCode": oData.SoldToPartId,
-					"Name1": oData.SoldToPartName,
-					"SalesOrg": oData.SoldToPartSaleOrg,
-					"Division": oData.SoldToPartDivision,
-					"Distchl": oData.SoldToPartDistChannel,
-					"languageID": "E"
-				}),
-				and: true
-			});
-			aFilters.push(oFilter);
-			this.formatter.fetchData.call(this, oModel, sPath, aFilters).then(function (oRes) {
-				Object.assign(oRes, {
-					"totalRecords": oRes.results.length
-				});
-				this.oFragmentList[sFragment].setModel(new JSONModel(oRes), "SoldToPartyModel");
-				oTable.setBusy(false);
-			}.bind(this)).catch(this._displayWarning.bind(this));
-			/*			this._getSmartTable("idSoldToPartSmartTable").rebindTable();*/
+			if (bCheck) {
+				this._setBindFilterStp(sId);
+			}
+		},
+		onResetSoldToParty: function (oEvent) {
+			var oFilterModel = this.getView().getModel("filterModel");
+			this.resetModel(oFilterModel, ["stp_id", "stp_name", "stp_soldorg", "stp_division", "stp_distchnl"]);
 		},
 		/* Start - Need to enhance*/
 		/* =========================================================================================*/
@@ -1480,47 +1490,32 @@ sap.ui.define([
 			}
 		},
 		/* =========================================================================================*/
-		onLiveSearchSoldToParty: function (oEvent, sId) {
-			var sValue = oEvent.getParameters().newValue,
-				oBinding = this._getTable(sId).getBinding("items"),
-				aFilters = [];
-
-			if (!oEvent.getParameters().clearButtonPressed && sValue) {
-				var oFilterString = new Filter({
-						filters: this.setBindingFilter(["CustCode", "Name1", "DName", "DCName", "SOrgName"],
-							sValue, oBinding),
-						and: false
-					}),
-					aBindingFilters = new Filter({
-						filters: [oFilterString]
-					});
-				aFilters.push(aBindingFilters);
-				oBinding.filter(aFilters);
-			} else {
-				oBinding.filter(null);
-			}
-		},
-		onLiveChange: function (oEvent, sFilter1, sFilter2) {
+		onLiveChange: function (oEvent, sCode, sDescription) {
 			var value = oEvent.getParameters().value,
-				filters = [],
-				oBinding = oEvent.getSource().getBinding("items");
-
-			if (value) {
-				var oFilter = new Filter({
-					filters: [new Filter(sFilter1, FilterOperator.Contains, value), new Filter(sFilter2, FilterOperator.Contains, value)],
+				oBinding = oEvent.getSource().getBinding("items"),
+				aFilter = [];
+			if (this.vhFilter) {
+				aFilter.push(new Filter({
+					filters: this.vhFilter.aFilters.map(function (obj) {
+						return obj;
+					}),
 					and: false
-				});
+				}));
 			}
-			filters.push(oFilter ? oFilter : this.vhFilter);
-			oBinding.filter(filters);
+			if (value) {
+				aFilter.push(new Filter({
+					filters: [new Filter(sCode, FilterOperator.Contains, value), new Filter(sDescription, FilterOperator.Contains, value)],
+					and: false
+				}));
+			}
+			oBinding.filter(new Filter(aFilter, true));
 		},
 		handleAdd: function (oEvent, sPath, sProperty, sBindModel, sPathReset, sPathSoldParty) {
 			var selectedObj = oEvent.getParameters().selectedContexts[0].getObject(),
 				oModel = this.getView().getModel(sBindModel),
-				sPathM = (this.valueHelpId.includes("idSoldToPart")) ? sPathSoldParty : sPath;
+				sPathM = (this.valueHelpId.includes("idstp")) ? sPathSoldParty : sPath;
 
 			oModel.setProperty(sPathM, selectedObj[sProperty]);
-			// oModel.setProperty(sPath, selectedObj[sProperty]);
 			// Need to enhacne next time
 			// For storage and batch value help
 			if (this.sItemPath) {
@@ -1548,7 +1543,9 @@ sap.ui.define([
 			}
 		},
 		onItemSubmission: function (oEvent, aItem, sFragmentName) {
+
 		//	debugger;
+
 			var oView = this.getView(),
 				oDataModel = oView.getModel(),
 				oLoadDataModel = oView.getModel("LoadDataModel"),
@@ -1614,8 +1611,8 @@ sap.ui.define([
 						initialFocus: MessageBox.Action.OK,
 						styleClass: sResponsivePaddingClasses
 					});
-				}.bind(this)).catch(function () {
-					this._displayError.bind(this);
+				}.bind(this)).catch(function (oErr) {
+					this._displayError(oErr).bind(this);
 				});
 			}.bind(this)).catch(this._displayWarning.bind(this));
 		},
@@ -1658,47 +1655,23 @@ sap.ui.define([
 				}.bind(this)).catch(this._displayWarning.bind(this));
 			}
 		},
+		onUpdateFinished: function (oEvent, sFragment) {
+			if (this.oFragmentList[sFragment]) {
+				this.oFragmentList[sFragment].getModel("SoldToPartyModel").setProperty("/totalRecords", oEvent.getParameter("total"));
+			}
+		},
 		onSubmitSoldtoParty: function (oEvent) {
-			var oView = this.getView(),
-				oTable = this._getTable("idSoldtoPartyTable"),
-				oFilterModel = oView.getModel("filterModel"),
-				sPath = oTable.getSelectedContexts()[0].sPath,
-				oData = oTable.getModel("SoldToPartyModel").getProperty(sPath);
+			var oTable = this._getTable("idSTPTable"),
+				oFilterModel = this.getView().getModel("filterModel"),
+				sPath = oTable.getSelectedContextPaths()[0],
+				oItem = oTable.getModel().getProperty(sPath);
 
-			oFilterModel.setProperty("/selectedSoldToParty", oData.CustCode);
+			oFilterModel.setProperty("/soldtoParty", oItem.stp_id);
+			oFilterModel.setProperty("/distChannel", oItem.stp_distchnl);
+			oFilterModel.setProperty("/division", oItem.stp_division);
+			oFilterModel.setProperty("/salesOrg", oItem.stp_soldorg);
 			this.handleCancel(oEvent, "SoldToParty");
 		},
-		// onPageClick: function (oEvent) {
-		// 	var sPageNum = +oEvent.getSource().getBindingContext("settings").getObject().pageNum,
-		// 		oSettingModel = this.getView().getModel("settings");
-		// 	oSettingModel.setProperty("/selectedPage", sPageNum);
-		// 	this.formatter.fetchSaleOrder.call(this);
-		// },
-		// onScrollLeft: function (oEvent) {
-		// 	var oSettingModel = this.getView().getModel("settings"),
-		// 		sPageNum = +oSettingModel.getProperty("/selectedPage");
-
-		// 	sPageNum--;
-		// 	if (sPageNum >= 1) {
-		// 		oSettingModel.setProperty("/selectedPage", sPageNum);
-		// 		this.formatter.fetchSaleOrder.call(this);
-		// 	}
-		// },
-		// onScrollRight: function (oEvent) {
-		// 	var oSettingModel = this.getView().getModel("settings"),
-		// 		sPageNum = +oSettingModel.getProperty("/selectedPage"),
-		// 		maxPage = oSettingModel.getProperty("/pagination").length;
-
-		// 	/*			if (sPageNum++ < maxPage) {
-		// 					oSettingModel.setProperty("/selectedPage", sPageNum);
-		// 					this.formatter.fetchSaleOrder.call(this);
-		// 				}*/
-		// 	// Set 5 pages for now
-		// 	if (sPageNum++ < 5) {
-		// 		oSettingModel.setProperty("/selectedPage", sPageNum);
-		// 		this.formatter.fetchSaleOrder.call(this);
-		// 	}
-		// },
 		onPressRefresh: function () {
 			this.formatter.fetchSaleOrder.call(this);
 		},
@@ -1707,13 +1680,6 @@ sap.ui.define([
 
 			oFilterModel.setData({});
 			oFilterModel.updateBindings(true);
-		},
-		onResetSoldToParty: function (oEvent) {
-			var oFilterModel = this.getView().getModel("filterModel");
-			this.resetModel(oFilterModel, ["SoldToPartId", "SoldToPartName", "SoldToPartSaleOrg", "SoldToPartDivision", "SoldToPartDistChannel"]);
-		},
-		_getTable: function (sId) {
-			return this.getView().byId(sId);
 		}
 	});
 

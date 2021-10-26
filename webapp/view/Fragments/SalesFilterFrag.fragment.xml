@@ -6,7 +6,7 @@
 			<fb:filterGroupItems>
 				<fb:FilterGroupItem groupName="G1" name="A" label="{i18n>salesOrg}" partOfCurrentVariant="true" visibleInFilterBar="{PersonalizationModel>/personalizationFilterBlockData/userPersonaDto/6/status}">
 					<fb:control>
-						<Input value="{filterModel>/salesOrg}" tooltip="{SaleHdrModelSet>/salesOrg}" maxLength="100" liveChange="salesDocValidationHandle"
+						<Input value="{filterModel>/salesOrg}" tooltip="{filterModel>/salesOrg}" maxLength="100" liveChange="salesDocValidationHandle"
 							placeholder="{i18n>plchSalesOrg}" showValueHelp="true" valueHelpRequest="valueHelpRequest($event, 'SalesOrg', 'Code', 'ATR01', true)"
 							valueHelpOnly="true" />
 					</fb:control>
@@ -64,7 +64,7 @@
 				<fb:FilterGroupItem groupName="G1" name="H" label="{i18n>soldToPartyTitle}" partOfCurrentVariant="true" visibleInFilterBar="{PersonalizationModel>/personalizationFilterBlockData/userPersonaDto/3/status}">
 					<!--<fb:control>-->
 					<!--	<Input showValueHelp="true" valueHelpOnly="true" value="{filterModel>/selectedSoldToParty}" tooltip="{filterModel>/selectedSoldToParty}"-->
-					<!--		valueHelpRequest="valueHelpRequestSoldToParty($event, 'SoldToParty', 'idSoldtoPartyTable')" id="soFragFilter1" visible="true"-->
+					<!--		valueHelpRequest="valueHelpRequestSoldToParty($event, 'SoldToParty', 'idSTPTable')" id="soFragFilter1" visible="true"-->
 					<!--		placeholder="{i18n>plchSoldtp}" showValueStateMessage="true" valueStateText="abc"/>-->
 					<!--</fb:control>-->
 					<fb:control>
@@ -72,7 +72,7 @@
 							valueHelpRequest="valueHelpRequest($event, 'SoldToParty', '', false)" visible="true" placeholder="{i18n>plchSoldtp}"
 							showValueStateMessage="true"/>
 						<!--<Input showValueHelp="true" valueHelpOnly="true" value="{filterModel>/soldtoParty}" tooltip="{filterModel>/soldtoParty}"-->
-						<!--	valueHelpRequest="valueHelpRequestSoldToParty($event, 'SoldToParty', 'idSoldtoPartyTable')" visible="true" placeholder="{i18n>plchSoldtp}"-->
+						<!--	valueHelpRequest="valueHelpRequestSoldToParty($event, 'SoldToParty', 'idSTPTable')" visible="true" placeholder="{i18n>plchSoldtp}"-->
 						<!--	showValueStateMessage="true"/>-->
 					</fb:control>
 				</fb:FilterGroupItem>
@@ -91,7 +91,7 @@
 							valueHelpOnly="true"/>
 					</fb:control>
 				</fb:FilterGroupItem>
-				<fb:FilterGroupItem groupName="G1" name="K" label="{i18n>ShipToParty}" partOfCurrentVariant="true" visibleInFilterBar="PersonalizationModel>/personalizationFilterBlockData/userPersonaDto/10/status">
+				<fb:FilterGroupItem groupName="G1" name="K" label="{i18n>ShipToParty}" partOfCurrentVariant="true" visibleInFilterBar="{PersonalizationModel>/personalizationFilterBlockData/userPersonaDto/10/status}">
 					<fb:control>
 						<Input value="{filterModel>/shipToparty}" tooltip="{filterModel>/shipToparty}" placeholder="{i18n>EntrShipTpParty}" maxLength="10"/>
 					</fb:control>
@@ -117,7 +117,7 @@
 						<Input value="{filterModel>/salesTeam}" tooltip="{filterModel>/salesTeam}" placeholder="{i18n>EnterSalesTeam}" maxLength="10"/>
 					</fb:control>
 				</fb:FilterGroupItem>
-				<fb:FilterGroupItem groupName="G1" name="P" label="{i18n>OrderType}" partOfCurrentVariant="true" visibleInFilterBar="PersonalizationModel>/personalizationFilterBlockData/userPersonaDto/15/status">
+				<fb:FilterGroupItem groupName="G1" name="P" label="{i18n>OrderType}" partOfCurrentVariant="true" visibleInFilterBar="{PersonalizationModel>/personalizationFilterBlockData/userPersonaDto/15/status}">
 					<fb:control>
 						<Input value="{filterModel>/orderType}" tooltip="{filterModel>/orderType}" placeholder="{i18n>OrderType}" showValueHelp="true"
 							valueHelpRequest="valueHelpRequest($event, 'OrderType')" maxLength="100" valueHelpOnly="true"/>

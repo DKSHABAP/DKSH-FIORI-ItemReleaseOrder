@@ -5,12 +5,12 @@
 			tooltip="{parts: ['DistChanSet>DistChl','DistChanSet>Name'], formatter:'.formatter.keyValueformat'}"/>
 	</SelectDialog>-->
 	<!--<SelectDialog title="{i18n>distChanlCustIdFragLabel}" liveChange="onLiveChange($event, 'Description', 'Distchl')"-->
-	<!--	confirm="handleAdd($event, '/selectedDistChannel', '/SoldToPartDistChannel', 'Distchl')" cancel="handleCancel($event, 'DistChan')"-->
+	<!--	confirm="handleAdd($event, '/selectedDistChannel', '/stp_distchnl', 'Distchl')" cancel="handleCancel($event, 'DistChan')"-->
 	<!--	items="{ValueHelpSet>/results}" class="sapUiSizeCompact">-->
 	<!--	<StandardListItem title="{ValueHelpSet>Description}" type="Active"/>-->
 	<!--</SelectDialog>-->
 	<SelectDialog title="{i18n>distChanlCustIdFragLabel}" liveChange="onLiveChange($event, 'Code', 'Description')"
-		confirm="handleAdd($event, '/distChannel', 'Code', 'filterModel', '', '/SoldToPartDistChannel')" cancel="handleCancel($event, 'DistChan')"
+		confirm="handleAdd($event, '/distChannel', 'Code', 'filterModel', '', '/stp_distchnl')" cancel="handleCancel($event, 'DistChan')"
 		items="{ path: '/SearchHelp_DistChnlSet'}" class="sapUiSizeCompact">
 		<StandardListItem title="{Description}" type="Active"/>
 	</SelectDialog>

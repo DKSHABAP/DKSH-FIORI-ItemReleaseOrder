@@ -83,6 +83,59 @@ sap.ui.define([
 			}
 			return aFilters;
 		},
+		_setBindFilterStp: function (sId, sSearchValue) {
+			var oFilterData = this.getView().getModel("filterModel").getData();
+			if (!oFilterData.stp_id && !oFilterData.stp_name && !oFilterData.stp_soldorg && !oFilterData.stp_division && !oFilterData.stp_distchnl) {
+				MessageBox.information(this.getText("ItemSelectFilter"));
+				return;
+			}
+			var aFilters = [],
+				oUserAccessModel = this.getView().getModel("UserAccess"),
+				oBinding = this._getTable(sId).getBinding("items"),
+				aProperties = ["stp_id", "stp_name", "stp_soldorg", "stp_division", "stp_distchnl"],
+				aSearchProperties = ["stp_id", "stp_name", "division_text", "dist_chnl_text", "sold_org_text"],
+				aDataAccess = {
+					stp_soldorg: "ATR01",
+					stp_division: "ATR03",
+					stp_distchnl: "ATR02"
+				};
+			for (var index in aProperties) {
+				var sProperty = aProperties[index],
+					aValue = [];
+				if (oFilterData[sProperty]) {
+					aValue.push(oFilterData[sProperty]);
+				}
+				if (Object.keys(aDataAccess).includes(sProperty) && !oFilterData[sProperty]) {
+					aValue = [];
+					var sAccess = aDataAccess[sProperty];
+					var sIAccess = oUserAccessModel.getData()[sAccess];
+					if (sIAccess) {
+						aValue = (sIAccess !== "*" ? sIAccess.split("@") : []);
+					}
+				}
+				if (aValue.length === 0) {
+					continue;
+				}
+				aFilters.push(new Filter({
+					filters: [new Filter({
+						filters: aValue.map(function (value) {
+							return new Filter(sProperty, FilterOperator.Contains, value);
+						}),
+						and: false
+					})],
+					and: true
+				}));
+			}
+			if (sSearchValue) {
+				aFilters.push(new Filter({
+					filters: aSearchProperties.map(function (sProperties) {
+						return new Filter(sProperties, FilterOperator.Contains, sSearchValue);
+					}),
+					and: false
+				}));
+			}
+			oBinding.filter(aFilters, true);
+		},
 		resetModel: function (oModel, aProperties) {
 			aProperties.map(function (aProperty) {
 				var sPath = ["/", aProperty].join("");
@@ -118,13 +171,15 @@ sap.ui.define([
 				this.getView().setBusy(false);
 				this.oFragmentList[sFragment].open();
 			}.bind(this)).catch(function (oErr) {
-				this._displayWarning(oErr).bind(this);
+				this._displayError(oErr);
 			}.bind(this));
 		},
 		_displayWarning: function (oResponse) {
 			if (oResponse.responseText) {
 				var errMsg = JSON.parse(oResponse.responseText).error.message.value;
 				MessageBox.warning(errMsg);
+			} else if (oResponse.message) {
+				MessageBox.warning(oResponse.message);
 			} else {
 				MessageBox.warning(oResponse);
 			}
@@ -140,6 +195,8 @@ sap.ui.define([
 					details: oResourceBundle.getText("errorDetail", [oResponse.statusCode, sMessage]),
 					contentWidth: "110px"
 				});
+			} else if (oResponse.message) {
+				MessageBox.error(oResponse.message);
 			} else {
 				MessageBox.error(this.getText(si18nKey), {
 					title: "Error",
@@ -149,6 +206,9 @@ sap.ui.define([
 			}
 			this.getView().setBusy(false);
 			this._getTable("idList").setBusy(false);
+		},
+		_getTable: function (sId) {
+			return this.getView().byId(sId);
 		}
 	});
 });

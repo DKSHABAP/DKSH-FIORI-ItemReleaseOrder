@@ -14,13 +14,6 @@
 			"version": "0.0.0"
 		},
 		"dataSources": {
-			"ZDKSH_CC_DAC_SOLDTOPARTY_SRV": {
-				"uri": "/sap/opu/odata/sap/ZDKSH_CC_DAC_SOLDTOPARTY_SRV/",
-				"type": "OData",
-				"settings": {
-					"localUri": "localService/ZDKSH_CC_DAC_SOLDTOPARTY_SRV/metadata.xml"
-				}
-			},
 			"ZDKSH_CC_HDR_ITEM_RELEASE_SRV": {
 				"uri": "/sap/opu/odata/sap/ZDKSH_CC_HDR_ITEM_RELEASE_SRV/",
 				"type": "OData",
@@ -92,17 +85,6 @@
 			"@i18n": {
 				"type": "sap.ui.model.resource.ResourceModel",
 				"uri": "i18n/i18n.properties"
-			},
-			"_SoldToParty": {
-				"type": "sap.ui.model.odata.v2.ODataModel",
-				"settings": {
-					"defaultOperationMode": "Server",
-					"defaultBindingMode": "OneWay",
-					"defaultCountMode": "None",
-					"useBatch": false
-				},
-				"dataSource": "ZDKSH_CC_DAC_SOLDTOPARTY_SRV",
-				"preload": true
 			},
 			"": {
 				"type": "sap.ui.model.odata.v2.ODataModel",

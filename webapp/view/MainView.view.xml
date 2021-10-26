@@ -68,7 +68,7 @@
 			<OverflowToolbar id="otb1" class="dkshToolbarStyle customTitle">
 				<Title text="{i18n>pendingRequests} ({=${ItemBlockModel>/count} ? ${ItemBlockModel>/count} : 0})" class="sapUiSmallMarginBegin"/>
 				<ToolbarSpacer/>
-				<Button icon="sap-icon://sort" type="Transparent" tooltip="{i18n>Sort}" press="onSortPress($event, 'idList', '/panelSort', 'postingDate')"/>
+				<Button icon="sap-icon://sort" type="Transparent" tooltip="{i18n>Sort}" press="onSortPress($event, 'idList', '/panelSort', 'creationDate')"/>
 				<Button type="Transparent" text="{i18n>ExpandAll}" press="onExpandAll" enabled="{oButtonModel>/expandButtonShow}"/>
 				<Button type="Transparent" text="{i18n>CollapseAll}" press="onCollapseAll" enabled="{oButtonModel>/expandButtonShow}"/>
 				<SearchField width="30%" liveChange="onSearchValueForHeader" search="onSearchValueForHeader" placeholder="{i18n>Search}"></SearchField>
@@ -101,7 +101,7 @@
 			<!--	</items>-->
 			<!--</List>-->
 			<List id="idList" growing="true" growingScrollToLoad="true"
-				items="{path: 'ItemBlockModel>/data', templateShareable: false, sorter : { path: 'postingDate', descending : 'true' } }"
+				items="{path: 'ItemBlockModel>/data', templateShareable: false, sorter : [{ path: 'creationDate', descending: true }, { path: 'salesOrderNum', descending: true }] }"
 				noDataText="No pending release found" class="sapUiSizeCompact">
 				<items>
 					<CustomListItem>
@@ -110,13 +110,13 @@
 								<OverflowToolbar>
 									<Label text="{i18n>ApproveBlockSalesOrder}"/>
 									<Label text="{ItemBlockModel>salesOrderNum}" design="Bold"/>
-									<Label text="{i18n>descSet}"/>
-									<Label text="{ItemBlockModel>decisionSetId}" design="Bold"/>
+									<!--<Label text="{i18n>descSet}"/>-->
+									<!--<Label text="{ItemBlockModel>decisionSetId}" design="Bold"/>-->
 									<Label text="{i18n>level}"/>
 									<Label text="{ItemBlockModel>levelNum}" design="Bold"/>
 									<ToolbarSpacer/>
 									<Label
-										text="{ path: 'ItemBlockModel>postingDate', type: 'sap.ui.model.odata.type.Date', formatOptions: { strictParsing: true, UTC: true, pattern: 'dd/MM/yyyy' } }"
+										text="{ path: 'ItemBlockModel>creationDate', type: 'sap.ui.model.type.Date', formatOptions: { strictParsing: true, UTC: false, pattern: 'dd/MM/yyyy' } }"
 										design="Bold"/>
 								</OverflowToolbar>
 							</headerToolbar>
@@ -126,20 +126,5 @@
 				</items>
 			</List>
 		</content>
-		<!--<footer type="Transparent">-->
-		<!--	<Toolbar design="Transparent" height="150%">-->
-		<!--		<ToolbarSpacer/>-->
-		<!--		<FlexBox alignItems="Center" width="auto" justifyContent="Center" fitContainer="false">-->
-		<!--			<Button id="idPrevButton" icon="sap-icon://close-command-field" class="navigateButtonClass sapUiSizeCompact" press="onScrollLeft"-->
-		<!--				type="Transparent"/>-->
-		<!--			<HBox items="{settings>/pagination}" alignContent="Start" justifyContent="Center" width="100%" fitContainer="false">-->
-		<!--				<Link text="{settings>pageNum}" press="onPageClick" class="paginationNumbers"/>-->
-		<!--			</HBox>-->
-		<!--			<Button id="idNextButton" icon="sap-icon://open-command-field" class="navigateButtonClass sapUiSizeCompact" press="onScrollRight"-->
-		<!--				type="Transparent"/>-->
-		<!--		</FlexBox>-->
-		<!--		<ToolbarSpacer/>-->
-		<!--	</Toolbar>-->
-		<!--</footer>-->
 	</Page>
 </mvc:View>
