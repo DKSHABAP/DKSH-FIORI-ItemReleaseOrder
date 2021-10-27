@@ -26,65 +26,6 @@ sap.ui.define([
 			//STRY0012026 End Item Personalization settings for application users - Release Item
 
 		},
-		// Method to initialize Item Personalization
-		/*		initializeItemPersonalization: function () {
-					var that = this;
-					var ListPersonalizationModel = new sap.ui.model.json.JSONModel();
-					that.getView().setModel(ListPersonalizationModel, "ListPersonalizationModel");
-					if (!this.ItemPresonalizationFrag) {
-						//this.ItemPresonalizationFrag = sap.ui.xmlfragment("com.dkhs.view.Fragments.ItemPersonalization", this);
-						this.ItemPresonalizationFrag = sap.ui.xmlfragment("dksh.connectclient.itemblockorder.view.Fragments.ItemPersonalization", this);
-						this.getView().addDependent(this.ItemPresonalizationFrag);
-						this.ItemPresonalizationFrag.addStyleClass("sapUiSizeCompact");
-						that.ItemPresonalizationFrag.setModel(new sap.ui.model.json.JSONModel(), "oItemLevelPersonalizationModel");
-					}
-					var busyDialog = new sap.m.BusyDialog();
-					busyDialog.open();
-					this.oItemLevelPersonalizationModel = new sap.ui.model.json.JSONModel();
-					this.getUserDetails();
-					var screen = "Web";
-					var oHeader = {
-						"Content-Type": "application/json;charset=utf-8"
-					};
-					var payload = {
-						"userId": this.getView().getModel("userapi").getProperty("/name"),
-						"appId": "keySearchReleaseBlock",
-						"runType": screen,
-						"emailId": this.getView().getModel("userapi").getData().email
-					};
-				
-					this.oItemLevelPersonalizationModel.loadData("/DKSHJavaService2/variant/getVariantReleaseOrder", JSON.stringify(payload), true, "POST", false, false, oHeader);
-					this.oItemLevelPersonalizationModel.attachRequestCompleted(function (oEvent) {
-						busyDialog.close();
-						var itemLevelPersData = oEvent.getSource().getData().data;
-						if (!itemLevelPersData) {
-							return;
-						}
-						var customItem = {
-							"header": [],
-							"item": []
-						};
-						// loop to Segregate Header and item settings for personalization
-						for (var i = 0; i < itemLevelPersData.length; i++) {
-						/*	if (itemLevelPersData[i].level === "HEADER")
-							{
-								customItem.header.push(JSON.parse(JSON.stringify(itemLevelPersData[i])));
-							} else {
-								customItem.item.push(JSON.parse(JSON.stringify(itemLevelPersData[i])));
-							}*/
-		/*	customItem.header.push(JSON.parse(JSON.stringify(itemLevelPersData[i])));
-					customItem.item.push(JSON.parse(JSON.stringify(itemLevelPersData[i])));
-					
-				}
-				that.ItemPresonalizationFrag.getModel("oItemLevelPersonalizationModel").setData(customItem);
-				that.ItemPresonalizationFrag.getModel("oItemLevelPersonalizationModel").refresh();
-			});
-			this.oItemLevelPersonalizationModel.attachRequestFailed(function (oEvent) {
-				// MessageBox.error(oEvent.getSource().getData().message);
-				busyDialog.close();
-			});
-		},*/
-
 		onExpand: function (oEvent) {},
 		onSortPress: function (oEvent, sId, sPath, sField) {
 			var oView = this.getView(),
@@ -1191,7 +1132,6 @@ sap.ui.define([
 			// Need to enhance logic if it's final level or not
 			//debugger;
 
-
 			this.onApprovePress["Table"] = oTable;
 			var fnCloseApprove = function (oAction) {
 				oTable = this.onApprovePress["Table"];
@@ -1538,39 +1478,65 @@ sap.ui.define([
 			}
 		},
 		onItemSubmission: function (oEvent, aItem, sFragmentName) {
-
-			//	debugger;
-
-
 			var oView = this.getView(),
+				oSource = oEvent.getSource(),
+				sId = oSource.getParent().getParent().getId(),
+				oTable = sap.ui.getCore().byId(sId),
 				oDataModel = oView.getModel(),
 				oLoadDataModel = oView.getModel("LoadDataModel"),
 				aEntry = {
 					navHeaderToValidateItem: []
 				},
+				aItemList = [],
+				sItemNoMsg,
+				oResourceBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle(),
 				aDataProperties = ["salesItemOrderNo", "salesHeaderNo", "sapMaterialNum", "orderedQtySales", "netPrice", "storageLoc", "batchNum"];
-			this.aDetailItem = aItem;
 
-			if (this.aDetailItem.salesDocItemList.find(function (oList) {
-					return !oList.acceptOrReject;
-				})) {
-				MessageToast.show(this.getText("noActionTaken"));
+			if (oTable.getSelectedItems().length === 0) {
+				MessageToast.show(this.getText("ItemSelectList"));
 				return;
 			}
-			this._getTable("idList").setBusy(true);
 			Object.assign(aEntry, {
-				salesHeaderNo: this.aDetailItem.salesOrderNum
+				salesHeaderNo: aItem.salesOrderNum
 			});
-			for (var index in this.aDetailItem.salesDocItemList) {
-				var oItem = this.aDetailItem.salesDocItemList[index],
+			this.aDetailItem = aItem;
+			debugger;
+			for (var index in oTable.getSelectedContextPaths()) {
+				var sPath = oTable.getSelectedContextPaths()[index],
+					oItem = oTable.getSelectedContexts()[index].getProperty(sPath),
 					oEntry = {};
 
+				if (!oItem.acceptOrReject) {
+					sItemNoMsg = (sItemNoMsg) ? [sItemNoMsg, "&", oItem.salesItemOrderNo].join(" ") : oItem.salesItemOrderNo;
+					continue;
+				}
+				if (oItem.higherLevelItem === "000000") {
+					var oBonusItem = aItem.salesDocItemList.find(function (Item) {
+						return oItem.salesItemOrderNo === Item.higherLevelItem;
+					});
+					if (oBonusItem) {
+						var bSelected = oTable.getSelectedContexts().some(function (oContext) {
+							return oContext.getObject().salesItemOrderNo === oBonusItem.salesItemOrderNo;
+						});
+						if (!oBonusItem.acceptOrReject || !bSelected) {
+							sItemNoMsg = (sItemNoMsg) ? [sItemNoMsg, "&", oBonusItem.salesItemOrderNo].join(" ") : oBonusItem.salesItemOrderNo;
+							continue;
+						}
+					}
+				}
 				for (index in Object.keys(aDataProperties)) {
 					var sDataProperty = aDataProperties[index];
 					oEntry[sDataProperty] = oItem[sDataProperty].toString();
 				}
 				aEntry.navHeaderToValidateItem.push(oEntry);
+				aItemList.push(oItem);
 			}
+			if (sItemNoMsg) {
+				this._displayWarning(oResourceBundle.getText("noActionTakenItem", [sItemNoMsg]));
+				return;
+			}
+			this.aDetailItem.salesDocItemList = aItemList;
+			this._getTable("idList").setBusy(true);
 			// Use create is easy to structure for deep entries
 			Promise.all([this.formatter.createData.call(this, oDataModel, "/ValidateBeforeSubmitSet", aEntry)]).then(function (oRes) {
 				// if found the data from frontend is not sync with backend, prompt error.
@@ -1588,7 +1554,6 @@ sap.ui.define([
 				var sUrl = "/DKSHJavaService/taskSubmit/processECCJobNew";
 				this.formatter.postJavaService.call(this, oLoadDataModel, sUrl, JSON.stringify(this.aDetailItem)).then(function (oJavaRes) {
 					// Fetch the sale order 
-					// Can remove the model for performance perstrueve
 					if (oLoadDataModel.getData().status === "FAILED") {
 						this._displayError(oLoadDataModel.getData().message, "SubmitFailedMessage").bind(this);
 						return;
