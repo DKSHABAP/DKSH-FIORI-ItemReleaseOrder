@@ -21,10 +21,6 @@ sap.ui.define([
 			Promise.all([this.formatter.fetchUserInfo.call(this)]).then(function (oRes) {
 				this.formatter.fetchSaleOrder.call(this);
 			}.bind(this)).catch(this._displayError.bind(this));
-			//STRY0012026 Start Item Personalization settings for application users - Release Item
-			this.getUserDetails();
-			//STRY0012026 End Item Personalization settings for application users - Release Item
-
 		},
 		onExpand: function (oEvent) {},
 		onSortPress: function (oEvent, sId, sPath, sField) {
@@ -72,824 +68,6 @@ sap.ui.define([
 		onResetValueHelp: function (oEvent) {
 			var oFilterModel = this.getView().getModel("filterModel");
 			this.resetModel(oFilterModel, Object.keys(this.getView().getModel("filterModel").getData()));
-		},
-
-		getUserDetails: function () {
-			var that = this;
-			$.ajax({
-				type: "GET",
-				async: false,
-				url: "/services/userapi/currentUser",
-				contentType: "application/scim+json",
-				success: function (data, textStatus, xhr) {
-					var userModel = new sap.ui.model.json.JSONModel(data);
-					that.getView().setModel(userModel, "userapi");
-					var PersonalizationModel = new sap.ui.model.json.JSONModel();
-					that.getView().setModel(PersonalizationModel, "PersonalizationModel");
-					that._getFilterPersonalizationDetails();
-					var ListPersonalizationModel = new sap.ui.model.json.JSONModel();
-					that.getView().setModel(ListPersonalizationModel, "ListPersonalizationModel");
-					that._getItemPersonalizationDetails();
-
-				},
-				error: function (data) {
-					sap.m.MessageBox.error(that.getView().getModel("i18n").getProperty("retrieveDetails"));
-				}
-			});
-		},
-		//Personalization for Search Filter
-		onPressFilterPersonalization: function (oEvent) {
-			//STRY0012026 Personalization settings for application users - Release Item
-			var that = this;
-			var oModel = new sap.ui.model.json.JSONModel();
-			that.getView().setModel(oModel, "oModel");
-			this.selectedObjects = [];
-			this.selectedHeaderObjects = [];
-			this.selectedItemObjects = [];
-			var PersonalizationModel = new sap.ui.model.json.JSONModel();
-			if (!this.FilterPersonalization) {
-				this.FilterPersonalization = sap.ui.xmlfragment("dksh.connectclient.itemblockorder.view.Fragments.Personalization", this);
-				this.getView().addDependent(this.FilterPersonalization);
-			}
-			that.getView().setModel(PersonalizationModel, "PersonalizationModel");
-			//	this.getUserDetails();
-			var screen = "Web";
-			var oHeader = {
-				"Content-Type": "application/json;charset=utf-8"
-			};
-			var payload = {
-				"userId": this.getView().getModel("userapi").getProperty("/name"),
-
-				//	var pID = this.getView().getModel("oUserModel").getData().
-				"appId": "keySearchReleaseBlock",
-				"runType": screen,
-				"emailId": this.getView().getModel("userapi").getData().email
-			};
-			oModel.loadData("/DKSHJavaService2/variant/getVariant", JSON.stringify(payload), true, "POST", false, false, oHeader);
-			oModel.attachRequestCompleted(function (success) {
-					if (success.getSource().getData().userPersonaDto !== null) {
-						that.getView().getModel("PersonalizationModel").setProperty("/personalizationFilterBlockData", success.getSource().getData());
-						var FilterPersonalization = new sap.ui.model.json.JSONModel({});
-						FilterPersonalization.setData({
-							"enableCheckBox": false,
-							"selectVarVisible": true,
-							"nameVarVisible": false,
-							"okPersBtnVisible": true,
-							"savePersBtnVisible": false,
-							"cancelPersBtnVisible": true,
-							"deletePersBtnVisible": false,
-							"createPersBtnVisible": true,
-							"varinatNameValueState": "None",
-							"editPersBtnVisible": true,
-							"results": success.getSource().getData()
-						});
-						if (that.FilterPersonalization) {
-							that.FilterPersonalization.setModel(FilterPersonalization, "FilterPersonalization");
-							that.FilterPersonalization.getModel("FilterPersonalization").refresh();
-							that.FilterPersonalization.getModel("FilterPersonalization").setProperty("/results/action", "");
-
-						}
-					}
-					that.FilterPersonalization.open(); //Method to get Logged in user PID
-				}
-
-			);
-			oModel.attachRequestFailed(function (oEvent) {
-				MessageBox.error(oEvent.getSource().getData().message);
-			});
-
-			/*		this.getView().setModel({
-						deletePersBtnVisible: false,
-						savePersBtnVisible: false
-					}, "FilterPersonalization");
-					this._loadFragment("Personalization").bind(this);*/
-		},
-		//for Item
-		onPersonalizationOK: function () {
-			var that = this;
-			var ListPersonalizationModel = this.getView().getModel("ListPersonalizationModel");
-			if (!this.oItemLevelPersonalizationModel) {
-				this.oItemLevelPersonalizationModel = sap.ui.xmlfragment("dksh.connectclient.itemblockorder.view.Fragments.ItemPersonalization",
-					this);
-				this.getView().addDependent(this.oItemLevelPersonalizationModel);
-			}
-			var oItemLevelPersonalizationModel = new sap.ui.model.json.JSONModel({
-				"results": this.getView().getModel("ListPersonalizationModel").getData()
-			});
-			this.oItemLevelPersonalizationModel.setModel(oItemLevelPersonalizationModel, "oItemLevelPersonalizationModel");
-			this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").setProperty("/results/selectVarVisible", true);
-			this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").setProperty("/results/nameVarVisible", false);
-			this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").setProperty("/results/enableCheckBox", false);
-			this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").refresh();
-			this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").setProperty("/okPersBtnVisible", true);
-			this.getView().getModel("ListPersonalizationModel").setProperty("/savePersBtnVisible", false);
-			this.getView().getModel("ListPersonalizationModel").setProperty("/cancelPersBtnVisible", true);
-			this.getView().getModel("ListPersonalizationModel").setProperty("/deletePersBtnVisible", false);
-			this.getView().getModel("ListPersonalizationModel").setProperty("/createPersBtnVisible", true);
-			this.getView().getModel("ListPersonalizationModel").setProperty("/editPersBtnVisible", true);
-			this.getView().getModel("ListPersonalizationModel").setProperty("/varinatNameValueState", "None");
-			this.selectedObjects = [];
-			this.selectedHeaderObjects = [];
-			this.selectedItemObjects = [];
-			this.getView().getModel("ListPersonalizationModel").refresh();
-			this.oItemLevelPersonalizationModel.close();
-			this._getItemPersonalizationDetails();
-		},
-
-		//for search
-		onVariantOK: function () {
-			var that = this;
-			var PersonalizationModel = this.getView().getModel("PersonalizationModel");
-			if (!this.FilterPersonalization) {
-				this.FilterPersonalization = sap.ui.xmlfragment("incture.com.ConnectClient_Inventory.Fragments.FilterPersonalization", this);
-				this.getView().addDependent(this.FilterPersonalization);
-			}
-			var FilterPersonalization = new sap.ui.model.json.JSONModel({
-				"results": this.getView().getModel("PersonalizationModel").getData()
-			});
-			this.FilterPersonalization.setModel(FilterPersonalization, "FilterPersonalization");
-			this.FilterPersonalization.getModel("FilterPersonalization").setProperty("/results/selectVarVisible", true);
-			this.FilterPersonalization.getModel("FilterPersonalization").setProperty("/results/nameVarVisible", false);
-			this.FilterPersonalization.getModel("FilterPersonalization").setProperty("/results/enableCheckBox", false);
-			this.FilterPersonalization.getModel("FilterPersonalization").refresh();
-
-			this.FilterPersonalization.getModel("FilterPersonalization").setProperty("/okPersBtnVisible", true);
-			this.getView().getModel("PersonalizationModel").setProperty("/savePersBtnVisible", false);
-			this.getView().getModel("PersonalizationModel").setProperty("/cancelPersBtnVisible", true);
-			this.getView().getModel("PersonalizationModel").setProperty("/deletePersBtnVisible", false);
-			this.getView().getModel("PersonalizationModel").setProperty("/createPersBtnVisible", true);
-			this.getView().getModel("PersonalizationModel").setProperty("/editPersBtnVisible", true);
-			this.getView().getModel("PersonalizationModel").setProperty("/varinatNameValueState", "None");
-			this.selectedObjects = [];
-			this.getView().getModel("PersonalizationModel").refresh();
-
-			this.FilterPersonalization.close();
-			this._getFilterPersonalizationDetails();
-		},
-
-		/*	onPressPersonalization: function () {
-			this.selectedObjects = [];
-			this.FilterPersonalization.close();
-		},*/
-		onPersonlizationClose: function () {
-			this.selectedObjects = [];
-			this.FilterPersonalization.close();
-		},
-
-		onPersonalizationCloseItem: function () {
-			this.selectedObjects = [];
-			this.selectedHeaderObjects = [];
-			this.selectedItemObjects = [];
-			this.oItemLevelPersonalizationModel.close();
-		},
-		onVariantCreate: function () {
-			var PersonalizationModel = this.FilterPersonalization.getModel("FilterPersonalization");
-			PersonalizationModel.setProperty("/results/action", "Create");
-			PersonalizationModel.setProperty("/selectVarVisible", false);
-			PersonalizationModel.setProperty("/nameVarVisible", true);
-			PersonalizationModel.setProperty("/enableCheckBox", true);
-			PersonalizationModel.setProperty("/okPersBtnVisible", false);
-			PersonalizationModel.setProperty("/savePersBtnVisible", true);
-			PersonalizationModel.setProperty("/newVariantName", "");
-			var fieldData = PersonalizationModel.getData().results.userPersonaDto;
-			for (var i = 0; i < fieldData.length; i++) {
-				fieldData[i].status = false;
-			}
-			PersonalizationModel.setProperty("/results/userPersonaDto", fieldData);
-			this.FilterPersonalization.getModel("FilterPersonalization").refresh();
-		},
-		onVariantSave: function (oEvent) {
-			if (this.selectedObjects.length === 0) {
-				MessageToast.show(this.getView().getModel("i18n").getProperty("saveAfterEdit"));
-				return;
-			}
-			var that = this;
-			var oModel = new sap.ui.model.json.JSONModel();
-			var PersonalizationModel = this.FilterPersonalization.getModel("FilterPersonalization");
-			if (PersonalizationModel.getProperty("/results/action") === "Create") {
-				if (PersonalizationModel.getData().newVariantName !== undefined && PersonalizationModel.getData().newVariantName !==
-					"") {
-					for (var j = 0; j < PersonalizationModel.getData().results.variantName.length; j++) {
-						if (PersonalizationModel.getData().results.variantName[j].name === PersonalizationModel.getData().newVariantName) {
-							this.FilterPersonalization.getModel("FilterPersonalization").setProperty("/varinatNameValueState", "Error");
-							MessageBox.error(this.getView().getModel("i18n").getProperty("newVariant"));
-							return;
-						}
-					}
-					this.FilterPersonalization.getModel("FilterPersonalization").setProperty("/varinatNameValueState", "None");
-					var VariantName = PersonalizationModel.getData().newVariantName;
-					for (var i = 0; i < this.selectedObjects.length; i++) {
-						this.selectedObjects[i].variantId = VariantName;
-					}
-
-				} else {
-					this.FilterPersonalization.getModel("FilterPersonalization").setProperty("/varinatNameValueState", "Error");
-					sap.m.MessageBox.error(this.getView().getModel("i18n").getProperty("enterVariant"));
-					return;
-				}
-			}
-			var payload = {
-				"varaiantObject": this.selectedObjects,
-				"userId": this.getView().getModel("userapi").getProperty("/name"),
-				"applicationId": "keySearchReleaseBlock",
-				"varaintId": this.selectedObjects[0].variantId
-			};
-			var oHeader = {
-				"Content-Type": "application/json;charset=utf-8"
-			};
-			var busyDialog = new sap.m.BusyDialog();
-			busyDialog.open();
-			oModel.loadData("/DKSHJavaService2/variant/UpdateVariant", JSON.stringify(payload), true, "PUT", false,
-				false, oHeader);
-			oModel.attachRequestCompleted(function (success) {
-				busyDialog.close();
-				that.selectedObjects = [];
-				that.FilterPersonalization.close();
-				sap.m.MessageBox.success(that.getView().getModel("i18n").getProperty("created"), {
-					actions: [sap.m.MessageBox.Action.OK],
-					onClose: function (sAction) {
-						if (sAction === MessageBox.Action.OK) {
-							that._getFilterPersonalizationDetails(that.currentStep, "Before");
-						}
-					}
-				});
-			});
-			oModel.attachRequestFailed(function (oEvent) {
-				MessageBox.error(oEvent.getSource().getData().message);
-			});
-		},
-
-		_getFilterPersonalizationDetails: function () {
-			var that = this;
-			var oModel = new sap.ui.model.json.JSONModel();
-			that.getView().setModel(oModel, "oModel");
-			var screen = "Web";
-			var oHeader = {
-				"Content-Type": "application/json;charset=utf-8"
-			};
-			var payload = {
-				"userId": this.getView().getModel("userapi").getProperty("/name"),
-				"appId": "keySearchReleaseBlock",
-				"runType": screen,
-				"emailId": this.getView().getModel("userapi").getData().email
-			};
-			oModel.loadData("/DKSHJavaService2/variant/getVariant", JSON.stringify(payload), true, "POST", false, false, oHeader);
-			oModel.attachRequestCompleted(function (success) {
-				if (success.getSource().getData().userPersonaDto !== null) {
-					that.getView().getModel("PersonalizationModel").setProperty("/personalizationFilterBlockData", success.getSource().getData());
-					that.getView().getModel("PersonalizationModel").refresh();
-					var FilterPersonalization = new sap.ui.model.json.JSONModel({});
-					FilterPersonalization.setData({
-						"enableCheckBox": false,
-						"selectVarVisible": true,
-						"nameVarVisible": false,
-						"okPersBtnVisible": true,
-						"savePersBtnVisible": false,
-						"cancelPersBtnVisible": true,
-						"deletePersBtnVisible": false,
-						"createPersBtnVisible": true,
-						"varinatNameValueState": "None",
-						"editPersBtnVisible": true,
-						"results": success.getSource().getData()
-					});
-					if (that.FilterPersonalization) {
-						that.FilterPersonalization.setModel(FilterPersonalization, "FilterPersonalization");
-						that.FilterPersonalization.getModel("FilterPersonalization").refresh();
-						that.FilterPersonalization.getModel("FilterPersonalization").setProperty("/results/action", "");
-						that.getView().getModel("PersonalizationModel").refresh();
-
-					}
-				} //Method to get Logged in user PID
-			});
-			oModel.attachRequestFailed(function (oEvent) {
-				MessageBox.error(oEvent.getSource().getData().message);
-			});
-
-		},
-		_getItemPersonalizationDetails: function () {
-			var that = this;
-			var oModel = new sap.ui.model.json.JSONModel();
-			that.getView().setModel(oModel, "oModel");
-			var screen = "Web";
-			var oHeader = {
-				"Content-Type": "application/json;charset=utf-8"
-			};
-			var payload = {
-				"userId": this.getView().getModel("userapi").getProperty("/name"),
-
-				//	var pID = this.getView().getModel("oUserModel").getData().
-				"appId": "keyHeaderReleaseBlock@keyItemReleaseBlock",
-				"runType": screen,
-				"emailId": this.getView().getModel("userapi").getData().email
-			};
-			oModel.loadData("/DKSHJavaService2/variant/getVariantReleaseOrder", JSON.stringify(payload), true, "POST", false, false, oHeader);
-			oModel.attachRequestCompleted(function (success) {
-				if (success.getSource().getData().userPersonaDto !== null) {
-					that.getView().getModel("ListPersonalizationModel").setProperty("/personalizationItemData", success.getSource().getData());
-					var oItemLevelPersonalizationModel = new sap.ui.model.json.JSONModel({});
-					oItemLevelPersonalizationModel.setData({
-						"enableCheckBox": false,
-						"selectVarVisible": true,
-						"nameVarVisible": false,
-						"okPersBtnVisible": true,
-						"savePersBtnVisible": false,
-						"cancelPersBtnVisible": true,
-						"deletePersBtnVisible": false,
-						"createPersBtnVisible": true,
-						"varinatNameValueState": "None",
-						"editPersBtnVisible": true,
-						"results": success.getSource().getData()
-					});
-					if (that.oItemLevelPersonalizationModel) {
-						that.oItemLevelPersonalizationModel.setModel(oItemLevelPersonalizationModel, "oItemLevelPersonalizationModel");
-						that.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").refresh();
-						that.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").setProperty("/results/action", "");
-					}
-				} //Method to get Logged in user PID
-			});
-			oModel.attachRequestFailed(function (oEvent) {
-				MessageBox.error(oEvent.getSource().getData().message);
-			});
-
-		},
-		onChangeCheckboxItem: function (oEvent) {
-			var personalizationItemData = this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").getData().results.item
-				.userPersonaDto;
-			var path = parseInt(oEvent.getSource().getBindingContext("oItemLevelPersonalizationModel").getPath().split("/")[4]);
-			if (oEvent.getSource().getSelected() === true) {
-				for (var j = 0; j < personalizationItemData.length; j++) {
-					if (j === path) {
-						personalizationItemData[j].status = true;
-					}
-					if (this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").getProperty("/results/action") === "Create") {
-						personalizationItemData[j].id = "";
-					}
-				}
-			} else {
-				for (var i = 0; i < personalizationItemData.length; i++) {
-					if (i === path) {
-						personalizationItemData[i].status = false;
-					}
-				}
-			}
-			this.selectedItemObjects = personalizationItemData;
-		},
-		onChangeCheckboxHeader: function (oEvent) {
-			var personalizationHeaderData = this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").getData().results.header
-				.userPersonaDto;
-			var path = parseInt(oEvent.getSource().getBindingContext("oItemLevelPersonalizationModel").getPath().split("/")[4]);
-			if (oEvent.getSource().getSelected() === true) {
-				for (var j = 0; j < personalizationHeaderData.length; j++) {
-					if (j === path) {
-						personalizationHeaderData[j].status = true;
-					}
-					if (this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").getProperty("/results/action") === "Create") {
-						personalizationHeaderData[j].id = "";
-					}
-				}
-			} else {
-				for (var i = 0; i < personalizationHeaderData.length; i++) {
-					if (i === path) {
-						personalizationHeaderData[i].status = false;
-					}
-				}
-			}
-			this.selectedHeaderObjects = personalizationHeaderData;
-
-		},
-		onChangeCheckbox: function (oEvent) {
-			var personalizationData = this.FilterPersonalization.getModel("FilterPersonalization").getData().results.userPersonaDto;
-			var path = parseInt(oEvent.getSource().getBindingContext("FilterPersonalization").getPath().split("/")[3]);
-			if (oEvent.getSource().getSelected() === true) {
-				for (var j = 0; j < personalizationData.length; j++) {
-					if (j === path) {
-						personalizationData[j].status = true;
-					}
-					if (this.FilterPersonalization.getModel("FilterPersonalization").getProperty("/results/action") === "Create") {
-						personalizationData[j].id = "";
-					}
-					this.selectedObjects = personalizationData;
-				}
-			} else {
-				for (var i = 0; i < personalizationData.length; i++) {
-					if (i === path) {
-						personalizationData[i].status = false;
-					}
-				}
-				this.selectedObjects = personalizationData;
-			}
-		},
-		onSelectvarian: function (oEvent) {
-			var that = this;
-			var pID = this.getView().getModel("userapi").getProperty("/name");
-			var oModel = new sap.ui.model.json.JSONModel();
-			that.getView().setModel(oModel, "oModel");
-			var varinatName;
-			if (oEvent) {
-				varinatName = oEvent.getSource().getSelectedKey();
-			} else {
-				varinatName = this.FilterPersonalization.getModel("FilterPersonalization").getData().results.currentVariant;
-			}
-			var oHeader = {
-				"Content-Type": "application/json;charset=utf-8"
-			};
-			var screen = "Web";
-			// if (sap.ui.Device.system.phone === true) {
-			// 	screen = "Phone";
-			// }
-			var busyDialog = new sap.m.BusyDialog();
-			busyDialog.open();
-			oModel.loadData("/DKSHJavaService2/variant/getvariantLists/" + pID + "/keySearchReleaseBlock/" + varinatName + "/" + screen,
-				true,
-				"POST", false,
-				false, oHeader);
-			oModel.attachRequestCompleted(function (success) {
-				busyDialog.close();
-				var success = success.getSource().getData().userPersonaDto;
-				if (that.FilterPersonalization.getModel("FilterPersonalization").getProperty("/results/action") === "Edit") {
-					that.getView().getModel("PersonalizationModel").setProperty("/personalizationFilterBlockData/userPersonaDto", success);
-					that.FilterPersonalization.getModel("FilterPersonalization").setProperty(
-						"/results/userPersonaDto", success);
-					that.FilterPersonalization.getModel("FilterPersonalization").refresh();
-					that.getView().getModel("PersonalizationModel").refresh();
-					if (that.FilterPersonalization.getModel("FilterPersonalization").getProperty(
-							"/results/currentVariant") ===
-						"Default") {
-						that.FilterPersonalization.getModel("FilterPersonalization").setProperty("/results/action", "");
-						that.FilterPersonalization.getModel("FilterPersonalization").setProperty("/enableCheckBox", false);
-						that.FilterPersonalization.getModel("FilterPersonalization").setProperty("/savePersBtnVisible", false);
-						that.FilterPersonalization.getModel("FilterPersonalization").setProperty("/okPersBtnVisible", true);
-						that.FilterPersonalization.getModel("FilterPersonalization").setProperty("/deletePersBtnVisible", false);
-						that.FilterPersonalization.getModel("FilterPersonalization").setProperty("/selectVarVisible", true);
-						that.FilterPersonalization.getModel("FilterPersonalization").setProperty("/nameVarVisible", false);
-						MessageToast.show(that.getView().getModel("i18n").getProperty("cannotEdit"));
-						that.FilterPersonalization.getModel("FilterPersonalization").refresh();
-					}
-				} else {
-					that.getView().getModel("PersonalizationModel").setProperty("/personalizationFilterBlockData/userPersonaDto", success);
-					that.FilterPersonalization.getModel("FilterPersonalization").setProperty(
-						"/results/userPersonaDto", success);
-					that.FilterPersonalization.getModel("FilterPersonalization").refresh();
-					that.getView().getModel("PersonalizationModel").refresh();
-				}
-			});
-			oModel.attachRequestFailed(function (oEvent) {
-				MessageBox.error(oEvent.getSource().getData().message);
-			});
-		},
-		onSelectvarianItem: function (oEvent) {
-			var that = this;
-			var pID = this.getView().getModel("userapi").getProperty("/name");
-			var oModel = new sap.ui.model.json.JSONModel();
-			that.getView().setModel(oModel, "oModel");
-			var varinatName;
-			if (oEvent) {
-				varinatName = oEvent.getSource().getSelectedKey();
-			} else {
-				varinatName = this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").getData().results.currentVariant;
-			}
-			var oHeader = {
-				"Content-Type": "application/json;charset=utf-8"
-			};
-			var screen = "Web";
-			// if (sap.ui.Device.system.phone === true) {
-			// 	screen = "Phone";
-			// }
-			var busyDialog = new sap.m.BusyDialog();
-			busyDialog.open();
-			oModel.loadData("/DKSHJavaService2/variant/getvariantListsReleaseOrder/" + pID + "/keyHeaderReleaseBlock@keyItemReleaseBlock/" +
-				varinatName + "/" + screen,
-				true,
-				"POST", false,
-				false, oHeader);
-			oModel.attachRequestCompleted(function (success) {
-				busyDialog.close();
-				var successheader = success.getSource().getData().header.userPersonaDto;
-				var successitem = success.getSource().getData().item.userPersonaDto;
-				if (that.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").getProperty("/results/action") === "Edit") {
-					that.getView().getModel("ListPersonalizationModel").setProperty("/personalizationItemData/header/userPersonaDto", successheader);
-					that.getView().getModel("ListPersonalizationModel").setProperty("/personalizationItemData/item/userPersonaDto", successitem);
-					that.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").setProperty(
-						"/results/header/userPersonaDto", successheader);
-					that.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").setProperty(
-						"/results/item/userPersonaDto", successitem);
-					that.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").refresh();
-					that.getView().getModel("ListPersonalizationModel").refresh();
-					if (that.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").getProperty(
-							"/results/currentVariant") ===
-						"Default") {
-						that.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").setProperty("/results/action", "");
-						that.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").setProperty("/enableCheckBox", false);
-						that.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").setProperty("/savePersBtnVisible", false);
-						that.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").setProperty("/okPersBtnVisible", true);
-						that.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").setProperty("/deletePersBtnVisible", false);
-						that.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").setProperty("/selectVarVisible", true);
-						that.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").setProperty("/nameVarVisible", false);
-						MessageToast.show(that.getView().getModel("i18n").getProperty("cannotEdit"));
-						that.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").refresh();
-					}
-				} else {
-					//that.getView().getModel("ListPersonalizationModel").setProperty("/personalizationItemBlockData/userPersonaDto", success);
-					that.getView().getModel("ListPersonalizationModel").setProperty("/personalizationItemData/header/userPersonaDto", successheader);
-					that.getView().getModel("ListPersonalizationModel").setProperty("/personalizationItemData/item/userPersonaDto", successitem);
-					//that.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").setProperty(
-					//	"/results/userPersonaDto", success);
-					that.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").setProperty(
-						"/results/header/userPersonaDto", successheader);
-					that.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").setProperty(
-						"/results/item/userPersonaDto", successitem);
-					that.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").refresh();
-					that.getView().getModel("ListPersonalizationModel").refresh();
-				}
-			});
-			oModel.attachRequestFailed(function (oEvent) {
-				MessageBox.error(oEvent.getSource().getData().message);
-			});
-		},
-		onVariantEdit: function () {
-			var PersonalizationModel = this.FilterPersonalization.getModel("FilterPersonalization");
-			if (PersonalizationModel.getData().results.currentVariant === "Default") {
-				MessageToast.show(this.getView().getModel("i18n").getProperty("cannotEdit"));
-				return;
-			}
-			PersonalizationModel.setProperty("/results/action", "Edit");
-			this.FilterPersonalization.getModel("FilterPersonalization").setProperty("/okPersBtnVisible", false);
-			PersonalizationModel.setProperty("/enableCheckBox", true);
-			PersonalizationModel.setProperty("/savePersBtnVisible", true);
-			PersonalizationModel.setProperty("/deletePersBtnVisible", true);
-			PersonalizationModel.setProperty("/selectVarVisible", true);
-			PersonalizationModel.setProperty("/nameVarVisible", false);
-			PersonalizationModel.refresh();
-			this.onSelectvarian();
-		},
-		onVariantDelete: function () {
-			var that = this;
-			var data = this.FilterPersonalization.getModel("FilterPersonalization").getProperty("/results/userPersonaDto");
-			var payload = {
-				"userId": this.getView().getModel("userapi").getProperty("/name"),
-				"applicationId": "keySearchReleaseBlock",
-				"varaiantObject": data,
-				"varaintId": this.FilterPersonalization.getModel("FilterPersonalization").getProperty(
-					"/results/userPersonaDto")[0].variantId
-			};
-			var oHeader = {
-				"Content-Type": "application/json;charset=utf-8"
-			};
-			var oModel = new sap.ui.model.json.JSONModel();
-			var busyDialog = new sap.m.BusyDialog();
-			busyDialog.open();
-			oModel.loadData("/DKSHJavaService2/variant/deleteVariant", JSON.stringify(payload), true, "DELETE", false,
-				false, oHeader);
-			oModel.attachRequestCompleted(function (success) {
-				busyDialog.close();
-				that.FilterPersonalization.close();
-				// 	// var message = oNewEvent.getSource().getData().message;
-				sap.m.MessageBox.success(success.getSource().getData().name, {
-					actions: [sap.m.MessageBox.Action.OK],
-					onClose: function (sAction) {
-						if (sAction === MessageBox.Action.OK) {
-							that._getFilterPersonalizationDetails();
-						}
-					}
-				});
-			});
-			oModel.attachRequestFailed(function (oEvent) {
-				MessageBox.error(oEvent.getSource().getData().name);
-			});
-		},
-		onVariantSaveItem: function (oEvent) {
-			if (this.selectedHeaderObjects.length === 0 && this.selectedItemObjects.length === 0) {
-				MessageToast.show(this.getView().getModel("i18n").getProperty("saveAfterEdit"));
-				return;
-			}
-			var that = this;
-			var oModel = new sap.ui.model.json.JSONModel();
-			var personalizationheaderData = this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").getData().results.header
-				.userPersonaDto;
-			var personalizationItemData = this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").getData().results.item
-				.userPersonaDto;
-			var ListPersonalizationModel = this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel");
-			if (ListPersonalizationModel.getProperty("/results/action") === "Create") {
-				if (ListPersonalizationModel.getData().newVariantName !== undefined && ListPersonalizationModel.getData().newVariantName !==
-					"") {
-					for (var j = 0; j < ListPersonalizationModel.getData().results.variantName.length; j++) {
-						if (ListPersonalizationModel.getData().results.variantName[j].name === ListPersonalizationModel.getData().newVariantName) {
-							this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").setProperty("/varinatNameValueState", "Error");
-							MessageBox.error(this.getView().getModel("i18n").getProperty("newVariant"));
-							return;
-						}
-					}
-					this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").setProperty("/varinatNameValueState", "None");
-					var VariantName = ListPersonalizationModel.getData().newVariantName;
-					if (!this.selectedHeaderObjects.length === 0) {
-						for (var i = 0; i < this.selectedHeaderObjects.length; i++) {
-							this.selectedHeaderObjects[i].variantId = VariantName;
-							this.selectedHeaderObjects[i].applicationTab = "keyHeaderReleaseBlock";
-						}
-					}
-					//to fix update null issue from Java Endpoint
-					else {
-
-						this.selectedHeaderObjects = personalizationheaderData;
-					}
-					if (!this.selectedItemObjects.length === 0) {
-						for (var k = 0; k < this.selectedItemObjects.length; k++) {
-							this.selectedItemObjects[k].variantId = VariantName;
-							this.selectedItemObjects[k].applicationTab = "keyItemReleaseBlock";
-						}
-					}
-					//to fix update null issue from Java Endpoint
-					else {
-
-						this.selectedItemObjects = personalizationItemData;
-					}
-				} else {
-					this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").setProperty("/varinatNameValueState", "Error");
-					sap.m.MessageBox.error(this.getView().getModel("i18n").getProperty("enterVariant"));
-					return;
-				}
-			}
-			var payload = {
-				"header": {
-					"userPersonaDto": this.selectedHeaderObjects
-				},
-				"item": {
-					"userPersonaDto": this.selectedItemObjects
-				},
-				"userId": this.getView().getModel("userapi").getProperty("/name"),
-				"variantId": VariantName,
-				//"variantName": VariantName
-
-			};
-
-			var oHeader = {
-				"Content-Type": "application/json;charset=utf-8"
-			};
-			var busyDialog = new sap.m.BusyDialog();
-			busyDialog.open();
-			oModel.loadData("/DKSHJavaService2/variant/UpdateVariantReleaseOrder", JSON.stringify(payload), true, "PUT", false,
-				false, oHeader);
-			oModel.attachRequestCompleted(function (success) {
-				busyDialog.close();
-				that.selectedObjects = [];
-				that.selectedHeaderObjects = [];
-				that.selectedItemObjects = [];
-				that.oItemLevelPersonalizationModel.close();
-				sap.m.MessageBox.success(that.getView().getModel("i18n").getProperty("created"), {
-					actions: [sap.m.MessageBox.Action.OK],
-					onClose: function (sAction) {
-						if (sAction === MessageBox.Action.OK) {
-							that._getItemPersonalizationDetails(that.currentStep, "Before");
-						}
-					}
-				});
-			});
-			oModel.attachRequestFailed(function (oEvent) {
-				MessageBox.error(oEvent.getSource().getData().message);
-			});
-		},
-		onVariantEditItem: function () {
-			var ListPersonalizationModel = this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel");
-			if (ListPersonalizationModel.getData().results.currentVariant === "Default") {
-				MessageToast.show(this.getView().getModel("i18n").getProperty("cannotEdit"));
-				return;
-			}
-			ListPersonalizationModel.setProperty("/results/action", "Edit");
-			this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").setProperty("/okPersBtnVisible", false);
-			ListPersonalizationModel.setProperty("/enableCheckBox", true);
-			ListPersonalizationModel.setProperty("/savePersBtnVisible", true);
-			ListPersonalizationModel.setProperty("/deletePersBtnVisible", true);
-			ListPersonalizationModel.setProperty("/selectVarVisible", true);
-			ListPersonalizationModel.setProperty("/nameVarVisible", false);
-			ListPersonalizationModel.refresh();
-			this.onSelectvarianItem();
-		},
-		onVariantCreateItem: function () {
-			var ListPersonalizationModel = this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel");
-			ListPersonalizationModel.setProperty("/results/action", "Create");
-			ListPersonalizationModel.setProperty("/selectVarVisible", false);
-			ListPersonalizationModel.setProperty("/nameVarVisible", true);
-			ListPersonalizationModel.setProperty("/enableCheckBox", true);
-			ListPersonalizationModel.setProperty("/okPersBtnVisible", false);
-			ListPersonalizationModel.setProperty("/savePersBtnVisible", true);
-			ListPersonalizationModel.setProperty("/newVariantName", "");
-			var fieldData = ListPersonalizationModel.getData().results.header.userPersonaDto;
-			for (var i = 0; i < fieldData.length; i++) {
-				fieldData[i].status = false;
-			}
-			ListPersonalizationModel.setProperty("/results/userPersonaDto", fieldData);
-			this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").refresh();
-		},
-
-		onVariantDeleteItem: function (oEvent) {
-			var that = this;
-			var oPersDeleteModel = new sap.ui.model.json.JSONModel();
-			var headerdata = this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").getProperty("/results/header");
-			var itemdata = this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").getProperty("/results/item/");
-			var payload = {
-
-				//	"applicationId": "keyHeaderReleaseBlock@keyItemReleaseBlock",
-				"header": headerdata,
-				"item": itemdata,
-				"userId": this.getView().getModel("userapi").getProperty("/name"),
-				"variantId": this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").getProperty(
-					"/results/header/userPersonaDto")[0].variantId
-			};
-			var oHeader = {
-				"Content-Type": "application/json;charset=utf-8"
-			};
-
-			var busyDialog = new sap.m.BusyDialog();
-			busyDialog.open();
-			oPersDeleteModel.loadData("/DKSHJavaService2/variant/deleteVariantReleaseOrder", JSON.stringify(payload), true, "DELETE", false,
-				false, oHeader);
-			oPersDeleteModel.attachRequestCompleted(function (success) {
-				busyDialog.close();
-				that.oItemLevelPersonalizationModel.close();
-				// 	// var message = oNewEvent.getSource().getData().message;
-				sap.m.MessageBox.success(success.getSource().getData().name, {
-					actions: [sap.m.MessageBox.Action.OK],
-					onClose: function (sAction) {
-						if (sAction === MessageBox.Action.OK) {
-							that._getItemPersonalizationDetails();
-						}
-					}
-				});
-			});
-			oPersDeleteModel.attachRequestFailed(function (oEvent) {
-				MessageBox.error(oEvent.getSource().getData().name);
-			});
-		},
-		//STRY0012026 Personalization settings for application users - Release Item
-		//Personalization for Item
-		onPressPersonalization: function (oEvent) {
-			var that = this;
-			var oModel = new sap.ui.model.json.JSONModel();
-			that.getView().setModel(oModel, "oModel");
-			//	this.getUserDetails();
-			var ListPersonalizationModel = new sap.ui.model.json.JSONModel();
-			this.selectedHeaderObjects = [];
-			this.selectedItemObjects = [];
-			this.selectedObjectsItem = [];
-			if (!this.oItemLevelPersonalizationModel) {
-				this.oItemLevelPersonalizationModel = sap.ui.xmlfragment("dksh.connectclient.itemblockorder.view.Fragments.ItemPersonalization",
-					this);
-				this.getView().addDependent(this.oItemLevelPersonalizationModel);
-			}
-
-			that.getView().setModel(ListPersonalizationModel, "ListPersonalizationModel");
-			/*var oItemLevelPersonalizationModel = new sap.ui.model.json.JSONModel({
-				"results": this.getView().getModel("ListPersonalizationModel").getData()
-			});
-			this.oItemLevelPersonalizationModel.setModel(oItemLevelPersonalizationModel, "oItemLevelPersonalizationModel");
-			this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").setProperty("/results/enableCheckBox", false);
-			this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").setProperty("/results/selectVarVisible", true);
-			this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").setProperty("/results/nameVarVisible", false);
-			this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").refresh();
-			this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").refresh();
-			this.oItemLevelPersonalizationModel.open();*/
-			var screen = "Web";
-			var oHeader = {
-				"Content-Type": "application/json;charset=utf-8"
-			};
-			var payload = {
-				"userId": this.getView().getModel("userapi").getProperty("/name"),
-
-				//	var pID = this.getView().getModel("oUserModel").getData().
-				"appId": "keyHeaderReleaseBlock@keyItemReleaseBlock",
-				"runType": screen,
-				"emailId": this.getView().getModel("userapi").getData().email
-			};
-			oModel.loadData("/DKSHJavaService2/variant/getVariantReleaseOrder", JSON.stringify(payload), true, "POST", false, false, oHeader);
-			oModel.attachRequestCompleted(function (success) {
-				if (success.getSource().getData().userPersonaDto !== null) {
-					that.getView().getModel("ListPersonalizationModel").setProperty("/personalizationItemBlockData", success.getSource().getData());
-					var oItemLevelPersonalizationModel = new sap.ui.model.json.JSONModel({});
-					oItemLevelPersonalizationModel.setData({
-						"enableCheckBox": false,
-						"selectVarVisible": true,
-						"nameVarVisible": false,
-						"okPersBtnVisible": true,
-						"savePersBtnVisible": false,
-						"cancelPersBtnVisible": true,
-						"deletePersBtnVisible": false,
-						"createPersBtnVisible": true,
-						"varinatNameValueState": "None",
-						"editPersBtnVisible": true,
-						"results": success.getSource().getData()
-					});
-					if (that.oItemLevelPersonalizationModel) {
-						that.oItemLevelPersonalizationModel.setModel(oItemLevelPersonalizationModel, "oItemLevelPersonalizationModel");
-						that.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").refresh();
-						that.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").setProperty("/results/action", "");
-						that.oItemLevelPersonalizationModel.open();
-					}
-				} //Method to get Logged in user PID
-			});
-			oModel.attachRequestFailed(function (oEvent) {
-				MessageBox.error(oEvent.getSource().getData().message);
-			});
-
 		},
 		onSearchValueForHeader: function (oEvent) {
 			var sValue = oEvent.getParameters().newValue,
@@ -1090,7 +268,6 @@ sap.ui.define([
 				return;
 			}
 
-			// oView.setBusy(true);
 			this._getTable("idList").setBusy(true);
 			// Call oData to simulate the price for the material
 			for (var indx in Object.keys(aDataProperties)) {
@@ -1130,8 +307,6 @@ sap.ui.define([
 			}
 
 			// Need to enhance logic if it's final level or not
-			//debugger;
-
 			this.onApprovePress["Table"] = oTable;
 			var fnCloseApprove = function (oAction) {
 				oTable = this.onApprovePress["Table"];
@@ -1254,17 +429,7 @@ sap.ui.define([
 			}
 		},
 		onDisplayMarkedItems: function (oEvent, sFragmentName, oItemModel) {
-			var sFragmentPath = this.getText("MainFragmentPath");
-			if (!this.oFragmentList[sFragmentName]) {
-				this.oFragmentList[sFragmentName] = sap.ui.xmlfragment(sFragmentPath + sFragmentName, this);
-				this.getView().addDependent(this.oFragmentList[sFragmentName]);
-				this.oFragmentList[sFragmentName].addStyleClass("sapUiSizeCompact");
-				this.oFragmentList[sFragmentName].setModel(new JSONModel(oItemModel), "DisplayActionModel");
-				this.oFragmentList[sFragmentName].open();
-			} else {
-				this.oFragmentList[sFragmentName].setModel(new JSONModel(oItemModel), "DisplayActionModel");
-				this.oFragmentList[sFragmentName].open();
-			}
+			this._loadXMLFragment(this.getText("MainFragmentPath"), sFragmentName, oItemModel, "DisplayActionModel").bind(this);
 		},
 		onResetDisplay: function (oEvent) {
 			var oSource = oEvent.getSource(),
@@ -1278,10 +443,10 @@ sap.ui.define([
 			oTable.removeSelections();
 			aSelectedContext.map(function (oContexts) {
 				var sPath = oContexts.getPath(),
-					oItemBlockModel = oContexts.getModel("ItemBlockModel");
+					oContextModel = oContexts.getModel();
 				if (oContexts.getProperty([sPath, "/acceptOrReject"].join(""))) {
-					oItemBlockModel.setProperty(sPath + "/acceptOrReject", null);
-					oItemBlockModel.setProperty(sPath + "/itemStagingStatus", this.getText("PendingApproval"));
+					oContextModel.setProperty(sPath + "/acceptOrReject", null);
+					oContextModel.setProperty(sPath + "/itemStagingStatus", this.getText("PendingApproval"));
 				}
 			}.bind(this));
 			oTable.getModel().updateBindings(false);
@@ -1477,37 +642,43 @@ sap.ui.define([
 				this.oFragmentList[sFragmentName].close();
 			}
 		},
-		onItemSubmission: function (oEvent, aItem, sFragmentName) {
+		onItemSubmission: function (oEvent, aItem, sSubmitFragment, sSavedMessageFragment) {
 			var oView = this.getView(),
-				oSource = oEvent.getSource(),
-				sId = oSource.getParent().getParent().getId(),
-				oTable = sap.ui.getCore().byId(sId),
-				oDataModel = oView.getModel(),
-				oLoadDataModel = oView.getModel("LoadDataModel"),
-				aEntry = {
-					navHeaderToValidateItem: []
-				},
-				aItemList = [],
-				sItemNoMsg,
-				oResourceBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle(),
-				aDataProperties = ["salesItemOrderNo", "salesHeaderNo", "sapMaterialNum", "orderedQtySales", "netPrice", "storageLoc", "batchNum"];
+				sId = oEvent.getSource().getParent().getParent().getId(),
+				oTable = sap.ui.getCore().byId(sId);
 
 			if (oTable.getSelectedItems().length === 0) {
 				MessageToast.show(this.getText("ItemSelectList"));
 				return;
 			}
+			var oDataModel = oView.getModel(),
+				oLoadDataModel = oView.getModel("LoadDataModel"),
+				aEntry = {
+					navHeaderToValidateItem: []
+				},
+				aPayloadItem = {},
+				aItemList = [],
+				aErrResults = [],
+				aMessageModel = {
+					results: []
+				},
+				oResourceBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle(),
+				aDataProperties = ["salesItemOrderNo", "salesHeaderNo", "sapMaterialNum", "orderedQtySales", "netPrice", "storageLoc", "batchNum"];
+
 			Object.assign(aEntry, {
 				salesHeaderNo: aItem.salesOrderNum
 			});
-			this.aDetailItem = aItem;
-			debugger;
-			for (var index in oTable.getSelectedContextPaths()) {
-				var sPath = oTable.getSelectedContextPaths()[index],
-					oItem = oTable.getSelectedContexts()[index].getProperty(sPath),
+			for (var index in oTable.getSelectedContexts()) {
+				var oSelectedContext = oTable.getSelectedContexts()[index],
+					sPath = oSelectedContext.getPath(),
+					oItem = oSelectedContext.getProperty(sPath),
 					oEntry = {};
 
 				if (!oItem.acceptOrReject) {
-					sItemNoMsg = (sItemNoMsg) ? [sItemNoMsg, "&", oItem.salesItemOrderNo].join(" ") : oItem.salesItemOrderNo;
+					aErrResults.push({
+						salesItemOrderNo: oItem.salesItemOrderNo,
+						Message: oResourceBundle.getText("noActionTakenItem", [oItem.salesItemOrderNo])
+					});
 					continue;
 				}
 				if (oItem.higherLevelItem === "000000") {
@@ -1519,7 +690,18 @@ sap.ui.define([
 							return oContext.getObject().salesItemOrderNo === oBonusItem.salesItemOrderNo;
 						});
 						if (!oBonusItem.acceptOrReject || !bSelected) {
-							sItemNoMsg = (sItemNoMsg) ? [sItemNoMsg, "&", oBonusItem.salesItemOrderNo].join(" ") : oBonusItem.salesItemOrderNo;
+							aErrResults.push({
+								salesItemOrderNo: oBonusItem.salesItemOrderNo,
+								Message: oResourceBundle.getText("noActionTakenItem", [oBonusItem.salesItemOrderNo])
+							});
+							continue;
+						}
+						var bValid = (oItem.acceptOrReject === "R" && oBonusItem.acceptOrReject === "A") ? false : true;
+						if (!bValid) {
+							aErrResults.push({
+								salesItemOrderNo: oBonusItem.salesItemOrderNo,
+								Message: oResourceBundle.getText("noAllowToApprove", [oBonusItem.salesItemOrderNo, oItem.salesItemOrderNo])
+							});
 							continue;
 						}
 					}
@@ -1531,28 +713,31 @@ sap.ui.define([
 				aEntry.navHeaderToValidateItem.push(oEntry);
 				aItemList.push(oItem);
 			}
-			if (sItemNoMsg) {
-				this._displayWarning(oResourceBundle.getText("noActionTakenItem", [sItemNoMsg]));
+			if (aErrResults.length > 0) {
+				aMessageModel.results = aErrResults.filter(function (obj, idx) {
+					return !aErrResults.map(function (map) {
+						return map.salesItemOrderNo;
+					}).includes(obj.salesItemOrderNo, idx + 1);
+				});
+				this._loadXMLFragment(this.getText("MainFragmentPath"), sSavedMessageFragment, aMessageModel, "SavedMessageModel").bind(this);
 				return;
 			}
-			this.aDetailItem.salesDocItemList = aItemList;
+			Object.assign(aPayloadItem, aItem);
+			aPayloadItem.salesDocItemList = aItemList;
 			this._getTable("idList").setBusy(true);
 			// Use create is easy to structure for deep entries
 			Promise.all([this.formatter.createData.call(this, oDataModel, "/ValidateBeforeSubmitSet", aEntry)]).then(function (oRes) {
+				debugger;
 				// if found the data from frontend is not sync with backend, prompt error.
 				if (oRes[0].isChanged) {
-					if (!this.oFragmentList[sFragmentName]) {
-						this.oFragmentList[sFragmentName] = sap.ui.xmlfragment(this.getText("MainFragmentPath") + sFragmentName, this);
-						oView.addDependent(this.oFragmentList[sFragmentName]);
-					}
-					this.oFragmentList[sFragmentName].setModel(new JSONModel(oRes[0].navHeaderToValidateItem), "SubmitMessageModel");
-					this.oFragmentList[sFragmentName].open();
 					this._getTable("idList").setBusy(false);
+					this._loadXMLFragment(this.getText("MainFragmentPath"), sSubmitFragment, oRes[0].navHeaderToValidateItem,
+						"SubmitMessageModel");
 					return;
 				}
-				// Trigger endpoint for submission
+				// Trigger submission endpoint
 				var sUrl = "/DKSHJavaService/taskSubmit/processECCJobNew";
-				this.formatter.postJavaService.call(this, oLoadDataModel, sUrl, JSON.stringify(this.aDetailItem)).then(function (oJavaRes) {
+				this.formatter.postJavaService.call(this, oLoadDataModel, sUrl, JSON.stringify(aPayloadItem)).then(function (oJavaRes) {
 					// Fetch the sale order 
 					if (oLoadDataModel.getData().status === "FAILED") {
 						this._displayError(oLoadDataModel.getData().message, "SubmitFailedMessage").bind(this);
@@ -1574,8 +759,10 @@ sap.ui.define([
 					});
 				}.bind(this)).catch(function (oErr) {
 					this._displayError(oErr).bind(this);
-				});
-			}.bind(this)).catch(this._displayWarning.bind(this));
+				}.bind(this));
+			}.bind(this)).catch(function (oErr) {
+				this._displayWarning(oErr);
+			}.bind(this));
 		},
 		handleCreditBlockPress: function (oEvent, sOrderNum) {
 			var oButton = oEvent.getSource(),
@@ -1643,5 +830,4 @@ sap.ui.define([
 			oFilterModel.updateBindings(true);
 		}
 	});
-
 });
