@@ -149,6 +149,14 @@ sap.ui.define([
 			});
 			oModel.updateBindings(true);
 		},
+		_loadXMLFragment: function (sFragmentPath, sFragmentName, aOutput, sModelName) {
+			if (!this.oFragmentList[sFragmentName]) {
+				this.oFragmentList[sFragmentName] = sap.ui.xmlfragment(sFragmentPath + sFragmentName, this);
+				this.getView().addDependent(this.oFragmentList[sFragmentName]);
+			}
+			this.oFragmentList[sFragmentName].setModel(new JSONModel(aOutput), sModelName);
+			this.oFragmentList[sFragmentName].open();
+		},
 		_loadFragment: function (sFragment, oEvent) {
 			var sFragmentPath = this.getText("FragmentPath");
 			this.getView().setBusy(true);
