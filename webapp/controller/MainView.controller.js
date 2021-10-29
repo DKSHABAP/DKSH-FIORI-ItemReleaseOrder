@@ -784,8 +784,7 @@ sap.ui.define([
 			
 				if (ListPersonalizationModel.getProperty("/results/action")  === "Edit")
 				{
-					 this.selectedHeaderObjects[0].variantId= this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").getProperty(
-					"/results/header/userPersonaDto")[0].variantId;
+					
 						if (this.selectedHeaderObjects.length === 0)
 						{
 						this.selectedHeaderObjects = personalizationheaderData;	
@@ -794,7 +793,8 @@ sap.ui.define([
 						{
 						this.selectedItemObjects = personalizationItemData;	
 						}
-					
+					 this.selectedHeaderObjects[0].variantId= this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").getProperty(
+					"/results/header/userPersonaDto")[0].variantId;
 					
 				}
 				
