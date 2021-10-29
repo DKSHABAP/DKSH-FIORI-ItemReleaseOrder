@@ -90,7 +90,7 @@
 				"type": "sap.ui.model.odata.v2.ODataModel",
 				"settings": {
 					"defaultOperationMode": "Server",
-					"defaultBindingMode": "OneWay",
+					"defaultBindingMode": "TwoWay",
 					"defaultCountMode": "None",
 					"useBatch": false
 				},
@@ -99,9 +99,11 @@
 			}
 		},
 		"resources": {
-			"css": [{
-				"uri": "css/style.css"
-			}]
+			"css": [
+				{
+					"uri": "css/style.css"
+				}
+			]
 		},
 		"routing": {
 			"config": {
@@ -116,11 +118,15 @@
 					"target": []
 				}
 			},
-			"routes": [{
-				"name": "MainView",
-				"pattern": "",
-				"target": ["MainView"]
-			}],
+			"routes": [
+				{
+					"name": "MainView",
+					"pattern": "",
+					"target": [
+						"MainView"
+					]
+				}
+			],
 			"targets": {
 				"MainView": {
 					"viewType": "XML",
