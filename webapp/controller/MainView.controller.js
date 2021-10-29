@@ -93,16 +93,13 @@ sap.ui.define([
 				oItemBlockModel = oTable.getModel("ItemBlockModel"),
 				aItems = oTable.getItems(),
 				sPath = oTable.getBindingContext("ItemBlockModel").getPath(),
-				aItemUsage = ["B", "C"],
-				bBonus = aItems.some(function (oItem) {
-					var obj = oItem.getBindingContext("ItemBlockModel").getObject();
-					return aItemUsage.includes(obj.higherLevelItemUsage) || (obj.higherLevelItem !== "000000");
-				});
+				aItemUsage = ["B", "C"];
+
 			oSource.setVisible(false);
 			// Control selected item's properties visibility
 			aItems.map(function (oItem) {
 				var object = oItem.getBindingContext("ItemBlockModel").getObject();
-				object = this.formatter.controlEditabled.call(this, object, bBonus, aItemUsage);
+				object = this.formatter.controlEditabled.call(this, object, aItems, aItemUsage);
 				object.salesUnit = (!object.salesUnit) ? this.getText("UoM").toUpperCase() : object.salesUnit;
 			}.bind(this));
 			// Store initial value model for onSaveEditItem function
@@ -758,7 +755,7 @@ sap.ui.define([
 						styleClass: sResponsivePaddingClasses
 					});
 				}.bind(this)).catch(function (oErr) {
-					this._displayError(oErr).bind(this);
+					this._displayError(oErr);
 				}.bind(this));
 			}.bind(this)).catch(function (oErr) {
 				this._displayWarning(oErr);

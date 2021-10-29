@@ -184,21 +184,24 @@ sap.ui.define([
 					});
 				});
 		},
-		controlEditabled: function (object, bBonus, aItemUsage) {
+		controlEditabled: function (object, aItems, aItemUsage) {
 			// Default
+			debugger;
 			object.editMaterial = true;
 			object.editOrderQty = true;
 			object.editNetPrice = true;
 			object.editSLoc = true;
 			object.editBatchNo = true;
-			// Auto/ Manual bonus found
-			if (bBonus) {
-				object.editMaterial = false;
-				// Manual Bonus
-				if (object.higherLevelItem !== "000000") {
-					object.editMaterial = (aItemUsage.includes(object.higherLevelItemUsage)) ? false : true;
-					object.editNetPrice = false;
-				}
+			if (object.higherLevelItem === "000000") {
+				// Parent item
+				var bBonus = aItems.some(function (oItem) {
+					return object.salesItemOrderNo === oItem.getBindingContext("ItemBlockModel").getObject().higherLevelItem;
+				});
+				object.editMaterial = (bBonus) ? false : true;
+			} else {
+				// Child Item (Bonus)
+				object.editMaterial = (aItemUsage.includes(object.higherLevelItemUsage)) ? false : true;
+				object.editNetPrice = false;
 			}
 			return object;
 		},
@@ -220,33 +223,12 @@ sap.ui.define([
 		messageStatus: function (isValid) {
 			return (isValid) ? "sap-icon://message-success" : "sap-icon://message-error";
 		},
-
-		//STRY0012026 Start Item Personalization settings for application users - Release Item
-		hideMultipleFilter: function (key) {
-			if (key === "salesDocNumEnd" || key === "endDate" || key === "approvalType" || key === "storageLocText") {
-				return false;
-			} else {
-				return true;
-			}
-		},
-
-		//STRY0012026 Start Item Personalization settings for application users - Release Item
-
 		dateFormatter: function (pTimeStamp) {
 			if (!pTimeStamp) {
 				return;
 			}
 			return new Date(pTimeStamp).toLocaleDateString();
 		},
-		// setBlurVisibility: function (visiblity) {
-		// 	if (visiblity === 13) {
-		// 		return "";
-		// 	} else if (visiblity === 14) {
-		// 		return "BLUR";
-		// 	} else if (visiblity === 15) {
-		// 		return "BLURGreen";
-		// 	}
-		// },
 		concateText: function (sCode, sText) {
 			if (sCode) {
 				sText = (sText) ? "(" + sText + ")" : "";
