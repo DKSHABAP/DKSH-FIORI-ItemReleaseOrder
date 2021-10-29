@@ -740,7 +740,7 @@ sap.ui.define([
 					}
 					this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").setProperty("/varinatNameValueState", "None");
 					var VariantName = ListPersonalizationModel.getData().newVariantName;
-					if (!this.selectedHeaderObjects.length === 0) {
+					if (this.selectedHeaderObjects.length !== 0) {
 						for (var i = 0; i < this.selectedHeaderObjects.length; i++) {
 							this.selectedHeaderObjects[i].variantId = VariantName;
 							this.selectedHeaderObjects[i].applicationTab = "keyHeaderReleaseBlock";
@@ -750,8 +750,14 @@ sap.ui.define([
 					else {
 
 						this.selectedHeaderObjects = personalizationheaderData;
+					//to fix null data in header level when no header selected during create
+						for (var m = 0; m < this.selectedHeaderObjects.length; m++)
+						{
+						  this.selectedHeaderObjects[m].variantId = VariantName;
+							this.selectedHeaderObjects[m].applicationTab = "keyHeaderReleaseBlock";	
+						}
 					}
-					if (!this.selectedItemObjects.length === 0) {
+					if (this.selectedItemObjects.length !== 0) {
 						for (var k = 0; k < this.selectedItemObjects.length; k++) {
 							this.selectedItemObjects[k].variantId = VariantName;
 							this.selectedItemObjects[k].applicationTab = "keyItemReleaseBlock";
@@ -759,8 +765,15 @@ sap.ui.define([
 					}
 					//to fix update null issue from Java Endpoint
 					else {
+						
 
 						this.selectedItemObjects = personalizationItemData;
+						//to fix null data in item level when no item selected during create
+						for (var n = 0; n < this.selectedItemObjects.length; n++)
+						{
+						  this.selectedItemObjects[n].variantId = VariantName;
+						  this.selectedItemObjects[n].applicationTab = "keyItemReleaseBlock";	
+						}
 					}
 				} else {
 					this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").setProperty("/varinatNameValueState", "Error");
@@ -768,6 +781,23 @@ sap.ui.define([
 					return;
 				}
 			}
+			
+				if (ListPersonalizationModel.getProperty("/results/action")  === "Edit")
+				{
+					 this.selectedHeaderObjects[0].variantId= this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").getProperty(
+					"/results/header/userPersonaDto")[0].variantId;
+						if (this.selectedHeaderObjects.length === 0)
+						{
+						this.selectedHeaderObjects = personalizationheaderData;	
+						}
+						if (this.selectedItemObjects.length === 0)
+						{
+						this.selectedItemObjects = personalizationItemData;	
+						}
+					
+					
+				}
+				
 			var payload = {
 				"header": {
 					"userPersonaDto": this.selectedHeaderObjects
@@ -776,9 +806,8 @@ sap.ui.define([
 					"userPersonaDto": this.selectedItemObjects
 				},
 				"userId": this.getView().getModel("userapi").getProperty("/name"),
-				"variantId": VariantName,
-				//"variantName": VariantName
-
+				//"variantId": VariantName
+				"variantId": this.selectedHeaderObjects[0].variantId
 			};
 
 			var oHeader = {
@@ -832,11 +861,16 @@ sap.ui.define([
 			ListPersonalizationModel.setProperty("/okPersBtnVisible", false);
 			ListPersonalizationModel.setProperty("/savePersBtnVisible", true);
 			ListPersonalizationModel.setProperty("/newVariantName", "");
-			var fieldData = ListPersonalizationModel.getData().results.header.userPersonaDto;
-			for (var i = 0; i < fieldData.length; i++) {
-				fieldData[i].status = false;
+			var fieldheaderData = ListPersonalizationModel.getData().results.header.userPersonaDto;
+			for (var i = 0; i < fieldheaderData.length; i++) {
+				fieldheaderData[i].status = false;
 			}
-			ListPersonalizationModel.setProperty("/results/userPersonaDto", fieldData);
+			ListPersonalizationModel.setProperty("/results/userPersonaDto/header", fieldheaderData);
+			var fieldtemData = ListPersonalizationModel.getData().results.item.userPersonaDto;
+			for (var j = 0; j < fieldtemData.length; j++) {
+				fieldtemData[j].status = false;
+			}
+			ListPersonalizationModel.setProperty("/results/userPersonaDto/item", fieldtemData);
 			this.oItemLevelPersonalizationModel.getModel("oItemLevelPersonalizationModel").refresh();
 		},
 

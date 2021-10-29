@@ -111,7 +111,7 @@
 							class="dkshAcceptBtnStyle"/>
 					</HBox>
 				</Column>
-				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left" visible = "{ListPersonalizationModel>/personalizationItemData/header/userPersonaDto/1/status}">
+				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left" visible = "{ListPersonalizationModel>/personalizationItemData/item/userPersonaDto/1/status}">
 					<Label design="Bold" text="{i18n>Material}" tooltip="{i18n>Material}"/>
 				</Column>
 				<Column  demandPopin="true" minScreenWidth="Tablet" hAlign="Right" visible ="{ListPersonalizationModel>/personalizationItemData/item/userPersonaDto/8/status}">

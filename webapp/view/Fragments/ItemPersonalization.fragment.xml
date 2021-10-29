@@ -48,7 +48,7 @@
 			</VBox>
 		</content>
 		<buttons>
-			<Button text="{i18n>ok}" press="onPersonalizationOK" tooltip="OK"/>
+			<Button text="{i18n>ok}" press="onPersonalizationOK" tooltip="OK" visible="{oItemLevelPersonalizationModel>/okPersBtnVisible}"/>
 			<!--<Button text="{i18n>reset2DefaultBtn}" press="onPersonalizationReset" tooltip="Reset" type="Default"/>-->
 			<Button text="{i18n>cancel}" press="onPersonalizationCloseItem" tooltip="Cancel" type="Default"/>
 			<Button text="{i18n>Save}" press="onVariantSaveItem" tooltip="{i18n>Save}" visible="{oItemLevelPersonalizationModel>/savePersBtnVisible}"/>
