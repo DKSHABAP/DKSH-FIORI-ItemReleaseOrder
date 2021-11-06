@@ -1,0 +1,76 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form" xmlns:l="sap.ui.layout">
+	<!--<Dialog title="{i18n>personalization}" class="sapUiSizeCompact custBox" contentWidth="30%" draggable="true" resizable="true"-->
+	<!--	escapeHandler=".handleEscape" afterClose="onAfterClose">-->
+	<Dialog title="{i18n>personalization}" class="sapUiSizeCompact custBox" contentWidth="30%" draggable="true" resizable="true"
+		afterClose="onAfterClose($event, ${SoItemPersonalizationModel>/}, 'SoItemPersonalizationModel', 'SoItemPersonalization')">
+		<content>
+			<VBox >
+				<Toolbar>
+					<Label text="{i18n>Variant}" visible="{= !${SoItemPersonalizationModel>/oData/isSetCreatable}}"/>
+					<Select items="{SoItemPersonalizationModel>/oData/variantName}" selectedKey="{SoItemPersonalizationModel>/oData/currentVariant}" width="50%"
+						change="onChangeVariant($event, ${SoItemPersonalizationModel>/}, 'SoItemPersonalizationModel', 'SoItemPersonalization')"
+						enabled="{= !${SoItemPersonalizationModel>/oData/isListEnabled} }" visible="{= !${SoItemPersonalizationModel>/oData/isSetCreatable}}">
+						<core:Item key="{SoItemPersonalizationModel>name}" text="{SoItemPersonalizationModel>name}"/>
+					</Select>
+					<Label text="{i18n>VariantName}" required="true" visible="{SoItemPersonalizationModel>/oData/isSetCreatable}"/>
+					<Input value="{SoItemPersonalizationModel>/oData/newVariant}" placeholder="{i18n>VariantName}"
+						valueState="{SoItemPersonalizationModel>/oData/valueState}" valueStateText="{i18n>InvalidVariant}" width="50%"
+						visible="{SoItemPersonalizationModel>/oData/isSetCreatable}"/>
+					<ToolbarSpacer></ToolbarSpacer>
+					<Button icon="sap-icon://add-activity"
+						press="onPresBtnShVariant($event, 'SoItemPersonalization', ${SoItemPersonalizationModel>/}, 'SoItemPersonalizationModel', 'Create', true)"
+						tooltip="{i18n>Create}" visible="{SoItemPersonalizationModel>/oData/isBtnVisible}"/>
+					<Button icon="sap-icon://edit"
+						press="onPresBtnShVariant($event, 'SoItemPersonalization', ${SoItemPersonalizationModel>/}, 'SoItemPersonalizationModel', 'Edit')"
+						tooltip="{i18n>Edit}" visible="{SoItemPersonalizationModel>/oData/isBtnVisible}"
+						enabled="{= ${SoItemPersonalizationModel>/oData/currentVariant} !== 'Default'}"/>
+					<Button icon="sap-icon://cancel"
+						press="onPresBtnShVariant($event, 'SoItemPersonalization', ${SoItemPersonalizationModel>/}, 'SoItemPersonalizationModel', 'Cancel')"
+						tooltip="{i18n>Cancel}" visible="{= !${SoItemPersonalizationModel>/oData/isBtnVisible}}"/>
+				</Toolbar>
+				<Table headerText="Header Level" inset="false" items="{SoItemPersonalizationModel>/oData/header/userPersonaDto}">
+					<columns>
+						<Column ></Column>
+					</columns>
+					<items>
+						<ColumnListItem>
+							<cells>
+								<FlexBox alignItems="Center" justifyContent="Start">
+									<CheckBox selected="{SoItemPersonalizationModel>status}" select="onChangeCheckbox($event, ${SoItemPersonalizationModel>/})"
+										enabled="{SoItemPersonalizationModel>/oData/isListEnabled}"/>
+									<Text text="{SoItemPersonalizationModel>enabledKey}"/>
+								</FlexBox>
+							</cells>
+						</ColumnListItem>
+					</items>
+				</Table>
+				<Table headerText="Item Level" inset="false" items="{SoItemPersonalizationModel>/oData/item/userPersonaDto}">
+					<columns>
+						<Column ></Column>
+					</columns>
+					<items>
+						<ColumnListItem>
+							<cells>
+								<FlexBox alignItems="Center" justifyContent="Start">
+									<CheckBox selected="{SoItemPersonalizationModel>status}" select="onChangeCheckbox($event, ${SoItemPersonalizationModel>/})"
+										enabled="{SoItemPersonalizationModel>/oData/isListEnabled}"/>
+									<Text text="{SoItemPersonalizationModel>enabledKey}"/>
+								</FlexBox>
+							</cells>
+						</ColumnListItem>
+					</items>
+				</Table>
+			</VBox>
+		</content>
+		<buttons>
+			<Button text="{i18n>Save}"
+				press="onVariantUpdate($event, ${SoItemPersonalizationModel>/}, 'SoItemPersonalizationModel', 'SAVE', 'SoItemPersonalization', true)"
+				tooltip="{i18n>Save}" visible="{= !${SoItemPersonalizationModel>/oData/isBtnVisible}}"/>
+			<Button text="{i18n>Delete}"
+				press="onVariantDelete($event, ${SoItemPersonalizationModel>/}, 'SoItemPersonalizationModel', 'DELETE', 'SoItemPersonalization', true)"
+				tooltip="{i18n>cancelbtntext}" visible="{= !${SoItemPersonalizationModel>/oData/isDelBtnVisible}}"/>
+			<Button text="{i18n>Cancel}" press="handleCancel($event, 'SoItemPersonalization')" tooltip="{i18n>cancelbtntext}"
+				visible="{= ${SoItemPersonalizationModel>/oData/isBtnVisible}}"/>
+		</buttons>
+	</Dialog>
+</core:FragmentDefinition>

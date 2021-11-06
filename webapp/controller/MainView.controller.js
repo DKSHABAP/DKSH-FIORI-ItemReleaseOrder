@@ -13,16 +13,39 @@ sap.ui.define([
 
 	return BaseController.extend("dksh.connectclient.itemblockorder.controller.MainView", {
 		onInit: function () {
-			// Pre Set Model (Base Controller)
-			this.preSetModel(this.getView());
+			this._preSetModel(this.getView());
 			this.oFragmentList = [];
 
 			this.getView().setBusy(true);
 			Promise.all([this.formatter.fetchUserInfo.call(this)]).then(function (oRes) {
-				this.formatter.fetchSaleOrder.call(this);
-			}.bind(this)).catch(this._displayError.bind(this));
+				var oUserData = this.getView().getModel("UserInfo").getData();
+				var fnReturnPayload = function (appId) {
+					return {
+						userId: oUserData.name,
+						appId: appId,
+						runType: "Web",
+						emailId: oUserData.email
+					};
+				};
+				Promise.all([
+					this.formatter.postJavaService.call(this, this.getView().getModel("SearchHelpPersonalization"),
+						"/DKSHJavaService2/variant/getVariant", JSON.stringify(fnReturnPayload("keySearchReleaseBlock")), "POST"),
+					this.formatter.postJavaService.call(this, this.getView().getModel("SoItemPersonalizationModel"),
+						"/DKSHJavaService2/variant/getVariantReleaseOrder", JSON.stringify(fnReturnPayload(
+							"keyHeaderReleaseBlock@keyItemReleaseBlock")), "POST"),
+					this.formatter.fetchSaleOrder.call(this)
+				]).then(function (_oRes) {
+					debugger;
+					Object.assign(_oRes[0], this._returnPersDefault());
+					Object.assign(_oRes[1], this._returnPersDefault());
+					this.getView().setBusy(false);
+				}.bind(this)).catch(function (oErr) {
+					this._displayError(oErr);
+				}.bind(this));
+			}.bind(this)).catch(function (oErr) {
+				this._displayError(oErr);
+			}.bind(this));
 		},
-		onExpand: function (oEvent) {},
 		onSortPress: function (oEvent, sId, sPath, sField) {
 			var oView = this.getView(),
 				oList = oView.byId(sId),
@@ -204,7 +227,7 @@ sap.ui.define([
 				}
 				// Update to ECC and hana DB
 				this.formatter.postJavaService.call(this, oLoadDataModel, "/DKSHJavaService/OdataServices/updateOnSaveOrEdit", JSON.stringify(
-					this.onSaveEditItem["Payload"])).then(function (oResponse) {
+					this.onSaveEditItem["Payload"]), "POST").then(function (oResponse) {
 					if (oLoadDataModel.getData().status === "FAILED") {
 						this._displayError(oLoadDataModel.getData().message, "SaveFailedMessage").bind(this);
 						return;
@@ -212,7 +235,6 @@ sap.ui.define([
 					this.oFragmentList[sFragmentName].open();
 					this._resetSavedItem(sFragmentName);
 				}.bind(this));
-				// }.bind(this)).catch(this._displayWarning("Failed to update to ECC").bind(this));
 			}.bind(this)).catch(function (oErrResp) {
 				this._displayWarning("Failed to update to ECC").bind(this);
 			}.bind(this));
@@ -289,7 +311,6 @@ sap.ui.define([
 					}
 				}
 				oItemBlockModel.refresh();
-				// oView.setBusy(false);
 				this._getTable("idList").setBusy(false);
 			}.bind(this)).catch(this._displayWarning.bind(this));
 		},
@@ -302,26 +323,24 @@ sap.ui.define([
 				MessageToast.show(this.getText("ItemSelectList"));
 				return;
 			}
-
-			// Need to enhance logic if it's final level or not
 			this.onApprovePress["Table"] = oTable;
 			var fnCloseApprove = function (oAction) {
 				oTable = this.onApprovePress["Table"];
-				if (oAction === "YES") {
-					for (var index in oTable.getSelectedContexts()) {
-						var oSelectedContext = oTable.getSelectedContexts()[index],
-							sPath = oSelectedContext.getPath();
-
-						oSelectedContext.getModel().setProperty([sPath, "/acceptOrReject"].join(""), "A");
-						oSelectedContext.getModel().setProperty([sPath, "/itemStagingStatus"].join(""), "Pending Approval");
-						// Set both comment and reject reason text to blank for user action
-						oSelectedContext.getModel().setProperty([sPath, "/reasonForRejectionText"].join(""), "");
-						oSelectedContext.getModel().setProperty([sPath, "/comments"].join(""), "");
-					}
-					oTable.removeSelections();
+				if (oAction === "CANCEL") {
+					return;
 				}
-			}.bind(this);
+				for (var index in oTable.getSelectedContexts()) {
+					var oSelectedContext = oTable.getSelectedContexts()[index],
+						sPath = oSelectedContext.getPath();
 
+					oSelectedContext.getModel().setProperty([sPath, "/acceptOrReject"].join(""), "A");
+					oSelectedContext.getModel().setProperty([sPath, "/itemStagingStatus"].join(""), "Pending Approval");
+					// Set both comment and reject reason text to blank for user action
+					oSelectedContext.getModel().setProperty([sPath, "/reasonForRejectionText"].join(""), "");
+					oSelectedContext.getModel().setProperty([sPath, "/comments"].join(""), "");
+				}
+				oTable.removeSelections();
+			}.bind(this);
 			// As discussed, java will set levelStatus = 4 when any item reached to last level or single level approver.
 			var sApprvMsg = ["(", oTable.getSelectedItems().length, ")", (!oItem.salesDocItemList[0].nextLevel) ?
 				" Item(s) approved completely" : " Item(s) approved"
@@ -336,7 +355,7 @@ sap.ui.define([
 			});
 		},
 		onRejectPress: function (oEvent, sFragment, oItem, oModel) {
-			//	debugger;
+			debugger;
 			var oView = this.getView(),
 				oSource = oEvent.getSource(),
 				sId = oSource.getParent().getParent().getId(),
@@ -357,7 +376,7 @@ sap.ui.define([
 			oView.setBusy(true);
 			this.onRejectPress["Table"] = oTable;
 			if (!this.oFragmentList[sFragment]) {
-				this._loadFragment(sFragment);
+				this._loadFragment(this.getText("FragmentPath"), sFragment);
 			} else {
 				this.oFragmentList[sFragment].open();
 				oView.setBusy(false);
@@ -394,7 +413,7 @@ sap.ui.define([
 				oItemBlockModel.setProperty([oItem.sPath, "/comments"].join(""), oEvent.getParameter("value"));
 			}
 		},
-		onItemTableFreeSearch: function (oEvent) {
+		onItemTableFreeSearch: function (oEvent, oModel) {
 			var sValue = oEvent.getParameters().newValue,
 				// Can't get ID by view since each panel ID is generated dynamically from control itself
 				// In this case, have to use sap.ui.core() to get the object of the sId
@@ -405,7 +424,7 @@ sap.ui.define([
 			if (!oEvent.getParameters().clearButtonPressed && sValue) {
 				var oFilterString = new Filter({
 						filters: this.setBindingFilter(["salesItemOrderNo", "shortText", "sapMaterialNum", "salesUnit", "netPrice", "splPrice",
-								"netWorth", "storageLoc", "batchNum", "materialGroup",
+								"netWorth", "storageLoc", "batchNum", "materialGroup", "disc1", "disc2", "disc3", "disc4",
 								"materialGroup4", "itemDlvBlockText", "itemDlvBlock", "itemCategText", "itemCategory", "oldMatCode", "itemStagingStatus"
 							],
 							sValue, oBinding),
@@ -449,7 +468,9 @@ sap.ui.define([
 			oTable.getModel().updateBindings(false);
 		},
 		onSearchSalesHeader: function (oEvent, oFilterSaleOrder) {
-			this.formatter.fetchSaleOrder.call(this);
+			this.formatter.fetchSaleOrder.call(this).then(function (oRes) {
+				this.getView().setBusy(false);
+			}.bind(this));
 		},
 		valueHelpRequest: function (oEvent, sFragment, sField, sAccess, bCheckAccess) {
 			var oUserAccessModel = this.getView().getModel("UserAccess"),
@@ -461,7 +482,6 @@ sap.ui.define([
 				MessageToast.show(this.getText("NoDataAccess"));
 				return;
 			}
-			//	debugger;
 			this.valueHelpId = oEvent.getSource().getId();
 			this.vhFilter = "";
 			var sIAccess = oUserAccessModel.getData()[sAccess];
@@ -486,7 +506,7 @@ sap.ui.define([
 			if (aClearFragment.includes(sFragment) && this.oFragmentList[sFragment]) {
 				this.oFragmentList[sFragment].destroy(true);
 			}
-			this._loadFragment(sFragment, oEvent);
+			this._loadFragment(this.getText("FragmentPath"), sFragment, oEvent);
 		},
 		onSearchSoldToParty: function (oEvent, sFragment, sId) {
 			this._setBindFilterStp(sId);
@@ -614,7 +634,6 @@ sap.ui.define([
 
 			oModel.setProperty(sPathM, selectedObj[sProperty]);
 			// Need to enhacne next time
-			// For storage and batch value help
 			if (this.sItemPath) {
 				var oSelectedObj = oEvent.getParameters().selectedContexts[0].getObject();
 				oModel.setProperty(this.sItemPath + sPath, oSelectedObj[sProperty]);
@@ -631,6 +650,7 @@ sap.ui.define([
 		},
 		//	On Cancel for particular fragment
 		handleCancel: function (oEvent, sFragmentName) {
+			debugger;
 			this.valueHelpId = "";
 			if (oEvent.getSource().getBinding("items")) {
 				oEvent.getSource().getBinding("items").filter([]);
@@ -724,7 +744,6 @@ sap.ui.define([
 			this._getTable("idList").setBusy(true);
 			// Use create is easy to structure for deep entries
 			Promise.all([this.formatter.createData.call(this, oDataModel, "/ValidateBeforeSubmitSet", aEntry)]).then(function (oRes) {
-				debugger;
 				// if found the data from frontend is not sync with backend, prompt error.
 				if (oRes[0].isChanged) {
 					this._getTable("idList").setBusy(false);
@@ -734,7 +753,7 @@ sap.ui.define([
 				}
 				// Trigger submission endpoint
 				var sUrl = "/DKSHJavaService/taskSubmit/processECCJobNew";
-				this.formatter.postJavaService.call(this, oLoadDataModel, sUrl, JSON.stringify(aPayloadItem)).then(function (oJavaRes) {
+				this.formatter.postJavaService.call(this, oLoadDataModel, sUrl, JSON.stringify(aPayloadItem), "POST").then(function (oJavaRes) {
 					// Fetch the sale order 
 					if (oLoadDataModel.getData().status === "FAILED") {
 						this._displayError(oLoadDataModel.getData().message, "SubmitFailedMessage").bind(this);
@@ -743,7 +762,9 @@ sap.ui.define([
 					var fnCloseApprove = function (oAction) {
 						if (oAction === "OK") {
 							this._getTable("idList").setBusy(false);
-							this.formatter.fetchSaleOrder.call(this);
+							this.formatter.fetchSaleOrder.call(this).then(function (_oRes) {
+								this.getView().setBusy(false);
+							}.bind(this));
 						}
 					}.bind(this);
 					MessageBox.show(this.getText("SubmitSuccessMessage"), {
@@ -817,12 +838,124 @@ sap.ui.define([
 			oFilterModel.setProperty("/salesOrg", oItem.stp_soldorg);
 			this.handleCancel(oEvent, "SoldToParty");
 		},
+		onPressPersonalization: function (oEvent, sFragmentName, sModel) {
+			this.getView().setModel(new JSONModel(JSON.parse(this.getView().getModel(sModel).getJSON())), "initialValueModel");
+			this._loadXMLFragment(this.getText("MainFragmentPath"), sFragmentName, this.getView().getModel(sModel), sModel).bind(this);
+		},
+		onPresBtnShVariant: function (oEvent, sFragmentName, oModel, sModelName, sAction, isItemPers) {
+			debugger;
+			if (sAction === "Create") {
+				if (isItemPers) {
+					this._setPersCreationSetting(oModel.getData().header.userPersonaDto);
+					this._setPersCreationSetting(oModel.getData().item.userPersonaDto);
+				} else {
+					this._setPersCreationSetting(oModel.getData().userPersonaDto);
+				}
+				var aSet = ["isSetCreatable", "isBtnVisible", "isListEnabled"];
+				for (var index in aSet) {
+					var oSet = aSet[index];
+					oModel.setProperty("/" + oSet, !oModel.getData()[oSet]);
+				}
+			} else if (sAction === "Cancel") {
+				var oInitialData = JSON.parse(JSON.stringify(this.getView().getModel("initialValueModel").getData()));
+				oModel.setData(oInitialData, this._returnPersDefault());
+			} else if (sAction === "Edit") {
+				aSet = ["isBtnVisible", "isDelBtnVisible", "isListEnabled", "isEdit"];
+				for (index in aSet) {
+					oSet = aSet[index];
+					oModel.setProperty("/" + oSet, !oModel.getData()[oSet]);
+				}
+			}
+			this.oFragmentList[sFragmentName].getModel(sModelName).refresh();
+		},
+		onChangeVariant: function (oEvent, oModel, sModel, sFragmentName) {
+			var oUserData = this.getView().getModel("UserInfo").getData(),
+				oResourceBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle(),
+				sVariantUrl = (sFragmentName === "SearchHelpPersonalization") ? "variantListUrl" : "variantReleaseListUrl",
+				sUrl = oResourceBundle.getText(sVariantUrl, [oUserData.name, (oEvent) ? oEvent.getParameters().selectedItem.getKey() : "Default"]);
+			this.callJavaServicePersonalization(oModel, sModel, "CHANGE", null, sUrl, sFragmentName);
+		},
+		onVariantUpdate: function (oEvent, oModel, sModel, sAction, sFragmentName, isItemPers) {
+			var oUserData = this.getView().getModel("UserInfo").getData();
+			if (!oModel.getData().newVariant && !oModel.getData().isEdit) {
+				oModel.setProperty("/valueState", "Error");
+				this.oFragmentList[sFragmentName].getModel(sModel).refresh();
+				return;
+			}
+			var sVariant = (oModel.getData().isEdit) ? oModel.getData().currentVariant : oModel.getData().newVariant;
+			oModel.setProperty("/valueState", "None");
+			var oPayload = (isItemPers) ? this._returnItemVarPayload(oModel, oUserData, sVariant) : this._returnShVarPayload(oModel, oUserData,
+					"keySearchReleaseBlock", sVariant),
+				sUrl = (isItemPers) ? "/DKSHJavaService2/variant/UpdateVariantReleaseOrder" : "/DKSHJavaService2/variant/UpdateVariant";
+			this.callJavaServicePersonalization(oModel, sModel, sAction, JSON.stringify(oPayload), sUrl, sFragmentName);
+		},
+		onVariantDelete: function (oEvent, oModel, sModel, sAction, sFragmentName, isItemPers) {
+			var oResourceBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle();
+			var fnClose = function (oAction) {
+				if (oAction === "CANCEL") {
+					return;
+				}
+				var oUserData = this.getView().getModel("UserInfo").getData(),
+					oPayload = (isItemPers) ? this._returnItemVarPayload(oModel, oUserData, oModel.getData().currentVariant) : this._returnShVarPayload(
+						oModel, oUserData, "keySearchReleaseBlock", oModel.getData().currentVariant),
+					sUrl = (isItemPers) ? "/DKSHJavaService2/variant/deleteVariantReleaseOrder" : "/DKSHJavaService2/variant/deleteVariant";
+				this.callJavaServicePersonalization(oModel, sModel, sAction, JSON.stringify(oPayload), sUrl, sFragmentName);
+			}.bind(this);
+			MessageBox.show(oResourceBundle.getText("variantDeleteMsg", [oModel.getData().currentVariant]), {
+				icon: MessageBox.Icon.INFORMATION,
+				title: "Information",
+				actions: [MessageBox.Action.YES, MessageBox.Action.CANCEL],
+				onClose: fnClose,
+				initialFocus: MessageBox.Action.CANCEL,
+				styleClass: sResponsivePaddingClasses
+			});
+		},
+		callJavaServicePersonalization: function (oModel, sModel, sAction, oPayload, sUrl, sFragmentName) {
+			var sMethod = (sAction === "SAVE") ? "PUT" : (sAction === "DELETE") ? "DELETE" : "POST";
+			this.getView().setBusy(true);
+			this.formatter.postJavaService.call(this, this.getView().getModel("LoadDataModel"), sUrl, oPayload, sMethod).then(function (_oRes) {
+				if (sMethod === "DELETE") {
+					oModel.setData(Object.assign(oModel.getData(), this._returnPersDefault()));
+					oModel.getData().variantName.splice(oModel.getData().variantName.findIndex(function (item) {
+						return item.name === oModel.getData().currentVariant;
+					}), 1);
+					this.onChangeVariant(null, oModel, sModel, sFragmentName);
+					return;
+				}
+				if (sMethod === "PUT") {
+					if (oModel.getData().newVariant) {
+						oModel.getData()["variantName"].push({
+							name: oModel.getData().newVariant
+						});
+					}
+					oModel.setData(Object.assign(oModel.getData(), this._returnPersDefault()));
+				}
+				if (sFragmentName === "SearchHelpPersonalization") {
+					oModel.setProperty("/currentVariant", _oRes.userPersonaDto[0].variantId);
+					oModel.setProperty("/userPersonaDto", _oRes.userPersonaDto);
+				} else {
+					oModel.setProperty("/currentVariant", _oRes.header.userPersonaDto[0].variantId);
+					oModel.setProperty("/header/userPersonaDto", _oRes.header.userPersonaDto);
+					oModel.setProperty("/item/userPersonaDto", _oRes.item.userPersonaDto);
+				}
+				var oInitialData = JSON.parse(JSON.stringify(oModel.getData()));
+				this.getView().getModel("initialValueModel").setData(oInitialData);
+				this.oFragmentList[sFragmentName].getModel(sModel).refresh();
+				this.getView().setBusy(false);
+			}.bind(this)).catch(function (oErr) {
+				this._displayError(oErr);
+			}.bind(this));
+		},
+		onAfterClose: function (oEvent, oModel, sModelName, sFragmentName) {
+			this.onPresBtnShVariant(oEvent, sFragmentName, oModel, sModelName, "Cancel", false);
+		},
 		onPressRefresh: function () {
-			this.formatter.fetchSaleOrder.call(this);
+			this.formatter.fetchSaleOrder.call(this).then(function () {
+				this.getView().setBusy(false);
+			}.bind(this));
 		},
 		onReset: function (oEvent) {
 			var oFilterModel = this.getView().getModel("filterModel");
-
 			oFilterModel.setData({});
 			oFilterModel.updateBindings(true);
 		}
