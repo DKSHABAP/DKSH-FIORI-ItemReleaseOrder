@@ -1,0 +1,60 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form" xmlns:l="sap.ui.layout">
+	<Dialog title="{i18n>personalization}" class="sapUiSizeCompact custBox" contentWidth="30%" draggable="true" resizable="true"
+		afterClose="onAfterClose($event, ${SearchHelpPersonalization>/}, 'SearchHelpPersonalization', 'SearchHelpPersonalization')">
+		<content>
+			<VBox>
+				<Toolbar>
+					<Label text="{i18n>Variant}" visible="{= !${SearchHelpPersonalization>/oData/isSetCreatable}}"/>
+					<Select items="{SearchHelpPersonalization>/oData/variantName}" selectedKey="{SearchHelpPersonalization>/oData/currentVariant}" width="50%"
+						change="onChangeVariant($event, ${SearchHelpPersonalization>/}, 'SearchHelpPersonalization', 'SearchHelpPersonalization')"
+						enabled="{= !${SearchHelpPersonalization>/oData/isListEnabled} }" visible="{= !${SearchHelpPersonalization>/oData/isSetCreatable}}">
+						<core:Item key="{SearchHelpPersonalization>name}" text="{SearchHelpPersonalization>name}"/>
+					</Select>
+					<Label text="{i18n>VariantName}" required="true" visible="{SearchHelpPersonalization>/oData/isSetCreatable}"/>
+					<Input value="{SearchHelpPersonalization>/oData/newVariant}" placeholder="{i18n>VariantName}"
+						valueState="{SearchHelpPersonalization>/oData/valueState}" valueStateText="{i18n>InvalidVariant}" width="50%"
+						visible="{SearchHelpPersonalization>/oData/isSetCreatable}"/>
+					<ToolbarSpacer></ToolbarSpacer>
+					<Button icon="sap-icon://add-activity"
+						press="onPresBtnShVariant($event, 'SearchHelpPersonalization', ${SearchHelpPersonalization>/}, 'SearchHelpPersonalization', 'Create')"
+						tooltip="{i18n>Create}" visible="{SearchHelpPersonalization>/oData/isBtnVisible}"/>
+					<Button icon="sap-icon://edit"
+						press="onPresBtnShVariant($event, 'SearchHelpPersonalization', ${SearchHelpPersonalization>/}, 'SearchHelpPersonalization', 'Edit')"
+						tooltip="{i18n>Edit}" visible="{SearchHelpPersonalization>/oData/isBtnVisible}"
+						enabled="{= ${SearchHelpPersonalization>/oData/currentVariant} !== 'Default'}"/>
+					<Button icon="sap-icon://cancel"
+						press="onPresBtnShVariant($event, 'SearchHelpPersonalization', ${SearchHelpPersonalization>/}, 'SearchHelpPersonalization', 'Cancel')"
+						tooltip="{i18n>Cancel}" visible="{= !${SearchHelpPersonalization>/oData/isBtnVisible}}"/>
+				</Toolbar>
+				<Table inset="false" items="{SearchHelpPersonalization>/oData/userPersonaDto}">
+					<columns>
+						<Column></Column>
+					</columns>
+					<items>
+						<ColumnListItem>
+							<cells>
+								<FlexBox alignItems="Center" justifyContent="Start">
+									<CheckBox selected="{SearchHelpPersonalization>status}" select="onChangeCheckbox($event, ${SearchHelpPersonalization>/})"
+										enabled="{SearchHelpPersonalization>/oData/isListEnabled}"/>
+									<Text text="{SearchHelpPersonalization>enabledKey}"/>
+								</FlexBox>
+							</cells>
+						</ColumnListItem>
+					</items>
+				</Table>
+			</VBox>
+		</content>
+		<buttons>
+			<!--<Button text="{i18n>ok}" press="handleOk($event, ${SearchHelpPersonalization>/},'SearchHelpPersonalization')" tooltip="{i18n>ok}"-->
+			<!--	visible="{= ${SearchHelpPersonalization>/oData/isBtnVisible}}"/>-->
+			<Button text="{i18n>Save}"
+				press="onVariantUpdate($event, ${SearchHelpPersonalization>/}, 'SearchHelpPersonalization', 'SAVE', 'SearchHelpPersonalization')"
+				tooltip="{i18n>Save}" visible="{= !${SearchHelpPersonalization>/oData/isBtnVisible}}"/>
+			<Button text="{i18n>Delete}"
+				press="onVariantDelete($event, ${SearchHelpPersonalization>/}, 'SearchHelpPersonalization', 'DELETE', 'SearchHelpPersonalization')"
+				tooltip="{i18n>cancelbtntext}" visible="{= !${SearchHelpPersonalization>/oData/isDelBtnVisible}}"/>
+			<Button text="{i18n>Cancel}" press="handleCancel($event, 'SearchHelpPersonalization')" tooltip="{i18n>cancelbtntext}"
+				visible="{= ${SearchHelpPersonalization>/oData/isBtnVisible}}"/>
+		</buttons>
+	</Dialog>
+</core:FragmentDefinition>

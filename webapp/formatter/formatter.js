@@ -97,45 +97,56 @@ sap.ui.define([
 			});
 			this.getView().setBusy(true);
 			var sUrl = "/DKSHJavaService/taskSubmit/getSalesBlockOrder/";
-			this.getView().getModel("ItemBlockModel").loadData(sUrl, JSON.stringify(oReqPayload), true, "POST", false, false, oHeader).then(
-					function (oRes) {
-						var oData = this.getView().getModel("ItemBlockModel").getData();
-						oUserMangement = this.getView().getModel("UserManagement");
-
-						// No data found
-						if (oData.data.length === 0 || !oData) {
-							this.getView().setBusy(false);
-							return;
-						}
-						//debugger;
-						this.getView().getModel("ItemBlockModel").setProperty("/count", oData.data.length);
-						oData.data.map(function (data) {
-							data.creationDate = new Date(data.salesOrderDateTxt);
-							Object.assign(data, {
-								loggedInUserPid: oUserMangement.getData().id,
-								loggedInUserId: oUserMangement.getData().userName,
-								expanded: false,
-								itemBtnEanbled: true,
-								submitForHeader: false
-							});
-						}.bind(this));
-						this.getView().getModel("ItemBlockModel").refresh();
-						this.getView().setBusy(false);
-					}.bind(this))
-				.catch(function (oErr) {
-					this.getView().setBusy(false);
-				}.bind(this));
-		},
-		postJavaService: function (Model, sUrl, oPayload) {
 			return new Promise(
 				function (resolve, reject) {
-					Model.loadData(sUrl, oPayload, true, "POST", false, false, oHeader)
-						.then(
+					this.getView().getModel("ItemBlockModel").loadData(sUrl, JSON.stringify(oReqPayload), true, "POST", false, false, oHeader).then(
 							function (oRes) {
-								resolve(oRes);
-							}.bind(this)).catch(function (oErr) {
-							reject(oErr);
+								var oData = this.getView().getModel("ItemBlockModel").getData();
+								oUserMangement = this.getView().getModel("UserManagement");
+
+								// No data found
+								if (oData.data.length === 0 || !oData) {
+									this.getView().setBusy(false);
+									return;
+								}
+								//debugger;
+								this.getView().getModel("ItemBlockModel").setProperty("/count", oData.data.length);
+								oData.data.map(function (data) {
+									data.creationDate = new Date(data.salesOrderDateTxt);
+									Object.assign(data, {
+										loggedInUserPid: oUserMangement.getData().id,
+										loggedInUserId: oUserMangement.getData().userName,
+										expanded: false,
+										itemBtnEanbled: true,
+										submitForHeader: false
+									});
+								}.bind(this));
+								this.getView().getModel("ItemBlockModel").refresh();
+								resolve(this.getView().getModel("ItemBlockModel"));
+							}.bind(this))
+						.catch(function (oErr) {
+							this.getView().setBusy(false);
 						}.bind(this));
+				}.bind(this));
+		},
+		postJavaService: function (Model, sUrl, oPayload, sMethod) {
+			return new Promise(
+				function (resolve, reject) {
+					if (oPayload) {
+						Model.loadData(sUrl, oPayload, true, sMethod, false, false, oHeader)
+							.then(function (oRes) {
+								resolve(Model.getData());
+							}.bind(this)).catch(function (oErr) {
+								reject(oErr);
+							}.bind(this));
+					} else {
+						Model.loadData(sUrl, true, sMethod, false, false, oHeader)
+							.then(function (oRes) {
+								resolve(Model.getData());
+							}.bind(this)).catch(function (oErr) {
+								reject(oErr);
+							}.bind(this));
+					}
 				});
 		},
 		setCancelEditItem: function (oItemBlockModel, aItems) {
@@ -224,10 +235,11 @@ sap.ui.define([
 			return (isValid) ? "sap-icon://message-success" : "sap-icon://message-error";
 		},
 		dateFormatter: function (pTimeStamp) {
-			if (!pTimeStamp) {
-				return;
+			if (pTimeStamp) {
+				return new Date(pTimeStamp).toLocaleDateString();
+			} else {
+				return new Date().toLocaleDateString();
 			}
-			return new Date(pTimeStamp).toLocaleDateString();
 		},
 		concateText: function (sCode, sText) {
 			if (sCode) {
