@@ -14,11 +14,14 @@ sap.ui.define([
 	return BaseController.extend("dksh.connectclient.itemblockorder.controller.MainView", {
 		onInit: function () {
 			this._preSetModel(this.getView());
+			this.oResourceBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle();
 			this.oFragmentList = [];
 
 			this.getView().setBusy(true);
-			Promise.all([this.formatter.fetchUserInfo.call(this)]).then(function (oRes) {
+			Promise.all([this.formatter.fetchUserInfo.call(this), this.formatter.fetchData.call(this, this.getOwnerComponent().getModel(),
+				"/GetControlEditableConfigSet")]).then(function (oRes) {
 				var oUserData = this.getView().getModel("UserInfo").getData();
+				this.getView().setModel(new JSONModel(oRes[1].results), "ControlEditConfig");
 				var fnReturnPayload = function (appId) {
 					return {
 						userId: oUserData.name,
@@ -29,13 +32,16 @@ sap.ui.define([
 				};
 				Promise.all([
 					this.formatter.postJavaService.call(this, this.getView().getModel("SearchHelpPersonalization"),
-						"/DKSHJavaService2/variant/getVariant", JSON.stringify(fnReturnPayload("keySearchReleaseBlock")), "POST"),
+						this.getText("getVariant"), JSON.stringify(fnReturnPayload("keySearchReleaseBlock")), "POST"),
 					this.formatter.postJavaService.call(this, this.getView().getModel("SoItemPersonalizationModel"),
-						"/DKSHJavaService2/variant/getVariantReleaseOrder", JSON.stringify(fnReturnPayload(
+						this.getText("getVariantRelease"), JSON.stringify(fnReturnPayload(
 							"keyHeaderReleaseBlock@keyItemReleaseBlock")), "POST"),
 					this.formatter.fetchSaleOrder.call(this)
 				]).then(function (_oRes) {
-					debugger;
+					_oRes[0].userPersonaDto.map(function (item) {
+						item.sequence = +item.sequence;
+						return item;
+					});
 					Object.assign(_oRes[0], this._returnPersDefault());
 					Object.assign(_oRes[1], this._returnPersDefault());
 					this.getView().setBusy(false);
@@ -108,9 +114,16 @@ sap.ui.define([
 				oBinding.filter(null);
 			}
 		},
-		onPressEditItem: function (oEvent) {
+		onPressEditItem: function (oEvent, oModel, oItemModel) {
 			var oView = this.getView(),
-				oSource = oEvent.getSource(),
+				oEditConfig = oView.getModel("ControlEditConfig").getData().find(function (oItem) {
+					return oItem.orderType === oItemModel.orderType;
+				});
+			if (oEditConfig && oEditConfig.ViewOnly) {
+				MessageToast.show(this.oResourceBundle.getText("OnlyViewMessage", [oItemModel.orderType]));
+				return;
+			}
+			var oSource = oEvent.getSource(),
 				sId = oSource.getParent().getParent().getId(),
 				oTable = sap.ui.getCore().byId(sId),
 				oItemBlockModel = oTable.getModel("ItemBlockModel"),
@@ -122,7 +135,7 @@ sap.ui.define([
 			// Control selected item's properties visibility
 			aItems.map(function (oItem) {
 				var object = oItem.getBindingContext("ItemBlockModel").getObject();
-				object = this.formatter.controlEditabled.call(this, object, aItems, aItemUsage);
+				object = this.formatter.controlEditabled.call(this, object, aItems, aItemUsage, oEditConfig);
 				object.salesUnit = (!object.salesUnit) ? this.getText("UoM").toUpperCase() : object.salesUnit;
 			}.bind(this));
 			// Store initial value model for onSaveEditItem function
@@ -355,7 +368,6 @@ sap.ui.define([
 			});
 		},
 		onRejectPress: function (oEvent, sFragment, oItem, oModel) {
-			debugger;
 			var oView = this.getView(),
 				oSource = oEvent.getSource(),
 				sId = oSource.getParent().getParent().getId(),
@@ -650,7 +662,6 @@ sap.ui.define([
 		},
 		//	On Cancel for particular fragment
 		handleCancel: function (oEvent, sFragmentName) {
-			debugger;
 			this.valueHelpId = "";
 			if (oEvent.getSource().getBinding("items")) {
 				oEvent.getSource().getBinding("items").filter([]);
@@ -679,7 +690,6 @@ sap.ui.define([
 				aMessageModel = {
 					results: []
 				},
-				oResourceBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle(),
 				aDataProperties = ["salesItemOrderNo", "salesHeaderNo", "sapMaterialNum", "orderedQtySales", "netPrice", "storageLoc", "batchNum"];
 
 			Object.assign(aEntry, {
@@ -694,7 +704,7 @@ sap.ui.define([
 				if (!oItem.acceptOrReject) {
 					aErrResults.push({
 						salesItemOrderNo: oItem.salesItemOrderNo,
-						Message: oResourceBundle.getText("noActionTakenItem", [oItem.salesItemOrderNo])
+						Message: this.oResourceBundle.getText("noActionTakenItem", [oItem.salesItemOrderNo])
 					});
 					continue;
 				}
@@ -709,7 +719,7 @@ sap.ui.define([
 						if (!oBonusItem.acceptOrReject || !bSelected) {
 							aErrResults.push({
 								salesItemOrderNo: oBonusItem.salesItemOrderNo,
-								Message: oResourceBundle.getText("noActionTakenItem", [oBonusItem.salesItemOrderNo])
+								Message: this.oResourceBundle.getText("noActionTakenItem", [oBonusItem.salesItemOrderNo])
 							});
 							continue;
 						}
@@ -717,7 +727,7 @@ sap.ui.define([
 						if (!bValid) {
 							aErrResults.push({
 								salesItemOrderNo: oBonusItem.salesItemOrderNo,
-								Message: oResourceBundle.getText("noAllowToApprove", [oBonusItem.salesItemOrderNo, oItem.salesItemOrderNo])
+								Message: this.oResourceBundle.getText("noAllowToApprove", [oBonusItem.salesItemOrderNo, oItem.salesItemOrderNo])
 							});
 							continue;
 						}
@@ -843,7 +853,6 @@ sap.ui.define([
 			this._loadXMLFragment(this.getText("MainFragmentPath"), sFragmentName, this.getView().getModel(sModel), sModel).bind(this);
 		},
 		onPresBtnShVariant: function (oEvent, sFragmentName, oModel, sModelName, sAction, isItemPers) {
-			debugger;
 			if (sAction === "Create") {
 				if (isItemPers) {
 					this._setPersCreationSetting(oModel.getData().header.userPersonaDto);
@@ -870,9 +879,10 @@ sap.ui.define([
 		},
 		onChangeVariant: function (oEvent, oModel, sModel, sFragmentName) {
 			var oUserData = this.getView().getModel("UserInfo").getData(),
-				oResourceBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle(),
 				sVariantUrl = (sFragmentName === "SearchHelpPersonalization") ? "variantListUrl" : "variantReleaseListUrl",
-				sUrl = oResourceBundle.getText(sVariantUrl, [oUserData.name, (oEvent) ? oEvent.getParameters().selectedItem.getKey() : "Default"]);
+				sUrl = this.oResourceBundle.getText(sVariantUrl, [oUserData.name, (oEvent) ? oEvent.getParameters().selectedItem.getKey() :
+					"Default"
+				]);
 			this.callJavaServicePersonalization(oModel, sModel, "CHANGE", null, sUrl, sFragmentName);
 		},
 		onVariantUpdate: function (oEvent, oModel, sModel, sAction, sFragmentName, isItemPers) {
@@ -886,11 +896,10 @@ sap.ui.define([
 			oModel.setProperty("/valueState", "None");
 			var oPayload = (isItemPers) ? this._returnItemVarPayload(oModel, oUserData, sVariant) : this._returnShVarPayload(oModel, oUserData,
 					"keySearchReleaseBlock", sVariant),
-				sUrl = (isItemPers) ? "/DKSHJavaService2/variant/UpdateVariantReleaseOrder" : "/DKSHJavaService2/variant/UpdateVariant";
+				sUrl = (isItemPers) ? this.getText("updateVariantRelease") : this.getText("updateVariant");
 			this.callJavaServicePersonalization(oModel, sModel, sAction, JSON.stringify(oPayload), sUrl, sFragmentName);
 		},
 		onVariantDelete: function (oEvent, oModel, sModel, sAction, sFragmentName, isItemPers) {
-			var oResourceBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle();
 			var fnClose = function (oAction) {
 				if (oAction === "CANCEL") {
 					return;
@@ -898,12 +907,12 @@ sap.ui.define([
 				var oUserData = this.getView().getModel("UserInfo").getData(),
 					oPayload = (isItemPers) ? this._returnItemVarPayload(oModel, oUserData, oModel.getData().currentVariant) : this._returnShVarPayload(
 						oModel, oUserData, "keySearchReleaseBlock", oModel.getData().currentVariant),
-					sUrl = (isItemPers) ? "/DKSHJavaService2/variant/deleteVariantReleaseOrder" : "/DKSHJavaService2/variant/deleteVariant";
+					sUrl = (isItemPers) ? this.getText("deleteVariantRelease") : this.getText("deleteVariant");
 				this.callJavaServicePersonalization(oModel, sModel, sAction, JSON.stringify(oPayload), sUrl, sFragmentName);
 			}.bind(this);
-			MessageBox.show(oResourceBundle.getText("variantDeleteMsg", [oModel.getData().currentVariant]), {
+			MessageBox.show(this.oResourceBundle.getText("variantDeleteMsg", [oModel.getData().currentVariant]), {
 				icon: MessageBox.Icon.INFORMATION,
-				title: "Information",
+				title: "Confirmation",
 				actions: [MessageBox.Action.YES, MessageBox.Action.CANCEL],
 				onClose: fnClose,
 				initialFocus: MessageBox.Action.CANCEL,

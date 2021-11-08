@@ -196,7 +196,6 @@ sap.ui.define([
 			this._getTable("idList").setBusy(false);
 		},
 		_displayError: function (oResponse, si18nKey) {
-			debugger;
 			var oResourceBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle();
 			if (oResponse.responseText) {
 				if (new DOMParser().parseFromString(oResponse.responseText, 'text/html').getElementsByTagName('h1').length > 0) {
