@@ -109,7 +109,6 @@ sap.ui.define([
 									this.getView().setBusy(false);
 									return;
 								}
-								//debugger;
 								this.getView().getModel("ItemBlockModel").setProperty("/count", oData.data.length);
 								oData.data.map(function (data) {
 									data.creationDate = new Date(data.salesOrderDateTxt);
@@ -195,14 +194,12 @@ sap.ui.define([
 					});
 				});
 		},
-		controlEditabled: function (object, aItems, aItemUsage) {
-			// Default
-			debugger;
-			object.editMaterial = true;
-			object.editOrderQty = true;
-			object.editNetPrice = true;
-			object.editSLoc = true;
-			object.editBatchNo = true;
+		controlEditabled: function (object, aItems, aItemUsage, oEditConfig) {
+			object.editMaterial = (oEditConfig) ? oEditConfig.editMaterial : true;
+			object.editOrderQty = (oEditConfig) ? oEditConfig.editOrderQty : true;
+			object.editNetPrice = (oEditConfig) ? oEditConfig.editNetPrice : true;
+			object.editSLoc = (oEditConfig) ? oEditConfig.editSLoc : true;
+			object.editBatchNo = (oEditConfig) ? oEditConfig.editBatchNo : true;
 			if (object.higherLevelItem === "000000") {
 				// Parent item
 				var bBonus = aItems.some(function (oItem) {
