@@ -26,7 +26,6 @@
 						press="onPresBtnShVariant($event, 'SearchHelpPersonalization', ${SearchHelpPersonalization>/}, 'SearchHelpPersonalization', 'Cancel')"
 						tooltip="{i18n>Cancel}" visible="{= !${SearchHelpPersonalization>/oData/isBtnVisible}}"/>
 				</Toolbar>
-				<!--<Table inset="false" items="{path: 'SearchHelpPersonalization>/oData/userPersonaDto', sorter: {path: 'sequence'}}">-->
 				<Table inset="false" items="{path: 'SearchHelpPersonalization>/oData/userPersonaDto'}">
 					<columns>
 						<Column></Column>

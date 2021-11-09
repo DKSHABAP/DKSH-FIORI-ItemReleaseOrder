@@ -243,7 +243,24 @@ sap.ui.define([
 				sText = (sText) ? "(" + sText + ")" : "";
 			}
 			return [sCode, sText].join(" ");
+		},
+		setNumericAndSort: function (oData, aProperty) {
+			if (oData) {
+				oData.userPersonaDto.map(function (item) {
+					for (var index in aProperty) {
+						var sProperty = aProperty[index];
+						item[sProperty] = +item[sProperty];
+					}
+					return item;
+				});
+				oData.userPersonaDto.sort(function (a, b) {
+					for (var index in aProperty) {
+						var sProperty = aProperty[index];
+						return a[sProperty] - b[sProperty];
+					}
+				});
+			}
+			return oData;
 		}
-
 	};
 });

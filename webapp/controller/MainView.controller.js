@@ -38,8 +38,8 @@ sap.ui.define([
 							"keyHeaderReleaseBlock@keyItemReleaseBlock")), "POST"),
 					this.formatter.fetchSaleOrder.call(this)
 				]).then(function (_oRes) {
-					debugger;
-					Object.assign(_oRes[0], this._returnPersDefault());
+					Object.assign(this.formatter.setNumericAndSort(_oRes[0], ["sequence"]), this._returnPersDefault());
+					this.getView().getModel("SearchHelpPersonalization").refresh();
 					Object.assign(_oRes[1], this._returnPersDefault());
 					this.getView().setBusy(false);
 				}.bind(this)).catch(function (oErr) {
@@ -938,7 +938,7 @@ sap.ui.define([
 				}
 				if (sFragmentName === "SearchHelpPersonalization") {
 					oModel.setProperty("/currentVariant", _oRes.userPersonaDto[0].variantId);
-					oModel.setProperty("/userPersonaDto", _oRes.userPersonaDto);
+					oModel.setProperty("/userPersonaDto", this.formatter.setNumericAndSort(_oRes, ["sequence"]).userPersonaDto);
 				} else {
 					oModel.setProperty("/currentVariant", _oRes.header.userPersonaDto[0].variantId);
 					oModel.setProperty("/header/userPersonaDto", _oRes.header.userPersonaDto);
