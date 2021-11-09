@@ -38,10 +38,7 @@ sap.ui.define([
 							"keyHeaderReleaseBlock@keyItemReleaseBlock")), "POST"),
 					this.formatter.fetchSaleOrder.call(this)
 				]).then(function (_oRes) {
-					_oRes[0].userPersonaDto.map(function (item) {
-						item.sequence = +item.sequence;
-						return item;
-					});
+					debugger;
 					Object.assign(_oRes[0], this._returnPersDefault());
 					Object.assign(_oRes[1], this._returnPersDefault());
 					this.getView().setBusy(false);

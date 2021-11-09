@@ -5,7 +5,7 @@
 			class="fbFilterLevel">
 			<fb:filterGroupItems>
 				<fb:FilterGroupItem groupName="G1" name="A" label="{i18n>salesOrg}" partOfCurrentVariant="true"
-					visibleInFilterBar="{SearchHelpPersonalization>/userPersonaDto/0/status}">
+					visibleInFilterBar="{SearchHelpPersonalization>/userPersonaDto/6/status}">
 					<fb:control>
 						<Input value="{filterModel>/salesOrg}" tooltip="{filterModel>/salesOrg}" maxLength="100" liveChange="salesDocValidationHandle"
 							placeholder="{i18n>plchSalesOrg}" showValueHelp="true" valueHelpRequest="valueHelpRequest($event, 'SalesOrg', 'Code', 'ATR01', true)"
@@ -13,14 +13,14 @@
 					</fb:control>
 				</fb:FilterGroupItem>
 				<fb:FilterGroupItem groupName="G1" name="B" label="{i18n>division}" partOfCurrentVariant="true"
-					visibleInFilterBar="{SearchHelpPersonalization>/userPersonaDto/1/status}">
+					visibleInFilterBar="{SearchHelpPersonalization>/userPersonaDto/7/status}">
 					<fb:control>
 						<Input value="{filterModel>/division}" tooltip="{filterModel>/division}" maxLength="100" placeholder="{i18n>plcDiv}" showValueHelp="true"
 							valueHelpRequest="valueHelpRequest($event, 'Division', 'Code', 'ATR03', true)" valueHelpOnly="true"/>
 					</fb:control>
 				</fb:FilterGroupItem>
 				<fb:FilterGroupItem groupName="G1" name="C" label="{i18n>tltpSalesDocNo}" partOfCurrentVariant="true"
-					visibleInFilterBar="{SearchHelpPersonalization>/userPersonaDto/2/status}">
+					visibleInFilterBar="{SearchHelpPersonalization>/userPersonaDto/0/status}">
 					<fb:control>
 						<HBox>
 							<Input class="sapUiSmallMarginEnd" width="95%" value="{filterModel>/salesDocNumInitial}" placeholder="{i18n>tltpFrom}"
@@ -31,33 +31,33 @@
 					</fb:control>
 				</fb:FilterGroupItem>
 				<fb:FilterGroupItem groupName="G1" name="D" label="{i18n>tltpDateRange}" partOfCurrentVariant="true"
-					visibleInFilterBar="{SearchHelpPersonalization>/userPersonaDto/3/status}">
+					visibleInFilterBar="{SearchHelpPersonalization>/userPersonaDto/1/status}">
 					<fb:control>
 						<DateRangeSelection displayFormat="dd/MM/yyyy" dateValue="{filterModel>/initialDate}" secondDateValue="{filterModel>/endDate}"/>
 					</fb:control>
 				</fb:FilterGroupItem>
 				<fb:FilterGroupItem groupName="G1" name="E" label="{i18n>CustomerPONo}" partOfCurrentVariant="true"
-					visibleInFilterBar="{SearchHelpPersonalization>/userPersonaDto/4/status}">
+					visibleInFilterBar="{SearchHelpPersonalization>/userPersonaDto/8/status}">
 					<fb:control>
 						<Input value="{filterModel>/customerPoNo}" tooltip="{filterModel>/customerPoNo}" placeholder="{i18n>plchCustPo}"/>
 					</fb:control>
 				</fb:FilterGroupItem>
 				<fb:FilterGroupItem groupName="G1" name="F" label="{i18n>tltpMatGrp}" partOfCurrentVariant="true"
-					visibleInFilterBar="{SearchHelpPersonalization>/userPersonaDto/5/status}">
+					visibleInFilterBar="{SearchHelpPersonalization>/userPersonaDto/9/status}">
 					<fb:control>
 						<Input value="{filterModel>/materialGroup}" tooltip="{filterModel>/materialGroup}" maxLength="500" placeholder="{i18n>plchMatGrp}"
 							showValueHelp="true" valueHelpRequest="valueHelpRequest($event, 'MaterialGroup', 'Code', 'ATR04', true)" valueHelpOnly="true"/>
 					</fb:control>
 				</fb:FilterGroupItem>
 				<fb:FilterGroupItem groupName="G1" name="G" label="{i18n>MaterialGroup4}" partOfCurrentVariant="true"
-					visibleInFilterBar="{SearchHelpPersonalization>/userPersonaDto/6/status}">
+					visibleInFilterBar="{SearchHelpPersonalization>/userPersonaDto/2/status}">
 					<fb:control>
 						<Input value="{filterModel>/materialGroup4}" tooltip="{filterModel>/materialGroup4}" maxLength="500" placeholder="{i18n>plchMatGrp4}"
 							showValueHelp="true" valueHelpRequest="valueHelpRequest($event, 'MaterialGroup4', 'Code', 'ATR05', true)" valueHelpOnly="true"/>
 					</fb:control>
 				</fb:FilterGroupItem>
 				<fb:FilterGroupItem groupName="G1" name="H" label="{i18n>soldToPartyTitle}" partOfCurrentVariant="true"
-					visibleInFilterBar="{SearchHelpPersonalization>/userPersonaDto/7/status}">
+					visibleInFilterBar="{SearchHelpPersonalization>/userPersonaDto/3/status}">
 					<fb:control>
 						<Input showValueHelp="true" valueHelpOnly="true" value="{filterModel>/soldtoParty}" tooltip="{filterModel>/soldtoParty}"
 							valueHelpRequest="valueHelpRequest($event, 'SoldToParty', '', false)" visible="true" placeholder="{i18n>plchSoldtp}"
@@ -65,14 +65,14 @@
 					</fb:control>
 				</fb:FilterGroupItem>
 				<fb:FilterGroupItem groupName="G1" name="I" label="{i18n>distChannel}" partOfCurrentVariant="true"
-					visibleInFilterBar="{SearchHelpPersonalization>/userPersonaDto/8/status}">
+					visibleInFilterBar="{SearchHelpPersonalization>/userPersonaDto/4/status}">
 					<fb:control>
 						<Input valueHelpOnly="true" value="{filterModel>/distChannel}" tooltip="" showValueHelp="true"
 							valueHelpRequest="valueHelpRequest($event, 'DistChan', 'Code', 'ATR02', true)" placeholder="{i18n>plchDistCha}"/>
 					</fb:control>
 				</fb:FilterGroupItem>
 				<fb:FilterGroupItem groupName="G1" name="J" label="{i18n>tltpItemDelBlock}" partOfCurrentVariant="true"
-					visibleInFilterBar="{SearchHelpPersonalization>/userPersonaDto/9/status}">
+					visibleInFilterBar="{SearchHelpPersonalization>/userPersonaDto/5/status}">
 					<fb:control>
 						<Input value="{filterModel>/itemDeliveryBlock}" tooltip="{filterModel>/itemDeliveryBlock}" placeholder="{i18n>plchItmDelBlock}"
 							showValueHelp="true" valueHelpRequest="valueHelpRequest($event, 'ItemDeliveryBlock', 'Code', '', false)" maxLength="100"
