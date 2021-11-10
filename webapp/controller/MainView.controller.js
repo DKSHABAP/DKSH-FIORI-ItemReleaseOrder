@@ -38,6 +38,7 @@ sap.ui.define([
 							"keyHeaderReleaseBlock@keyItemReleaseBlock")), "POST"),
 					this.formatter.fetchSaleOrder.call(this)
 				]).then(function (_oRes) {
+					debugger;
 					Object.assign(this.formatter.setNumericAndSort(_oRes[0], ["sequence"]), this._returnPersDefault());
 					this.getView().getModel("SearchHelpPersonalization").refresh();
 					Object.assign(_oRes[1], this._returnPersDefault());
@@ -209,8 +210,7 @@ sap.ui.define([
 				this.onSaveEditItem["Payload"].listOfChangedItemData.push(oItem);
 			}
 			// Validate if item has rejection or SO blocked prior update item to ECC
-			Promise.all([this.formatter.fetchData.call(this, oModel, "/ValidateItemsBeforeSaveSet", aFilters)]).
-			then(function (oRes) {
+			Promise.all([this.formatter.fetchData.call(this, oModel, "/ValidateItemsBeforeSaveSet", aFilters)]).then(function (oRes) {
 				var sFragmentPath = this.getText("MainFragmentPath");
 
 				if (!this.oFragmentList[sFragmentName]) {
