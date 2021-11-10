@@ -180,6 +180,9 @@
 					<Label design="Bold" text="{i18n>oldMatCodeCol}" tooltip="{i18n>oldMatCodeColTooltip}"/>
 				</Column>
 				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left" visible="{SoItemPersonalizationModel>/item/userPersonaDto/18/status}">
+					<Label design="Bold" text="{i18n>OriginalUnitPrice}" tooltip="{i18n>OriginalUnitPrice}"/>
+				</Column>
+				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left" visible="{SoItemPersonalizationModel>/item/userPersonaDto/19/status}">
 					<Label design="Bold" text="{i18n>ItemStatus}" tooltip="{i18n>oldMatCodeColTooltip}"/>
 				</Column>
 			</columns>
@@ -244,6 +247,9 @@
 						<Text text="{parts:['ItemBlockModel>itemCategory','ItemBlockModel>itemCategText'] ,formatter:'.formatter.concateText'}" textAlign="Left"/>
 						<!-- Old Material Code -->
 						<Text text="{ItemBlockModel>oldMatCode}" textAlign="Left"/>
+						<!-- Original Unit Price -->
+						<!-- disc1 is also using condition type ZTN7 -->
+						<Text text="{ItemBlockModel>disc1}" textAlign="Left"/>
 						<!-- Item Staging Status -->
 						<ObjectStatus text="{ItemBlockModel>itemStagingStatus}" state="{parts:['ItemBlockModel>itemStagingStatus'],formatter:'.formatter.status'}"/>
 					</cells>

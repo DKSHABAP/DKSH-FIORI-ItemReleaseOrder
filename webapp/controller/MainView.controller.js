@@ -209,8 +209,7 @@ sap.ui.define([
 				this.onSaveEditItem["Payload"].listOfChangedItemData.push(oItem);
 			}
 			// Validate if item has rejection or SO blocked prior update item to ECC
-			Promise.all([this.formatter.fetchData.call(this, oModel, "/ValidateItemsBeforeSaveSet", aFilters)]).
-			then(function (oRes) {
+			Promise.all([this.formatter.fetchData.call(this, oModel, "/ValidateItemsBeforeSaveSet", aFilters)]).then(function (oRes) {
 				var sFragmentPath = this.getText("MainFragmentPath");
 
 				if (!this.oFragmentList[sFragmentName]) {

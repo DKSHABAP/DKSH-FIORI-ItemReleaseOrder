@@ -50,10 +50,9 @@ sap.ui.define([
 							oUserAccessModel = oView.getModel("UserAccess");
 
 						oUserAccessModel.loadData("/DKSHJavaService2/userDetails/findAllRightsForUserInDomain/" + oUserInfoModel.getData().name +
-								"&cc")
-							.then(function (oUserAccessResp) {}).catch(function (oErr) {
-								reject(oErr);
-							});
+							"&cc").then(function (oUserAccessResp) {}).catch(function (oErr) {
+							reject(oErr);
+						});
 						oView.getModel("UserManagement").loadData("/UserManagement/service/scim/Users/" + oUserInfoModel.getProperty(
 							"/name")).then(function (oUserMgtRes) {
 							resolve(oUserMgtRes);
@@ -132,19 +131,17 @@ sap.ui.define([
 			return new Promise(
 				function (resolve, reject) {
 					if (oPayload) {
-						Model.loadData(sUrl, oPayload, true, sMethod, false, false, oHeader)
-							.then(function (oRes) {
-								resolve(Model.getData());
-							}.bind(this)).catch(function (oErr) {
-								reject(oErr);
-							}.bind(this));
+						Model.loadData(sUrl, oPayload, true, sMethod, false, false, oHeader).then(function (oRes) {
+							resolve(Model.getData());
+						}.bind(this)).catch(function (oErr) {
+							reject(oErr);
+						}.bind(this));
 					} else {
-						Model.loadData(sUrl, true, sMethod, false, false, oHeader)
-							.then(function (oRes) {
-								resolve(Model.getData());
-							}.bind(this)).catch(function (oErr) {
-								reject(oErr);
-							}.bind(this));
+						Model.loadData(sUrl, true, sMethod, false, false, oHeader).then(function (oRes) {
+							resolve(Model.getData());
+						}.bind(this)).catch(function (oErr) {
+							reject(oErr);
+						}.bind(this));
 					}
 				});
 		},
@@ -162,38 +159,38 @@ sap.ui.define([
 				oItemBlockModel.refresh();
 			}
 		},
-		fetchFieldParameters: function () {
-			var sUrl = "/WorkboxServices/users/getFieldParameters/approvalworkflow",
-				oView = this.getView(),
-				oLoadModel = oView.getModel("LoadDataModel");
+		// fetchFieldParameters: function () {
+		// 	var sUrl = "/WorkboxServices/users/getFieldParameters/approvalworkflow",
+		// 		oView = this.getView(),
+		// 		oLoadModel = oView.getModel("LoadDataModel");
 
-			return new Promise(
-				function (resolve, reject) {
-					oLoadModel.loadData(sUrl, null, !0);
-					oLoadModel.attachRequestCompleted(function (oResp) {
-						var itemLevelPersData = oResp.getSource().getData().data;
-						if (!itemLevelPersData) {
-							return;
-						}
-						var customItem = {
-							"header": [],
-							"item": []
-						};
-						for (var index in itemLevelPersData) {
-							if (itemLevelPersData[index].level === "HEADER") {
-								customItem.header.push(JSON.parse(JSON.stringify(itemLevelPersData[index])));
-							} else {
-								customItem.item.push(JSON.parse(JSON.stringify(itemLevelPersData[index])));
-							}
-						}
-						oView.setModel(new JSONModel(customItem), "PersonalizationModel");
-						resolve(oResp);
-					}.bind(this));
-					oLoadModel.attachRequestFailed(function (oErr) {
-						reject(oErr);
-					});
-				});
-		},
+		// 	return new Promise(
+		// 		function (resolve, reject) {
+		// 			oLoadModel.loadData(sUrl, null, !0);
+		// 			oLoadModel.attachRequestCompleted(function (oResp) {
+		// 				var itemLevelPersData = oResp.getSource().getData().data;
+		// 				if (!itemLevelPersData) {
+		// 					return;
+		// 				}
+		// 				var customItem = {
+		// 					"header": [],
+		// 					"item": []
+		// 				};
+		// 				for (var index in itemLevelPersData) {
+		// 					if (itemLevelPersData[index].level === "HEADER") {
+		// 						customItem.header.push(JSON.parse(JSON.stringify(itemLevelPersData[index])));
+		// 					} else {
+		// 						customItem.item.push(JSON.parse(JSON.stringify(itemLevelPersData[index])));
+		// 					}
+		// 				}
+		// 				oView.setModel(new JSONModel(customItem), "PersonalizationModel");
+		// 				resolve(oResp);
+		// 			}.bind(this));
+		// 			oLoadModel.attachRequestFailed(function (oErr) {
+		// 				reject(oErr);
+		// 			});
+		// 		});
+		// },
 		controlEditabled: function (object, aItems, aItemUsage, oEditConfig) {
 			object.editMaterial = (oEditConfig) ? oEditConfig.editMaterial : true;
 			object.editOrderQty = (oEditConfig) ? oEditConfig.editOrderQty : true;
