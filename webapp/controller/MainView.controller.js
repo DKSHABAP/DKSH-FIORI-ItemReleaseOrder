@@ -38,7 +38,6 @@ sap.ui.define([
 							"keyHeaderReleaseBlock@keyItemReleaseBlock")), "POST"),
 					this.formatter.fetchSaleOrder.call(this)
 				]).then(function (_oRes) {
-					debugger;
 					Object.assign(this.formatter.setNumericAndSort(_oRes[0], ["sequence"]), this._returnPersDefault());
 					this.getView().getModel("SearchHelpPersonalization").refresh();
 					Object.assign(_oRes[1], this._returnPersDefault());
