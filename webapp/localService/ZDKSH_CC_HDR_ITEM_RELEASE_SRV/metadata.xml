@@ -41,7 +41,21 @@
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/></EntityType>
 			<EntityType Name="CreditStatus" sap:content-version="1">
 				<Key><PropertyRef Name="salesOrderNum"/></Key><Property Name="salesOrderNum" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="SalesOrderNum" sap:creatable="false"
-					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="creditBlock" Type="Edm.String" Nullable="false" MaxLength="1" sap:unicode="false" sap:label="Credit Block Code"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Overallstatus" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="Overall status of credit checks"
+					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="StatusStatic" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="Status of static credit limit check"
+					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="StatusDynamic" Type="Edm.String" Nullable="false" sap:unicode="false"
+					sap:label="Status of dynamic credit limit check in the credit horizon" sap:creatable="false" sap:updatable="false" sap:sortable="false"
+					sap:filterable="false"/><Property Name="CreCheckMaxDocValue" Type="Edm.String" Nullable="false" sap:unicode="false"
+					sap:label="Status of credit check against maximum document value" sap:creatable="false" sap:updatable="false" sap:sortable="false"
+					sap:filterable="false"/><Property Name="CreCheckTermsOfPay" Type="Edm.String" Nullable="false" sap:unicode="false"
+					sap:label="Status of credit check against terms of payment" sap:creatable="false" sap:updatable="false" sap:sortable="false"
+					sap:filterable="false"/><Property Name="CreCheckCustReviewDate" Type="Edm.String" Nullable="false" sap:unicode="false"
+					sap:label="Status of credit check against customer review date" sap:creatable="false" sap:updatable="false" sap:sortable="false"
+					sap:filterable="false"/><Property Name="CreCheckOpenItem" Type="Edm.String" Nullable="false" sap:unicode="false"
+					sap:label="Status of credit check against open items due" sap:creatable="false" sap:updatable="false" sap:sortable="false"
+					sap:filterable="false"/><Property Name="CreCheckOldOpenItem" Type="Edm.String" Nullable="false" sap:unicode="false"
+					sap:label="Status of credit check against oldest open items" sap:creatable="false" sap:updatable="false" sap:sortable="false"
+					sap:filterable="false"/><Property Name="creditBlock" Type="Edm.String" Nullable="false" MaxLength="1" sap:unicode="false" sap:label="Credit Block Code"
 					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="StatusName" Type="Edm.String" Nullable="false" MaxLength="15" sap:unicode="false" sap:label="StatusName"
 					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Value" Type="Edm.String" Nullable="false" MaxLength="1" sap:unicode="false" sap:label="Value" sap:creatable="false"
 					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="Description" Type="Edm.String" Nullable="false" MaxLength="60" sap:unicode="false" sap:label="Description"
@@ -158,6 +172,16 @@
 				<Key><PropertyRef Name="Code"/></Key><Property Name="Code" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/><Property Name="Description" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false"
 					sap:sortable="false" sap:filterable="false"/></EntityType>
+			<EntityType Name="GetControlEditableConfig" sap:content-version="1">
+				<Key><PropertyRef Name="Country"/><PropertyRef Name="orderType"/></Key><Property Name="Country" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/><Property Name="orderType" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/><Property Name="ViewOnly" Type="Edm.Boolean" Nullable="false" sap:unicode="false" sap:label="Indicator" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="editMaterial" Type="Edm.Boolean" Nullable="false" sap:unicode="false" sap:label="Indicator" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="editOrderQty" Type="Edm.Boolean" Nullable="false" sap:unicode="false" sap:label="Indicator" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="editNetPrice" Type="Edm.Boolean" Nullable="false" sap:unicode="false" sap:label="Indicator" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="editSLoc" Type="Edm.Boolean" Nullable="false" sap:unicode="false" sap:label="Indicator" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="editBatchNo" Type="Edm.Boolean" Nullable="false" sap:unicode="false" sap:label="Indicator" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/></EntityType>
 			<EntityType Name="ZTHSD_DV_SOLD_TO_PARTYType" sap:label="Sold to party" sap:content-version="1">
 				<Key><PropertyRef Name="stp_id"/><PropertyRef Name="stp_division"/><PropertyRef Name="stp_distchnl"/><PropertyRef Name="stp_soldorg"/></Key><Property Name="stp_id" Type="Edm.String" Nullable="false" MaxLength="10" sap:display-format="UpperCase"/><Property Name="stp_division" Type="Edm.String" Nullable="false" MaxLength="2" sap:display-format="UpperCase" sap:label="Division"/><Property Name="stp_distchnl" Type="Edm.String" Nullable="false" MaxLength="2" sap:display-format="UpperCase"
 					sap:label="Distribution Channel"/><Property Name="stp_soldorg" Type="Edm.String" Nullable="false" MaxLength="4" sap:display-format="UpperCase" sap:label="Sales Organization"/><Property Name="stp_name" Type="Edm.String" MaxLength="35" sap:label="Name"/><Property Name="division_text" Type="Edm.String" MaxLength="20" sap:label="Division"/><Property Name="dist_chnl_text" Type="Edm.String" MaxLength="20" sap:label="Distribution Channel"/><Property Name="sold_org_text" Type="Edm.String" MaxLength="20" sap:label="Sales Org"/></EntityType>
@@ -192,12 +216,23 @@
 				sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/><EntitySet Name="SearchHelp_DistChnlSet" EntityType="ZDKSH_CC_HDR_ITEM_RELEASE_SRV.SearchHelp_DistChnl" sap:creatable="false"
 				sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/><EntitySet Name="SearchHelp_MaterialGroup4Set" EntityType="ZDKSH_CC_HDR_ITEM_RELEASE_SRV.SearchHelp_MaterialGroup4" sap:creatable="false"
 				sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/><EntitySet Name="SearchHelp_OrderTypeSet" EntityType="ZDKSH_CC_HDR_ITEM_RELEASE_SRV.SearchHelp_OrderType" sap:creatable="false"
+				sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/><EntitySet Name="GetControlEditableConfigSet" EntityType="ZDKSH_CC_HDR_ITEM_RELEASE_SRV.GetControlEditableConfig" sap:creatable="false"
 				sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
 				<AssociationSet Name="HeaderToItemSet" Association="ZDKSH_CC_HDR_ITEM_RELEASE_SRV.HeaderToItem" sap:creatable="false" sap:updatable="false"
 					sap:deletable="false" sap:content-version="1"><End EntitySet="SoHeaderSet" Role="FromRole_HeaderToItem"/><End EntitySet="SoItemSet" Role="ToRole_HeaderToItem"/></AssociationSet>
 				<AssociationSet Name="HeaderToValidateItemSet" Association="ZDKSH_CC_HDR_ITEM_RELEASE_SRV.HeaderToValidateItem" sap:creatable="false"
 					sap:updatable="false" sap:deletable="false" sap:content-version="1"><End EntitySet="ValidateBeforeSubmitSet" Role="FromRole_HeaderToValidateItem"/><End EntitySet="ValidateSubmitedItemSet" Role="ToRole_HeaderToValidateItem"/></AssociationSet>
-			</EntityContainer><atom:link rel="self"
+			</EntityContainer>
+			<Annotations Target="ZDKSH_CC_HDR_ITEM_RELEASE_SRV.ZTHSD_DV_SOLD_TO_PARTYType" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+				<Annotation Term="Common.SemanticKey">
+					<Collection>
+						<PropertyPath>stp_id</PropertyPath>
+						<PropertyPath>stp_division</PropertyPath>
+						<PropertyPath>stp_distchnl</PropertyPath>
+						<PropertyPath>stp_soldorg</PropertyPath>
+					</Collection>
+				</Annotation>
+			</Annotations><atom:link rel="self"
 				href="https://webidecp-uk81qreeol.dispatcher.ap1.hana.ondemand.com/destinations/DKSHODataService/sap/opu/odata/sap/ZDKSH_CC_HDR_ITEM_RELEASE_SRV/$metadata"
 				xmlns:atom="http://www.w3.org/2005/Atom"/><atom:link rel="latest-version"
 				href="https://webidecp-uk81qreeol.dispatcher.ap1.hana.ondemand.com/destinations/DKSHODataService/sap/opu/odata/sap/ZDKSH_CC_HDR_ITEM_RELEASE_SRV/$metadata"

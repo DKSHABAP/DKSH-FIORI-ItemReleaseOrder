@@ -73,7 +73,7 @@
 				<Button type="Transparent" text="{i18n>CollapseAll}" press="onCollapseAll" enabled="{oButtonModel>/expandButtonShow}"/>
 				<SearchField width="30%" liveChange="onSearchValueForHeader" search="onSearchValueForHeader" placeholder="{i18n>Search}"></SearchField>
 				<!--<Button icon="sap-icon://settings" type="Transparent" tooltip="{i18n>ItemPersonalization}" press="onPressPersonalization"/>-->
-				<Button icon="sap-icon://settings" tooltip="{i18n>ItemPersonalization}"
+				<Button icon="sap-icon://settings" type="Transparent" tooltip="{i18n>ItemPersonalization}"
 					press="onPressPersonalization($event, 'SoItemPersonalization', 'SoItemPersonalizationModel')"></Button>
 				<Button icon="sap-icon://refresh" type="Emphasized" tooltip="{i18n>Refresh}" press="onPressRefresh"/>
 			</OverflowToolbar>

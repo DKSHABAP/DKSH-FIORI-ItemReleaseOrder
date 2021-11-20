@@ -68,8 +68,8 @@
 				tooltip="{i18n>Save}" visible="{= !${SoItemPersonalizationModel>/oData/isBtnVisible}}"/>
 			<Button text="{i18n>Delete}"
 				press="onVariantDelete($event, ${SoItemPersonalizationModel>/}, 'SoItemPersonalizationModel', 'DELETE', 'SoItemPersonalization', true)"
-				tooltip="{i18n>cancelbtntext}" visible="{= !${SoItemPersonalizationModel>/oData/isDelBtnVisible}}"/>
-			<Button text="{i18n>Cancel}" press="handleCancel($event, 'SoItemPersonalization')" tooltip="{i18n>cancelbtntext}"
+				tooltip="{i18n>Delete}" visible="{= !${SoItemPersonalizationModel>/oData/isDelBtnVisible}}"/>
+			<Button text="{i18n>close}" press="handleCancel($event, 'SoItemPersonalization')" tooltip="{i18n>close}"
 				visible="{= ${SoItemPersonalizationModel>/oData/isBtnVisible}}"/>
 		</buttons>
 	</Dialog>

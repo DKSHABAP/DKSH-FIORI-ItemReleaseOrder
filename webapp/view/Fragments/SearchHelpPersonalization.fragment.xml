@@ -52,8 +52,8 @@
 				tooltip="{i18n>Save}" visible="{= !${SearchHelpPersonalization>/oData/isBtnVisible}}"/>
 			<Button text="{i18n>Delete}"
 				press="onVariantDelete($event, ${SearchHelpPersonalization>/}, 'SearchHelpPersonalization', 'DELETE', 'SearchHelpPersonalization')"
-				tooltip="{i18n>cancelbtntext}" visible="{= !${SearchHelpPersonalization>/oData/isDelBtnVisible}}"/>
-			<Button text="{i18n>Cancel}" press="handleCancel($event, 'SearchHelpPersonalization')" tooltip="{i18n>cancelbtntext}"
+				tooltip="{i18n>Delete}" visible="{= !${SearchHelpPersonalization>/oData/isDelBtnVisible}}"/>
+			<Button text="{i18n>close}" press="handleCancel($event, 'SearchHelpPersonalization')" tooltip="{i18n>close}"
 				visible="{= ${SearchHelpPersonalization>/oData/isBtnVisible}}"/>
 		</buttons>
 	</Dialog>

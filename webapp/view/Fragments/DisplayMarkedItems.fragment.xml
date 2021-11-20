@@ -2,7 +2,7 @@
 	<Dialog title="{i18n>userActions}" class="custBox ">
 		<VBox>
 			<Table inset="false" fixedLayout="true"
-				items="{ path: 'DisplayActionModel>/salesDocItemList', filters: [{ path: 'acceptOrReject', operator: 'EQ', value1: 'R' },{ path: 'acceptOrReject', operator: 'EQ', value1: 'A' }] }"
+				items="{ path: 'DisplayActionModel>/salesDocItemList', filters: [{ path: 'acceptOrReject', operator: 'EQ', value1: 'R' },{ path: 'acceptOrReject', operator: 'EQ', value1: 'A' }], sorter: { path: 'salesItemOrderNo' } }"
 				selectionChange="onSelectSingleSelectMaster" class="sapUiSizeCompact">
 				<columns>
 					<Column width="120px">
