@@ -48,7 +48,6 @@ sap.ui.define([
 					oView.getModel("UserInfo").loadData("/services/userapi/currentUser").then(function () {
 						var oUserInfoModel = oView.getModel("UserInfo"),
 							oUserAccessModel = oView.getModel("UserAccess");
-
 						oUserAccessModel.loadData("/DKSHJavaService2/userDetails/findAllRightsForUserInDomain/" + oUserInfoModel.getData().name +
 							"&cc").then(function (oUserAccessResp) {}).catch(function (oErr) {
 							reject(oErr);
