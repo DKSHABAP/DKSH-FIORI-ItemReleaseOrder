@@ -705,28 +705,17 @@ sap.ui.define([
 					continue;
 				}
 				if (oItem.higherLevelItem === "000000") {
-					var oBonusItem = aItem.salesDocItemList.find(function (Item) {
-						return oItem.salesItemOrderNo === Item.higherLevelItem;
-					});
-					if (oBonusItem) {
-						var bSelected = oTable.getSelectedContexts().some(function (oContext) {
-							return oContext.getObject().salesItemOrderNo === oBonusItem.salesItemOrderNo;
-						});
-						if (!oBonusItem.acceptOrReject || !bSelected) {
-							aErrResults.push({
-								salesItemOrderNo: oBonusItem.salesItemOrderNo,
-								Message: this.oResourceBundle.getText("noActionTakenItem", [oBonusItem.salesItemOrderNo])
-							});
-							continue;
-						}
-						var bValid = (oItem.acceptOrReject === "R" && oBonusItem.acceptOrReject === "A") ? false : true;
-						if (!bValid) {
-							aErrResults.push({
-								salesItemOrderNo: oBonusItem.salesItemOrderNo,
-								Message: this.oResourceBundle.getText("noAllowToApprove", [oBonusItem.salesItemOrderNo, oItem.salesItemOrderNo])
-							});
-							continue;
-						}
+					var aReturn = this._validateBonusAction(oItem, aItem, oTable, "salesItemOrderNo", "higherLevelItem");
+					if (aReturn && !aReturn[0]) {
+						aErrResults.push(aReturn[1]);
+						continue;
+					}
+				}
+				if (oItem.higherLevelItem !== "000000" && oItem.acceptOrReject !== "R") {
+					aReturn = this._validateBonusAction(oItem, aItem, oTable, "higherLevelItem", "salesItemOrderNo");
+					if (aReturn && !aReturn[0]) {
+						aErrResults.push(aReturn[1]);
+						continue;
 					}
 				}
 				for (index in Object.keys(aDataProperties)) {
@@ -769,6 +758,7 @@ sap.ui.define([
 						if (oAction === "OK") {
 							this._getTable("idList").setBusy(false);
 							this.formatter.fetchSaleOrder.call(this).then(function (_oRes) {
+								oTable.removeSelections();
 								this.getView().setBusy(false);
 							}.bind(this));
 						}

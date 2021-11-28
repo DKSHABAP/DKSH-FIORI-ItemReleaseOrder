@@ -262,6 +262,34 @@ sap.ui.define([
 				"variantId": sVariant
 			};
 		},
+		_validateBonusAction: function (oLineItem, aItem, oTable, sField1, sField2) {
+			var bRValid = true;
+			var oItem = aItem.salesDocItemList.find(function (Item) {
+				return oLineItem[sField1] === Item[sField2];
+			});
+			if (oItem) {
+				var bSelected = oTable.getSelectedContexts().some(function (oContext) {
+					return oContext.getObject().salesItemOrderNo === oItem.salesItemOrderNo;
+				});
+				if (!oItem.acceptOrReject || !bSelected) {
+					var oErrResults = {
+						salesItemOrderNo: oItem.salesItemOrderNo,
+						Message: this.oResourceBundle.getText("noActionTakenItem", [oItem.salesItemOrderNo])
+					};
+					bRValid = false;
+					return [bRValid, oErrResults];
+				}
+				var bValid = (oLineItem.acceptOrReject === "R" && oItem.acceptOrReject === "A") ? false : true;
+				if (!bValid) {
+					oErrResults = {
+						salesItemOrderNo: oItem.salesItemOrderNo,
+						Message: this.oResourceBundle.getText("noAllowToApprove", [oItem.salesItemOrderNo, oLineItem.salesItemOrderNo])
+					};
+					bRValid = false;
+					return [bRValid, oErrResults];
+				}
+			}
+		},
 		_setPersCreationSetting: function (oDto) {
 			return oDto.map(function (item) {
 				item.status = false;

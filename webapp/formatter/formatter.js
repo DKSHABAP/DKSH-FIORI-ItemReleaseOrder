@@ -101,7 +101,6 @@ sap.ui.define([
 							function (oRes) {
 								var oData = this.getView().getModel("ItemBlockModel").getData();
 								oUserMangement = this.getView().getModel("UserManagement");
-
 								// No data found
 								if (oData.data.length === 0 || !oData) {
 									this.getView().setBusy(false);
