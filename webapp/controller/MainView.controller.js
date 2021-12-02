@@ -936,6 +936,10 @@ sap.ui.define([
 				this._displayError(oErr);
 			}.bind(this));
 		},
+		handleDateChange: function (oEvent) {
+			var oFilterModel = this.getView().getModel("filterModel");
+			oFilterModel.setProperty("/initialDate", this.formatter.returnInitialDate.call(this, oEvent.getParameters().newValue, 30));
+		},
 		onAfterClose: function (oEvent, oModel, sModelName, sFragmentName) {
 			this.onPresBtnShVariant(oEvent, sFragmentName, oModel, sModelName, "Cancel", false);
 		},

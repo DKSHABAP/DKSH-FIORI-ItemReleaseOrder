@@ -30,7 +30,7 @@ sap.ui.define([
 				"salesDocNumEnd": "",
 				"distChannel": "",
 				"initialDate": null,
-				"endDate": null,
+				"endDate": this.formatter._dateFormatter(),
 				"materialGroup4": "",
 				"materialGroup": "",
 				"salesOrg": "",
