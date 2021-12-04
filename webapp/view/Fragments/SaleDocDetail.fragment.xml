@@ -251,7 +251,10 @@
 						<!-- disc1 is also using condition type ZTN7 -->
 						<Text text="{ItemBlockModel>disc1}" textAlign="Left"/>
 						<!-- Item Staging Status -->
-						<ObjectStatus text="{ItemBlockModel>itemStagingStatus}" state="{parts:['ItemBlockModel>itemStagingStatus'],formatter:'.formatter.status'}"/>
+						<!--<ObjectStatus text="{ItemBlockModel>itemStagingStatus}"-->
+						<!--	state="{parts:['ItemBlockModel>itemStagingStatus'],formatter:'.formatter.displayStatus'}"/>-->
+						<ObjectStatus text="{ItemBlockModel>itemStagingStatus}"
+							state="{parts:['ItemBlockModel>taskItemStatus', 'ItemBlockModel>visiblity'],formatter:'.formatter.displayStatus'}"/>
 					</cells>
 				</ColumnListItem>
 			</items>

@@ -2,8 +2,9 @@ sap.ui.define([
 	"sap/ui/model/json/JSONModel",
 	"sap/m/MessageBox",
 	"sap/m/MessageToast",
-	"sap/ui/core/message/MessageManager"
-], function (JSONModel, MessageBox, MessageToast, MessageManager) {
+	"sap/ui/core/message/MessageManager",
+	"sap/ui/core/format/DateFormat"
+], function (JSONModel, MessageBox, MessageToast, MessageManager, DateFormat) {
 	"use strict";
 
 	var oHeader = {
@@ -68,6 +69,7 @@ sap.ui.define([
 			var oUserInfoModel = this.getView().getModel("UserInfo"),
 				oUserMangement = this.getView().getModel("UserManagement"),
 				oFilterSaleOrder = this.getView().getModel("filterModel").getData(),
+				oSettingModel = this.getView().getModel("settings"),
 				aProperties = ["isAdmin", "materialGroup", "materialCode", "materialGroup4", "salesOrg", "soldtoParty",
 					"division", "distChannel", "salesTeam", "salesTerritory", "endDate", "initialDate", "customerPoNo", "shipToparty",
 					"salesDocNumInitial", "salesDocNumEnd", "headerDeliveryBlock", "itemDeliveryBlock", "orderType"
@@ -75,13 +77,20 @@ sap.ui.define([
 				oReqPayload = {
 					filter: {}
 				};
+			if (oFilterSaleOrder.initialDate && oFilterSaleOrder.endDate) {
+				var tDiff = Math.abs(oFilterSaleOrder.initialDate.getTime() - oFilterSaleOrder.endDate.getTime()),
+					dDiff = Math.ceil(tDiff / (1000 * 60 * 60 * 24));
+				if (dDiff > 30) {
+					oSettingModel.setProperty("/valueStateDate", "Error");
+					return;
+				}
+				oSettingModel.setProperty("/valueStateDate", "None");
+			}
 			for (var index in Object.keys(aProperties)) {
 				var sProperty = aProperties[index];
 				if ((sProperty === "endDate" || sProperty === "initialDate")) {
 					var dDate = oFilterSaleOrder[sProperty];
-					oReqPayload["filter"][sProperty] = (dDate) ? dDate.getFullYear() + '/' + ('0' + (dDate.getMonth() + 1)).slice(-2) + '/' + ('0' +
-						dDate.getDate()).slice(-
-						2) : '';
+					oReqPayload["filter"][sProperty] = this.formatter._dateFormatter.call(this, dDate);
 					continue;
 				}
 				oReqPayload["filter"][sProperty] = oFilterSaleOrder[sProperty];
@@ -157,38 +166,6 @@ sap.ui.define([
 				oItemBlockModel.refresh();
 			}
 		},
-		// fetchFieldParameters: function () {
-		// 	var sUrl = "/WorkboxServices/users/getFieldParameters/approvalworkflow",
-		// 		oView = this.getView(),
-		// 		oLoadModel = oView.getModel("LoadDataModel");
-
-		// 	return new Promise(
-		// 		function (resolve, reject) {
-		// 			oLoadModel.loadData(sUrl, null, !0);
-		// 			oLoadModel.attachRequestCompleted(function (oResp) {
-		// 				var itemLevelPersData = oResp.getSource().getData().data;
-		// 				if (!itemLevelPersData) {
-		// 					return;
-		// 				}
-		// 				var customItem = {
-		// 					"header": [],
-		// 					"item": []
-		// 				};
-		// 				for (var index in itemLevelPersData) {
-		// 					if (itemLevelPersData[index].level === "HEADER") {
-		// 						customItem.header.push(JSON.parse(JSON.stringify(itemLevelPersData[index])));
-		// 					} else {
-		// 						customItem.item.push(JSON.parse(JSON.stringify(itemLevelPersData[index])));
-		// 					}
-		// 				}
-		// 				oView.setModel(new JSONModel(customItem), "PersonalizationModel");
-		// 				resolve(oResp);
-		// 			}.bind(this));
-		// 			oLoadModel.attachRequestFailed(function (oErr) {
-		// 				reject(oErr);
-		// 			});
-		// 		});
-		// },
 		controlEditabled: function (object, aItems, aItemUsage, oEditConfig) {
 			object.editMaterial = (oEditConfig) ? oEditConfig.editMaterial : true;
 			object.editOrderQty = (oEditConfig) ? oEditConfig.editOrderQty : true;
@@ -211,16 +188,33 @@ sap.ui.define([
 		splitText: function (taskDescription, index) {
 			return taskDescription.split("|")[+index];
 		},
-		status: function (val) {
-			if (val === "Display Only") {
+		displayStatus: function (taskItemStatus, visiblity) {
+			// 22: Pending Approval
+			// 23: Pending Approval by previous level
+			// 24: Approved
+			// 25: Rejected
+			// 27: Rejected by Previous Level
+			// 32: Display Only
+			// 70: Rejected from ECC
+			var iStatus = taskItemStatus + visiblity;
+			if (iStatus === 32) {
 				var status = "Warning";
-			} else if (val === "Approved") {
+			} else if (iStatus === 24) {
 				status = "Success";
-			} else if (val === "Rejected" || val === "Pending for Rejection" || val === "Rejected by Previous Level") {
+			} else if (iStatus === 25 || iStatus === 27 || iStatus === 70) {
 				status = "Error";
-			} else if (val === this.getText("PendingApproval") || val === "Pending Approval by previous level") {
+			} else if (iStatus === 22 || iStatus === 23) {
 				status = "Information";
 			}
+			// if (val === "Display Only") {
+			// 	var status = "Warning";
+			// } else if (val === "Approved") {
+			// 	status = "Success";
+			// } else if (val === "Rejected" || val === "Pending for Rejection" || val === "Rejected by Previous Level") {
+			// 	status = "Error";
+			// } else if (val === this.getText("PendingApproval") || val === "Pending Approval by previous level") {
+			// 	status = "Information";
+			// }
 			return status;
 		},
 		messageStatus: function (isValid) {
@@ -233,11 +227,25 @@ sap.ui.define([
 				return new Date().toLocaleDateString();
 			}
 		},
+		_dateFormatter: function (dDate) {
+			var oDateFormat = DateFormat.getDateInstance({
+				pattern: "yyyy/MM/dd"
+			});
+			if (dDate) {
+				return oDateFormat.format(dDate);
+			} else {
+				return oDateFormat.format(new Date());
+			}
+		},
 		concateText: function (sCode, sText) {
 			if (sCode) {
 				sText = (sText) ? "(" + sText + ")" : "";
 			}
 			return [sCode, sText].join(" ");
+		},
+		returnDate: function (dDate, iDays) {
+			var dRDate = dDate;
+			return new Date(dRDate.setDate(dRDate.getDate() - iDays));
 		},
 		setNumericAndSort: function (oData, aProperty) {
 			if (oData) {

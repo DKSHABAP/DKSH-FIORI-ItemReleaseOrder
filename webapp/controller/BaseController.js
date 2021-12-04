@@ -22,6 +22,7 @@ sap.ui.define([
 				panelSort: true,
 				isPageBusy: false,
 				selectedPage: 1,
+				valueStateDate: "None",
 				pagination: []
 			}), "settings");
 			oView.setModel(new JSONModel({
@@ -29,8 +30,8 @@ sap.ui.define([
 				"salesDocNumInitial": "",
 				"salesDocNumEnd": "",
 				"distChannel": "",
-				"initialDate": null,
-				"endDate": null,
+				"initialDate": this.formatter.returnDate(new Date(), 15),
+				"endDate": new Date(),
 				"materialGroup4": "",
 				"materialGroup": "",
 				"salesOrg": "",

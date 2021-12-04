@@ -33,7 +33,8 @@
 				<fb:FilterGroupItem groupName="G1" name="D" label="{i18n>tltpDateRange}" partOfCurrentVariant="true"
 					visibleInFilterBar="{SearchHelpPersonalization>/userPersonaDto/3/status}">
 					<fb:control>
-						<DateRangeSelection displayFormat="dd/MM/yyyy" dateValue="{filterModel>/initialDate}" secondDateValue="{filterModel>/endDate}"/>
+						<DateRangeSelection displayFormat="dd/MM/yyyy" valueFormat="yyyy/MM/dd" dateValue="{filterModel>/initialDate}"
+							secondDateValue="{filterModel>/endDate}" valueState="{settings>/valueStateDate}" valueStateText="{i18n>maxDateRange}"/>
 					</fb:control>
 				</fb:FilterGroupItem>
 				<fb:FilterGroupItem groupName="G1" name="E" label="{i18n>CustomerPONo}" partOfCurrentVariant="true"
