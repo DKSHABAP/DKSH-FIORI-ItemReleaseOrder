@@ -69,6 +69,7 @@ sap.ui.define([
 			var oUserInfoModel = this.getView().getModel("UserInfo"),
 				oUserMangement = this.getView().getModel("UserManagement"),
 				oFilterSaleOrder = this.getView().getModel("filterModel").getData(),
+				oSettingModel = this.getView().getModel("settings"),
 				aProperties = ["isAdmin", "materialGroup", "materialCode", "materialGroup4", "salesOrg", "soldtoParty",
 					"division", "distChannel", "salesTeam", "salesTerritory", "endDate", "initialDate", "customerPoNo", "shipToparty",
 					"salesDocNumInitial", "salesDocNumEnd", "headerDeliveryBlock", "itemDeliveryBlock", "orderType"
@@ -76,17 +77,20 @@ sap.ui.define([
 				oReqPayload = {
 					filter: {}
 				};
-			if (!oFilterSaleOrder.initialDate) {
-				oFilterSaleOrder.initialDate = this.formatter.returnInitialDate.call(this, oFilterSaleOrder.endDate, 15);
+			if (oFilterSaleOrder.initialDate && oFilterSaleOrder.endDate) {
+				var tDiff = Math.abs(oFilterSaleOrder.initialDate.getTime() - oFilterSaleOrder.endDate.getTime()),
+					dDiff = Math.ceil(tDiff / (1000 * 60 * 60 * 24));
+				if (dDiff > 30) {
+					oSettingModel.setProperty("/valueStateDate", "Error");
+					return;
+				}
+				oSettingModel.setProperty("/valueStateDate", "None");
 			}
 			for (var index in Object.keys(aProperties)) {
 				var sProperty = aProperties[index];
 				if ((sProperty === "endDate" || sProperty === "initialDate")) {
 					var dDate = oFilterSaleOrder[sProperty];
-					if (sProperty === "endDate") {
-						dDate = dDate.split("/").reverse().join("/");
-					}
-					oReqPayload["filter"][sProperty] = dDate;
+					oReqPayload["filter"][sProperty] = this.formatter._dateFormatter.call(this, dDate);
 					continue;
 				}
 				oReqPayload["filter"][sProperty] = oFilterSaleOrder[sProperty];
@@ -225,7 +229,7 @@ sap.ui.define([
 		},
 		_dateFormatter: function (dDate) {
 			var oDateFormat = DateFormat.getDateInstance({
-				pattern: "dd/MM/yyyy"
+				pattern: "yyyy/MM/dd"
 			});
 			if (dDate) {
 				return oDateFormat.format(dDate);
@@ -239,11 +243,9 @@ sap.ui.define([
 			}
 			return [sCode, sText].join(" ");
 		},
-		returnInitialDate: function (dEndDate, iDays) {
-			var aDate = dEndDate.split("/");
-			var dStartDate = new Date([aDate[1], aDate[0], aDate[2]].join("/"));
-			dStartDate = this.formatter._dateFormatter(new Date(dStartDate.setDate(dStartDate.getDate() - iDays)));
-			return dStartDate.split("/").reverse().join("/");
+		returnDate: function (dDate, iDays) {
+			var dRDate = dDate;
+			return new Date(dRDate.setDate(dRDate.getDate() - iDays));
 		},
 		setNumericAndSort: function (oData, aProperty) {
 			if (oData) {
