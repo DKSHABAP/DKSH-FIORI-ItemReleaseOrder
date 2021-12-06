@@ -1,14 +1,4 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:ui="sap.ui.table" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core">
-	<!--	<SelectDialog title="{i18n>distChanlCustIdFragLabel}" liveChange="onLiveChangeDistChan" confirm="handleAddDistChan"  cancel="handleCancelDistChan"
-		items="{DistChanSet>/results}" class="sapUiSizeCompact">
-		<StandardListItem title="{parts: ['DistChanSet>DistChl','DistChanSet>Name'], formatter:'.formatter.keyValueformat'}" type="Active"
-			tooltip="{parts: ['DistChanSet>DistChl','DistChanSet>Name'], formatter:'.formatter.keyValueformat'}"/>
-	</SelectDialog>-->
-	<!--<SelectDialog title="{i18n>distChanlCustIdFragLabel}" liveChange="onLiveChange($event, 'Description', 'Distchl')"-->
-	<!--	confirm="handleAdd($event, '/selectedDistChannel', '/stp_distchnl', 'Distchl')" cancel="handleCancel($event, 'DistChan')"-->
-	<!--	items="{ValueHelpSet>/results}" class="sapUiSizeCompact">-->
-	<!--	<StandardListItem title="{ValueHelpSet>Description}" type="Active"/>-->
-	<!--</SelectDialog>-->
 	<SelectDialog title="{i18n>distChanlCustIdFragLabel}" liveChange="onLiveChange($event, 'Code', 'Description')"
 		confirm="handleAdd($event, '/distChannel', 'Code', 'filterModel', '', '/stp_distchnl')" cancel="handleCancel($event, 'DistChan')"
 		items="{ path: '/SearchHelp_DistChnlSet'}" class="sapUiSizeCompact">

@@ -12,7 +12,6 @@
 				<items>
 					<ColumnListItem>
 						<cells>
-							<!--						<Text text="{SubmitMessageModel>Message}" textAlign="Left"/>-->
 							<FlexBox alignItems="Center">
 								<ObjectStatus text="{SubmitMessageModel>Message}"
 									icon="{ path : '{= !${SubmitMessageModel>isChanged}}', formatter: '.formatter.messageStatus' }"/>

@@ -1,9 +1,4 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:ui="sap.ui.table" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core">
-	<!--<SelectDialog title="{i18n>tltpStoLoc}" liveChange="onLiveChange($event, 'Description', 'StorageLocation')"-->
-	<!--	confirm="handleAddItem($event, '/storageLoc', 'StorageLocation', '/batchNum')" cancel="handleCancel($event, 'StorageLocation')"-->
-	<!--	items="{ValueHelpSet>/results}" class="sapUiSizeCompact">-->
-	<!--	<StandardListItem title="{ValueHelpSet>Description}" type="Active"/>-->
-	<!--</SelectDialog>-->
 	<SelectDialog title="{i18n>tltpStoLoc}" liveChange="onLiveChange($event, 'Code', 'Description')"
 		confirm="handleAdd($event, '/storageLoc', 'Code', 'ItemBlockModel', '/batchNum')" cancel="handleCancel($event, 'StorageLocation')"
 		items="{path: '/SearchHelp_StorageLocationSet'}" class="sapUiSizeCompact">

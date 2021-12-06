@@ -11,7 +11,6 @@
 				<items>
 					<ColumnListItem>
 						<cells>
-							<!--						<Text text="{SavedMessageModel>Message}" textAlign="Left"/>-->
 							<FlexBox alignItems="Center">
 								<ObjectStatus text="{SavedMessageModel>Message}" icon="{ path : 'SavedMessageModel>isValid', formatter: '.formatter.messageStatus' }"/>
 							</FlexBox>

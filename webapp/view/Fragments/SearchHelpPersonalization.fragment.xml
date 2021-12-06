@@ -45,8 +45,6 @@
 			</VBox>
 		</content>
 		<buttons>
-			<!--<Button text="{i18n>ok}" press="handleOk($event, ${SearchHelpPersonalization>/},'SearchHelpPersonalization')" tooltip="{i18n>ok}"-->
-			<!--	visible="{= ${SearchHelpPersonalization>/oData/isBtnVisible}}"/>-->
 			<Button text="{i18n>Save}"
 				press="onVariantUpdate($event, ${SearchHelpPersonalization>/}, 'SearchHelpPersonalization', 'SAVE', 'SearchHelpPersonalization')"
 				tooltip="{i18n>Save}" visible="{= !${SearchHelpPersonalization>/oData/isBtnVisible}}"/>
