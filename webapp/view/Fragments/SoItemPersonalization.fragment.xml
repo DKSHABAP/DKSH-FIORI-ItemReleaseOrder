@@ -1,6 +1,4 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form" xmlns:l="sap.ui.layout">
-	<!--<Dialog title="{i18n>personalization}" class="sapUiSizeCompact custBox" contentWidth="30%" draggable="true" resizable="true"-->
-	<!--	escapeHandler=".handleEscape" afterClose="onAfterClose">-->
 	<Dialog title="{i18n>personalization}" class="sapUiSizeCompact custBox" contentWidth="30%" draggable="true" resizable="true"
 		afterClose="onAfterClose($event, ${SoItemPersonalizationModel>/}, 'SoItemPersonalizationModel', 'SoItemPersonalization')">
 		<content>

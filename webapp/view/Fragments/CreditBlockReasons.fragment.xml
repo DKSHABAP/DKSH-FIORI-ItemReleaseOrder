@@ -5,10 +5,3 @@
 		</SelectList>
 	</ResponsivePopover>
 </core:FragmentDefinition>
-<!--<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">-->
-<!--	<ResponsivePopover title="{i18n>CreditBlockReasonFragTitle}" placement="Auto">-->
-<!--		<SelectList id="idCreditStatus" items="{path: '/CreditStatusSet'}">-->
-<!--			<core:Item text="{Description}"/>-->
-<!--		</SelectList>-->
-<!--	</ResponsivePopover>-->
-<!--</core:FragmentDefinition>-->

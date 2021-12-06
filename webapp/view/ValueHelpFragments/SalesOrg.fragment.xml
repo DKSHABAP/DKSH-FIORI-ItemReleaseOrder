@@ -1,9 +1,4 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
-	<!--<SelectDialog title="{i18n>salesOrg}" liveChange="onLiveChange($event, 'Description', 'SalesOrg')"-->
-	<!--	confirm="handleAdd($event, '/selectedSalesOrg', '/stp_soldorg', 'Salesorg')" cancel="handleCancel($event, 'SalesOrg')"-->
-	<!--	items="{ValueHelpSet>/results}" class="sapUiSizeCompact">-->
-	<!--	<StandardListItem title="{ValueHelpSet>Description}" type="Active"/>-->
-	<!--</SelectDialog>-->
 	<SelectDialog title="{i18n>salesOrg}" liveChange="onLiveChange($event, 'Code', 'Description')"
 		confirm="handleAdd($event, '/salesOrg', 'Code', 'filterModel', '', '/stp_soldorg')" cancel="handleCancel($event, 'SalesOrg')"
 		items="{path: '/SearchHelp_SalesOrgSet'}" class="sapUiSizeCompact">

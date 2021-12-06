@@ -77,15 +77,19 @@ sap.ui.define([
 				oReqPayload = {
 					filter: {}
 				};
-			if (oFilterSaleOrder.initialDate && oFilterSaleOrder.endDate) {
-				var tDiff = Math.abs(oFilterSaleOrder.initialDate.getTime() - oFilterSaleOrder.endDate.getTime()),
-					dDiff = Math.ceil(tDiff / (1000 * 60 * 60 * 24));
-				if (dDiff > 30) {
-					oSettingModel.setProperty("/valueStateDate", "Error");
-					return;
-				}
-				oSettingModel.setProperty("/valueStateDate", "None");
+			if (!oFilterSaleOrder.initialDate || !oFilterSaleOrder.endDate) {
+				oSettingModel.setProperty("/valueStateDate", "Error");
+				oSettingModel.setProperty("/valueStateDateText", this.getText("dateRangeMandatory"));
+				return;
 			}
+			var tDiff = Math.abs(oFilterSaleOrder.initialDate.getTime() - oFilterSaleOrder.endDate.getTime()),
+				dDiff = Math.ceil(tDiff / (1000 * 60 * 60 * 24));
+			if (dDiff > 30) {
+				oSettingModel.setProperty("/valueStateDate", "Error");
+				oSettingModel.setProperty("/valueStateDateText", this.getText("maxDateRange"));
+				return;
+			}
+			oSettingModel.setProperty("/valueStateDate", "None");
 			for (var index in Object.keys(aProperties)) {
 				var sProperty = aProperties[index];
 				if ((sProperty === "endDate" || sProperty === "initialDate")) {

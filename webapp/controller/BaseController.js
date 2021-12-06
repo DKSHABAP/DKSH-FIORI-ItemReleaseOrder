@@ -23,6 +23,7 @@ sap.ui.define([
 				isPageBusy: false,
 				selectedPage: 1,
 				valueStateDate: "None",
+				valueStateDateText: "",
 				pagination: []
 			}), "settings");
 			oView.setModel(new JSONModel({

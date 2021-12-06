@@ -26,7 +26,6 @@
 						<Text text="{DisplayActionModel>salesItemOrderNo}" textAlign="Left"/>
 						<Text text="{DisplayActionModel>sapMaterialNum}" textAlign="Left"/>
 						<Text text="{=${DisplayActionModel>acceptOrReject} === 'R' ? 'Rejected' : 'Approved'}" textAlign="Left"/>
-						<!--						<Text text="{DisplayActionModel>reasonForRejection}" textAlign="Left"/>-->
 						<Text text="{DisplayActionModel>reasonForRejectionText}" textAlign="Left"/>
 						<Text text="{DisplayActionModel>comments}" textAlign="Left"/>
 					</ColumnListItem>
