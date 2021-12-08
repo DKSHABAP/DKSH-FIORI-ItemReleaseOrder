@@ -100,7 +100,7 @@
 						press="onPressEditItem($event, ${ItemBlockModel>/}, ${ItemBlockModel>})" visible="{= ${ItemBlockModel>itemBtnEanbled}}"
 						enabled="{= ${ItemBlockModel>itemBtnEanbled} &amp;&amp; ${ItemBlockModel>levelNum} === 'L1'}"/>
 					<Button type="Transparent" text="{i18n>Save}" visible="{= !${ItemBlockModel>itemBtnEanbled}}"
-						enabled="{= !${ItemBlockModel>itemBtnEanbled}}" press="onSaveEditItem($event, 'SavedMessage', ${ItemBlockModel>})"/>
+						enabled="{= !${ItemBlockModel>itemBtnEanbled}}" press="onSaveEditItem($event, 'SavedMessage', ${ItemBlockModel>}, ${ItemBlockModel>/})"/>
 					<Button type="Transparent" text="{i18n>Cancel}" visible="{= !${ItemBlockModel>itemBtnEanbled}}"
 						enabled="{= !${ItemBlockModel>itemBtnEanbled}}" press="onCancelEditItem"/>
 					<Button icon="sap-icon://accept" type="Accept" tooltip="{i18n>Approve}" class="dkshAcceptBtnStyle"

@@ -164,7 +164,6 @@ sap.ui.define([
 				MessageToast.show(this.getText("ItemSelectList"));
 				return;
 			}
-			this._getTable("idList").setBusy(true);
 			this.onSaveEditItem["Payload"] = {};
 			for (var index in aHeadProperties) {
 				var sHeadProperty = aHeadProperties[index];
@@ -190,6 +189,10 @@ sap.ui.define([
 				var sPath = aSelectedContext[indx].getPath();
 
 				oItem = aSelectedContext[indx].getProperty(sPath);
+				if (!oItem.sapMaterialNum) {
+					MessageBox.warning("Make sure material is not blank");
+					return;
+				}
 				oItem.salesItemOrderNo = oItem.salesItemOrderNo;
 				oItem.unitPrice = oItem.netPrice;
 				oItem.salesQty = oItem.orderedQtySales;
@@ -208,6 +211,7 @@ sap.ui.define([
 				aFilters.push(oFilter);
 				this.onSaveEditItem["Payload"].listOfChangedItemData.push(oItem);
 			}
+			this._getTable("idList").setBusy(true);
 			// Validate if item has rejection or SO blocked prior update item to ECC
 			Promise.all([this.formatter.fetchData.call(this, oModel, "/ValidateItemsBeforeSaveSet", aFilters)]).then(function (oRes) {
 				var sFragmentPath = this.getText("MainFragmentPath");
@@ -238,7 +242,7 @@ sap.ui.define([
 				this.formatter.postJavaService.call(this, oLoadDataModel, "/DKSHJavaService/OdataServices/updateOnSaveOrEdit", JSON.stringify(
 					this.onSaveEditItem["Payload"]), "POST").then(function (oResponse) {
 					if (oLoadDataModel.getData().status === "FAILED") {
-						this._displayError(oLoadDataModel.getData().message, "SaveFailedMessage").bind(this);
+						this._displayError(oLoadDataModel.getData().message, "SaveFailedMessage");
 						return;
 					}
 					this.oFragmentList[sFragmentName].open();
@@ -292,10 +296,9 @@ sap.ui.define([
 				];
 
 			if (sProperty === "Material" && !oEvent.getParameters().newValue) {
-				MessageToast.show("Make sure material is not empty");
+				MessageBox.warning("Make sure material is not blank");
 				return;
 			}
-
 			this._getTable("idList").setBusy(true);
 			// Call oData to simulate the price for the material
 			for (var indx in Object.keys(aDataProperties)) {
