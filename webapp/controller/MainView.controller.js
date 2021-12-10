@@ -346,7 +346,7 @@ sap.ui.define([
 						sPath = oSelectedContext.getPath();
 
 					oSelectedContext.getModel().setProperty([sPath, "/acceptOrReject"].join(""), "A");
-					oSelectedContext.getModel().setProperty([sPath, "/itemStagingStatus"].join(""), "Pending Approval");
+					oSelectedContext.getModel().setProperty([sPath, "/itemStagingStatus"].join(""), "Pending Submission");
 					// Set both comment and reject reason text to blank for user action
 					oSelectedContext.getModel().setProperty([sPath, "/reasonForRejectionText"].join(""), "");
 					oSelectedContext.getModel().setProperty([sPath, "/comments"].join(""), "");
