@@ -316,9 +316,9 @@ sap.ui.define([
 					sProperty = Object.keys(oItem)[index];
 					if (typeof oItem[sProperty] !== "object") {
 						if (typeof oItemBlockModel.getProperty(sPath)[sProperty] === "string") {
-							oItemBlockModel.getProperty(sPath)[sProperty] = oItem[sProperty];
+							oItemBlockModel.setProperty(sPath + "/" + sProperty, oItem[sProperty]);
 						} else {
-							oItemBlockModel.getProperty(sPath)[sProperty] = +oItem[sProperty];
+							oItemBlockModel.setProperty(sPath + "/" + sProperty, +oItem[sProperty]);
 						}
 					}
 				}
@@ -346,7 +346,7 @@ sap.ui.define([
 						sPath = oSelectedContext.getPath();
 
 					oSelectedContext.getModel().setProperty([sPath, "/acceptOrReject"].join(""), "A");
-					oSelectedContext.getModel().setProperty([sPath, "/itemStagingStatus"].join(""), "Pending Approval");
+					oSelectedContext.getModel().setProperty([sPath, "/itemStagingStatus"].join(""), "Pending Submission");
 					// Set both comment and reject reason text to blank for user action
 					oSelectedContext.getModel().setProperty([sPath, "/reasonForRejectionText"].join(""), "");
 					oSelectedContext.getModel().setProperty([sPath, "/comments"].join(""), "");
