@@ -316,9 +316,9 @@ sap.ui.define([
 					sProperty = Object.keys(oItem)[index];
 					if (typeof oItem[sProperty] !== "object") {
 						if (typeof oItemBlockModel.getProperty(sPath)[sProperty] === "string") {
-							oItemBlockModel.getProperty(sPath)[sProperty] = oItem[sProperty];
+							oItemBlockModel.setProperty(sPath + "/" + sProperty, oItem[sProperty]);
 						} else {
-							oItemBlockModel.getProperty(sPath)[sProperty] = +oItem[sProperty];
+							oItemBlockModel.setProperty(sPath + "/" + sProperty, +oItem[sProperty]);
 						}
 					}
 				}
