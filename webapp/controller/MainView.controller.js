@@ -329,42 +329,43 @@ sap.ui.define([
 		onApprovePress: function (oEvent, oItem) {
 			var oSource = oEvent.getSource(),
 				sId = oSource.getParent().getParent().getId(),
-				oTable = sap.ui.getCore().byId(sId);
+				oTable = sap.ui.getCore().byId(sId),
+				oMessageModel = {
+					results: []
+				};
 
 			if (oTable.getSelectedItems().length === 0) {
 				MessageToast.show(this.getText("ItemSelectList"));
 				return;
 			}
 			this.onApprovePress["Table"] = oTable;
-			var fnCloseApprove = function (oAction) {
-				oTable = this.onApprovePress["Table"];
-				if (oAction === "CANCEL") {
-					return;
-				}
-				for (var index in oTable.getSelectedContexts()) {
-					var oSelectedContext = oTable.getSelectedContexts()[index],
-						sPath = oSelectedContext.getPath();
+			oMessageModel["Title"] = this.oResourceBundle.getText("TitleMessageBox", [oItem.salesOrderNum]);
+			for (var indx in oTable.getSelectedContexts()) {
+				var oSelectedContext = oTable.getSelectedContexts()[indx];
+				var sMessage = (!oSelectedContext.getObject().nextLevel) ? this.oResourceBundle.getText("FinalApprovalMessage", [oSelectedContext.getObject()
+					.salesItemOrderNo
+				]) : this.oResourceBundle.getText("ApprovalMessage", [oSelectedContext.getObject().salesItemOrderNo]);
+				oMessageModel.results.push({
+					Message: sMessage
+				});
+			}
+			this.getView().setModel(new JSONModel(oMessageModel), "MessageModel");
+			this._loadXMLFragment(this.getText("MainFragmentPath"), "DialogMessageBox", oMessageModel, "MessageModel").bind(this);
+		},
+		onOkMessageBox: function (oEvent, sFragment) {
+			var oTable = this.onApprovePress["Table"];
+			for (var index in oTable.getSelectedContexts()) {
+				var oSelectedContext = oTable.getSelectedContexts()[index],
+					sPath = oSelectedContext.getPath();
 
-					oSelectedContext.getModel().setProperty([sPath, "/acceptOrReject"].join(""), "A");
-					oSelectedContext.getModel().setProperty([sPath, "/itemStagingStatus"].join(""), "Pending Submission");
-					// Set both comment and reject reason text to blank for user action
-					oSelectedContext.getModel().setProperty([sPath, "/reasonForRejectionText"].join(""), "");
-					oSelectedContext.getModel().setProperty([sPath, "/comments"].join(""), "");
-				}
-				oTable.removeSelections();
-			}.bind(this);
-			// As discussed, java will set levelStatus = 4 when any item reached to last level or single level approver.
-			var sApprvMsg = ["(", oTable.getSelectedItems().length, ")", (!oItem.salesDocItemList[0].nextLevel) ?
-				" Item(s) approved completely" : " Item(s) approved"
-			].join("");
-			MessageBox.show(sApprvMsg, {
-				icon: MessageBox.Icon.INFORMATION,
-				title: "Sales Document: " + oItem.salesOrderNum,
-				actions: [MessageBox.Action.YES, MessageBox.Action.CANCEL],
-				onClose: fnCloseApprove,
-				initialFocus: MessageBox.Action.CANCEL,
-				styleClass: sResponsivePaddingClasses
-			});
+				oSelectedContext.getModel().setProperty([sPath, "/acceptOrReject"].join(""), "A");
+				oSelectedContext.getModel().setProperty([sPath, "/itemStagingStatus"].join(""), "Pending Submission");
+				// Set both comment and reject reason text to blank for user action
+				oSelectedContext.getModel().setProperty([sPath, "/reasonForRejectionText"].join(""), "");
+				oSelectedContext.getModel().setProperty([sPath, "/comments"].join(""), "");
+			}
+			oTable.removeSelections();
+			this.handleCloseValueHelp(oEvent, sFragment);
 		},
 		onRejectPress: function (oEvent, sFragment, oItem, oModel) {
 			var oView = this.getView(),
