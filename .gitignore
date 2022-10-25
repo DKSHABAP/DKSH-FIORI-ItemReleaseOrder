@@ -16,3 +16,4 @@ mergedManifestDescriptor.json
 APIExternalProducer.js
 .*/APIExternalProducer.js
 /dist/
+.che/project.json
