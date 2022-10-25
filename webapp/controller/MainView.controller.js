@@ -6,8 +6,9 @@ sap.ui.define([
 	"sap/ui/model/Filter",
 	"sap/ui/model/FilterOperator",
 	"sap/m/MessageBox",
-	"sap/m/MessageToast"
-], function (BaseController, JSONModel, Fragment, Sorter, Filter, FilterOperator, MessageBox, MessageToast) {
+	"sap/m/MessageToast",
+	"dksh/connectclient/itemblockorder/controller/EditableConfig"
+], function (BaseController, JSONModel, Fragment, Sorter, Filter, FilterOperator, MessageBox, MessageToast, EditableConfig) {
 	"use strict";
 	var sResponsivePaddingClasses = "sapUiResponsivePadding--header sapUiResponsivePadding--content sapUiResponsivePadding--footer";
 
@@ -16,7 +17,7 @@ sap.ui.define([
 			this._preSetModel(this.getView());
 			this.oResourceBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle();
 			this.oFragmentList = [];
-
+			this._oEditableConfig = new EditableConfig(this.getOwnerComponent().getModel("Setup"));
 			this.getView().setBusy(true);
 			Promise.all([this.formatter.fetchUserInfo.call(this), this.formatter.fetchData.call(this, this.getOwnerComponent().getModel(),
 				"/GetControlEditableConfigSet")]).then(function (oRes) {
@@ -130,18 +131,27 @@ sap.ui.define([
 
 			oSource.setVisible(false);
 			// Control selected item's properties visibility
-			aItems.map(function (oItem) {
-				var object = oItem.getBindingContext("ItemBlockModel").getObject();
-				object = this.formatter.controlEditabled.call(this, object, aItems, aItemUsage, oEditConfig);
-				object.salesUnit = (!object.salesUnit) ? this.getText("UoM").toUpperCase() : object.salesUnit;
+			var oCombination = {
+				country: oItemModel.salesOrg.substring(0,2),
+				module: "Fiori",
+				settingName: "Item Release Order Editable"
+			};
+			var oPromise = this._oEditableConfig.getGiven(oCombination);
+			oPromise.then(function (aGiven) {
+				aItems.map(function (oItem) {
+					var object = oItem.getBindingContext("ItemBlockModel").getObject();
+					object = this.formatter.controlEditabled.call(this, object, aItems, aItemUsage, oEditConfig);
+					this._oEditableConfig.runGWT(aGiven,object);
+					object.salesUnit = (!object.salesUnit) ? this.getText("UoM").toUpperCase() : object.salesUnit;
+				}.bind(this));
+				// Store initial value model for onSaveEditItem function
+				// In case if item(s) are not valid then reset to initial value in onSaveEditItem or cancelEditItem function
+				oView.setModel(new JSONModel(), "initialValueModel");
+				oView.getModel("initialValueModel").setData(JSON.parse(oTable.getModel("ItemBlockModel").getJSON()));
+				// Set edit button
+				oItemBlockModel.setProperty(sPath + "/itemBtnEanbled", false);
+				oItemBlockModel.refresh();
 			}.bind(this));
-			// Store initial value model for onSaveEditItem function
-			// In case if item(s) are not valid then reset to initial value in onSaveEditItem or cancelEditItem function
-			oView.setModel(new JSONModel(), "initialValueModel");
-			oView.getModel("initialValueModel").setData(JSON.parse(oTable.getModel("ItemBlockModel").getJSON()));
-			// Set edit button
-			oItemBlockModel.setProperty(sPath + "/itemBtnEanbled", false);
-			oItemBlockModel.refresh();
 		},
 		onSaveEditItem: function (oEvent, sFragmentName, oItem) {
 			var oView = this.getView(),
@@ -952,6 +962,14 @@ sap.ui.define([
 			var oFilterModel = this.getView().getModel("filterModel");
 			oFilterModel.setData({});
 			oFilterModel.updateBindings(true);
+		},
+		/** 
+		 * Destroy controller and dependent objects
+		 */
+		destroy: function () {
+			if (this._oEditableConfig)
+				this._oEditableConfig.destroy();
+			BaseController.prototype.destroy.apply(this, arguments);
 		}
 	});
 });

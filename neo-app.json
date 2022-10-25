@@ -82,6 +82,14 @@
         "type": "destination",
         "name": "UserManagement_Dest"
       }
+    },
+    {
+      "path": "/dkshcc/Setup.xsodata/",
+      "target": {
+        "type": "destination",
+        "name": "DEV-Setup"
+      },
+      "description": "XSODATA-DEV"
     }
   ],
   "sendWelcomeFileRedirect": true
