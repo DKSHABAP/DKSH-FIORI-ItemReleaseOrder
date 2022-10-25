@@ -83,10 +83,11 @@ sap.ui.define([
 		},
 		/** 
 		 * Run Given/When/Then using a data context
+		 * @param aGiven Array of configuration maps
 		 * @param oContext Object with context data
-		 * @returns Promise
+		 * @param bAll Evaluate all groupings
 		 */
-		runGWT: function (aGiven, oContext) {
+		runGWT: function (aGiven, oContext, bAll) {
 			aGiven.forEach(function (oGiven, iIndex) {
 				var bWhen = oGiven.when.results.length === 0 || oGiven.when.results.every(function (oWhen) {
 					if (oContext.hasOwnProperty(oWhen.name)) {
@@ -108,7 +109,8 @@ sap.ui.define([
 							}
 						}
 					});
-					return;
+					if(!bAll)
+						return;
 				}
 			});
 		}
