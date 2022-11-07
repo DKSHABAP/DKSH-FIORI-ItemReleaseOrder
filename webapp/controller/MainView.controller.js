@@ -132,7 +132,7 @@ sap.ui.define([
 			oSource.setVisible(false);
 			// Control selected item's properties visibility
 			var oCombination = {
-				country: oItemModel.salesOrg.substring(0,2),
+				country: oItemModel.country ? oItemModel.country : oItemModel.salesOrg.substring(0,2),
 				module: "Fiori",
 				settingName: "Item Release Order Editable"
 			};
