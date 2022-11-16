@@ -87,7 +87,7 @@
       "path": "/dkshcc/Setup.xsodata/",
       "target": {
         "type": "destination",
-        "name": "DEV-Setup"
+        "name": "Setup"
       },
       "description": "XSODATA-DEV"
     }
