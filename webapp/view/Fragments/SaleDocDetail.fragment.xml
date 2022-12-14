@@ -185,6 +185,24 @@
 				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left" visible="{SoItemPersonalizationModel>/item/userPersonaDto/19/status}">
 					<Label design="Bold" text="{i18n>ItemStatus}" tooltip="{i18n>oldMatCodeColTooltip}"/>
 				</Column>
+				<Column demandPopin="true" minScreenWidth="Desktop" hAlign="Left" visible="{SoItemPersonalizationModel>/item/userPersonaDto/20/status}">
+					<Label design="Bold" text="{i18n>rejectionCode}" tooltip="{i18n>rejectionCodeColTooltip}"/>
+				</Column>
+				<Column demandPopin="true" minScreenWidth="Desktop" hAlign="Left" visible="{SoItemPersonalizationModel>/item/userPersonaDto/21/status}">
+					<Label design="Bold" text="{i18n>customerGroup}" tooltip="{i18n>customerGroupColTooltip}"/>
+				</Column>
+				<Column demandPopin="true" minScreenWidth="Desktop" hAlign="Left" visible="{SoItemPersonalizationModel>/item/userPersonaDto/22/status}">
+					<Label design="Bold" text="{i18n>customerGroup1}" tooltip="{i18n>customerGroup1ColTooltip}"/>
+				</Column>
+				<Column demandPopin="true" minScreenWidth="Desktop" hAlign="Left" visible="{SoItemPersonalizationModel>/item/userPersonaDto/23/status}">
+					<Label design="Bold" text="{i18n>shipToState}" tooltip="{i18n>shipToStateColTooltip}"/>
+				</Column>
+				<Column demandPopin="true" minScreenWidth="Desktop" hAlign="Left" visible="{SoItemPersonalizationModel>/item/userPersonaDto/24/status}">
+					<Label design="Bold" text="{i18n>productHierarchyLvl3}" tooltip="{i18n>productHierarchyLvl3ColTooltip}"/>
+				</Column>
+				<Column demandPopin="true" minScreenWidth="Desktop" hAlign="Left" visible="{SoItemPersonalizationModel>/item/userPersonaDto/25/status}">
+					<Label design="Bold" text="{i18n>productHierarchyLvl4}" tooltip="{i18n>productHierarchyLvl4ColTooltip}"/>
+				</Column>
 			</columns>
 			<items>
 				<ColumnListItem>
@@ -253,6 +271,12 @@
 						<!-- Item Staging Status -->
 						<ObjectStatus text="{ItemBlockModel>itemStagingStatus}"
 							state="{parts:['ItemBlockModel>taskItemStatus', 'ItemBlockModel>visiblity'],formatter:'.formatter.displayStatus'}"/>
+						<Text text="{ItemBlockModel>rejectionCode}" textAlign="Left"/>
+						<Text text="{ItemBlockModel>customerGroup}" textAlign="Left"/>
+						<Text text="{ItemBlockModel>customerGroup1}" textAlign="Left"/>
+						<Text text="{ItemBlockModel>shipToState}" textAlign="Left"/>
+						<Text text="{ItemBlockModel>productHierarchyLvl3}" textAlign="Left"/>
+						<Text text="{ItemBlockModel>productHierarchyLvl4}" textAlign="Left"/>
 					</cells>
 				</ColumnListItem>
 			</items>
