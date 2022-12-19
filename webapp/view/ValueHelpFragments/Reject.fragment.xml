@@ -12,7 +12,7 @@
 					</Column>
 					<Column width="150px">
 						<!-- modify by XRAINERH 07Dec2022 -->
-						<!-- Story STRY0018403 -->
+						<!-- Story STRY0018403  -->
 						<!-- Begin -->
 							<!--
 							<Select items="{path: '/SearchHelp_RejectReasonSet', templateShareable: true, sorter: {path: 'RejCode'}}"
