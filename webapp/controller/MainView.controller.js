@@ -130,18 +130,28 @@ sap.ui.define([
 
 			oSource.setVisible(false);
 			// Control selected item's properties visibility
-			aItems.map(function (oItem) {
-				var object = oItem.getBindingContext("ItemBlockModel").getObject();
-				object = this.formatter.controlEditabled.call(this, object, aItems, aItemUsage, oEditConfig);
-				object.salesUnit = (!object.salesUnit) ? this.getText("UoM").toUpperCase() : object.salesUnit;
+			var oCombination = {
+				country: oItemModel.country ? oItemModel.country : oItemModel.salesOrg.substring(0,2),
+				module: "Fiori",
+				settingName: "Item Release Order Editable"
+			};
+			
+			var oPromise = this._oEditableConfig.getGiven(oCombination);
+			oPromise.then(function (aGiven) {
+				aItems.map(function (oItem) {
+					var object = oItem.getBindingContext("ItemBlockModel").getObject();
+					object = this.formatter.controlEditabled.call(this, object, aItems, aItemUsage, oEditConfig);
+					this._oEditableConfig.runGWT(aGiven,object);
+					object.salesUnit = (!object.salesUnit) ? this.getText("UoM").toUpperCase() : object.salesUnit;
+				}.bind(this));
+				// Store initial value model for onSaveEditItem function
+				// In case if item(s) are not valid then reset to initial value in onSaveEditItem or cancelEditItem function
+				oView.setModel(new JSONModel(), "initialValueModel");
+				oView.getModel("initialValueModel").setData(JSON.parse(oTable.getModel("ItemBlockModel").getJSON()));
+				// Set edit button
+				oItemBlockModel.setProperty(sPath + "/itemBtnEanbled", false);
+				oItemBlockModel.refresh();
 			}.bind(this));
-			// Store initial value model for onSaveEditItem function
-			// In case if item(s) are not valid then reset to initial value in onSaveEditItem or cancelEditItem function
-			oView.setModel(new JSONModel(), "initialValueModel");
-			oView.getModel("initialValueModel").setData(JSON.parse(oTable.getModel("ItemBlockModel").getJSON()));
-			// Set edit button
-			oItemBlockModel.setProperty(sPath + "/itemBtnEanbled", false);
-			oItemBlockModel.refresh();
 		},
 		onSaveEditItem: function (oEvent, sFragmentName, oItem) {
 			var oView = this.getView(),
@@ -385,7 +395,7 @@ sap.ui.define([
 			}
 			
 			//modify by XRAINERH 07Dec2022 
-			//Begin - Story STRY0018403.
+			//Begin - Story STRY0018403
 			
 			//debugger;
 			var aHeaderComp = ({
