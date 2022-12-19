@@ -276,7 +276,6 @@ sap.ui.define([
 				sBindingPath = oTable.getBindingContext("ItemBlockModel").getPath(),
 				oInitialValueModel = oView.getModel("initialValueModel"),
 				aItems = oTable.getItems();
-
 			oItemBlockModel.setProperty(sBindingPath + "/itemBtnEanbled", true);
 			for (var index in aItems) {
 				var sPath = aItems[index].getBindingContextPath();
@@ -373,7 +372,7 @@ sap.ui.define([
 				sId = oSource.getParent().getParent().getId(),
 				oTable = sap.ui.getCore().byId(sId),
 				aRejectModel = [];
-
+			
 			if (oTable.getSelectedItems().length === 0) {
 				MessageToast.show(this.getText("ItemSelectList"));
 				return;
@@ -384,6 +383,65 @@ sap.ui.define([
 					sPath: oSelectedContext.getPath()
 				}));
 			}
+			
+			//modify by XRAINERH 07Dec2022 
+			//Begin - Story STRY0018403
+			
+			//debugger;
+			var aHeaderComp = ({
+					soNum : oModel.data[0].salesOrderNum,
+					sOrg : oModel.data[0].salesOrg
+				});
+			var countryCd = oModel.data[0].salesOrg.substr(0, 2);
+			if ( oModel.data[0].country !== null){
+				countryCd = oModel.data[0].country;
+			}
+			
+			var oDataModel = this.getView().getModel();
+			var filters = [];
+			//countryCd  = "MY";
+			oDataModel.read("/FILTER_REJECT_REASONSet", {
+				async: false,
+				filters: [
+						new sap.ui.model.Filter({
+							filters: [
+								new sap.ui.model.Filter("Country", sap.ui.model.FilterOperator.EQ, countryCd)
+							] })
+					],
+				sorters: [ new sap.ui.model.Sorter("Line", false) ],
+				success: function (oDataR, oResponseR) {
+					//console.log(oDataR.results);
+					oDataR.results.forEach( function( item, idx ) {
+						//console.log(item.Country + " [ " + item.ReasonReject + " ]");
+						filters.push(
+							new sap.ui.model.Filter({
+								filters: [
+									new sap.ui.model.Filter("RejCode", sap.ui.model.FilterOperator.EQ, item.ReasonReject)
+								] })
+						);
+					});
+					
+					oDataModel.read("/SearchHelp_RejectReasonSet", {
+						async: false,
+						filters: filters,
+						sorters: [ new sap.ui.model.Sorter("RejCode", false) ],
+						success: function (oData, oResponse) {
+							//console.log(oData.results);
+							oView.setModel(new JSONModel(oData.results), "RejectDataMode1");
+						},
+						error: function (error) {
+							MessageToast.show(error);
+						}
+					});
+				},
+				error: function (error) {
+					MessageToast.show(error);
+				}
+			});
+			//debugger;
+			oView.setModel(new JSONModel(aHeaderComp), "HeaderCompModel");
+			//End - Story STRY0018403
+			
 			oView.setModel(new JSONModel(aRejectModel), "RejectDataModel");
 			oView.setBusy(true);
 			this.onRejectPress["Table"] = oTable;
