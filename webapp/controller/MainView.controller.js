@@ -385,7 +385,7 @@ sap.ui.define([
 			}
 			
 			//modify by XRAINERH 07Dec2022 
-			//Begin - Story STRY0018403
+			//Begin - Story STRY0018403.
 			
 			//debugger;
 			var aHeaderComp = ({
