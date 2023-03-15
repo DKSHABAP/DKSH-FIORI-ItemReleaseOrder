@@ -1,21 +1,46 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:ui="sap.ui.table" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core">
-	<Dialog icon="sap-icon://hint" title="{MessageModel>/Title}" showHeader="true" draggable="true" contentWidth="20%">
-		<Table inset="false" fixedLayout="true" items="{path: 'MessageModel>/results'}" backgroundDesign="Solid" class="sapUiSizeCompact">
-			<columns>
-				<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left" width="140px">
-					<Label design="Bold" text="Message"/>
-				</Column>
-			</columns>
-			<items>
-				<ColumnListItem>
-					<cells>
-						<FlexBox alignItems="Center">
-							<ObjectStatus text="{MessageModel>Message}"/>
-						</FlexBox>
-					</cells>
-				</ColumnListItem>
-			</items>
-		</Table>
+	<Dialog icon="sap-icon://hint" title="{MessageModel>/Title}" showHeader="true" draggable="true" contentWidth="50%" class="custBox" >
+		<VBox>
+			<Table inset="false" fixedLayout="true" items="{path: 'MessageModel>/results'}" backgroundDesign="Solid" class="sapUiSizeCompact">
+				<columns>
+				<!--[-] delete - STRY0019584	
+					<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left" width="140px">
+						<Label design="Bold" text="Message"/>
+					</Column>
+				--><!--[-] end delete - STRY0019584 -->
+				<!--[+] add - STRY0019584 -->
+					<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left">
+						<Label design="Bold" text="{i18n>Message}"/>
+					</Column>
+					<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Center">
+						<Label design="Bold" text="{i18n>materialGroup}"/>
+					</Column>
+					<Column demandPopin="true" minScreenWidth="Tablet" hAlign="Left">
+						<Label design="Bold" text="{i18n>approvalRemark}"/>
+					</Column>				
+				<!--[+] end add - STRY0019584 -->
+				</columns>
+				<items>
+					<ColumnListItem>
+						<cells>
+							<FlexBox alignItems="Center">
+								<ObjectStatus text="{MessageModel>Message}"/>
+							</FlexBox>
+						<!--[+] add - STRY0019584 -->	
+							<Text text="{MessageModel>matGrp} - {MessageModel>matGrp4}" textAlign="Center" />
+							<Input value="{MessageModel>comments}" placeholder="{MessageModel>placeHolder}" 
+								textAlign="Left" />	
+						<!--[+] end add - STRY0019584 -->		
+						</cells>
+					</ColumnListItem>
+				</items>
+			</Table>
+			<!--[+] add - STRY0019584 -->
+				<Label text="{i18n>commentsText}" design="Bold" class="sapUiMediumMarginTop"/>
+				<TextArea change="onAddApproveComments($event, ${MessageModel>/results})" 
+					value="{MessageModel>/mainText}" showExceededText="true" width="100%" />
+			<!--[+] end add - STRY0019584 -->
+		</VBox>
 		<buttons>
 			<Button text="{i18n>ok}" press="onOkMessageBox($event, 'DialogMessageBox')"/>
 			<Button text="{i18n>cancel}" press="handleCloseValueHelp($event, 'DialogMessageBox')"/>
