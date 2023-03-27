@@ -11,57 +11,52 @@
 						<Label design="Bold" text="{i18n>Material}"/>
 					</Column>
 					<Column width="150px">
-						<!-- modify by XRAINERH 07Dec2022 -->
-						<!-- Story STRY0018403  -->
-						<!-- Begin -->
-							<!--
-							<Select items="{path: '/SearchHelp_RejectReasonSet', templateShareable: true, sorter: {path: 'RejCode'}}"
-								forceSelection="false"
-								change="onRejectCommonReasonChange($event, ${RejectDataModel>/})" width="100%">
-								<items>
-									<core:Item key="{RejCode}" text="{Description}"/>
-								</items>
-							</Select> 
-							-->
-						<Select items="{RejectDataMode1>/}"
+					<!--[-] delete - STRY0020007
+						<Select items="{path: '/SearchHelp_RejectReasonSet', templateShareable: true, sorter: {path: 'RejCode'}}"
 							forceSelection="false"
 							change="onRejectCommonReasonChange($event, ${RejectDataModel>/})" width="100%">
 							<items>
-								<core:Item key="{RejectDataMode1>RejCode}" text="{RejectDataMode1>Description}"/>
+								<core:Item key="{RejCode}" text="{Description}"/>
 							</items>
 						</Select> 
-						<!-- End -->
+					--><!-- end delete - STRY0020007 -->
+					<!-- add - STRY0020007 -1 -->
+						<Select items="{RejectF4Model>/}"
+							forceSelection="false"
+							change="onRejectCommonReasonChange($event, ${RejectDataModel>/})" width="100%">
+							<items>
+								<core:Item key="{RejectF4Model>RejCode}" text="{RejectF4Model>Description}"/>
+							</items>
+						</Select> 
+					<!-- end add - STRY0020007 -->
 					</Column>
 				</columns>
 				<items>
 					<ColumnListItem>
 						<Text text="{RejectDataModel>salesItemOrderNo}" textAlign="Left"/>
 						<Text text="{RejectDataModel>sapMaterialNum}" textAlign="Left"/>
-						<!-- modify by XRAINERH 07Dec2022 -->
-						<!-- Story STRY0018403 -->
-						<!-- Begin -->
-							<!--
-							<Select items="{path: '/SearchHelp_RejectReasonSet', templateShareable: true, sorter: {path: 'RejCode'}}" forceSelection="false"
-								selectedKey="{RejectDataModel>reasonForRejection}" selectedItemId="{RejectDataModel>selectedId}" width="100%">
-								<items>
-									<core:Item key="{RejCode}" text="{Description}"/>
-								</items>
-							</Select> 
-							-->
-						<Select items="{path:'RejectDataMode1>/', templateShareable:true}" forceSelection="false"
+					<!--[-] delete - STRY0020007
+						<Select items="{path: '/SearchHelp_RejectReasonSet', templateShareable: true, sorter: {path: 'RejCode'}}" forceSelection="false"
 							selectedKey="{RejectDataModel>reasonForRejection}" selectedItemId="{RejectDataModel>selectedId}" width="100%">
 							<items>
-								<core:Item key="{RejectDataMode1>RejCode}" text="{RejectDataMode1>Description}"/>
+								<core:Item key="{RejCode}" text="{Description}"/>
 							</items>
 						</Select> 
-						<!-- End -->
+					--><!--[-] ende delete - STRY0020007 -->
+					<!--[+] add - STRY0020007 -->
+						<Select items="{path:'RejectF4Model>/', templateShareable:true}" forceSelection="false"
+							selectedKey="{RejectDataModel>reasonForRejection}" selectedItemId="{RejectDataModel>selectedId}" width="100%">
+							<items>
+								<core:Item key="{RejectF4Model>RejCode}" text="{RejectF4Model>Description}"/>
+							</items>
+						</Select> 
+					<!--[+] end add - STRY0020007 -->
 					</ColumnListItem>
 				</items>
 			</Table>
-			<Label text="{HeaderCompModel>/soNum}" design="Bold" visible="false"/>
 			<Label text="{i18n>commentsText}" design="Bold" class="sapUiMediumMarginTop"/>
-			<TextArea change="onAddRejectComments($event, ${RejectDataModel>/})" value="{RejectDataModel>/0/comments}" showExceededText="true"
-				width="100%"/>
+			<TextArea change="onAddRejectComments($event, ${RejectDataModel>/})" 
+				value="{RejectDataModel>/0/comments}" showExceededText="true" width="100%" />
 		</VBox>
 		<buttons>
 			<Button text="{i18n>ok}" press="onOkRejectPress($event, ${RejectDataModel>/})"/>

@@ -29,7 +29,7 @@ sap.ui.define([
 		 */
 		getGiven: function (oCombination) {
 			var aFilters = [];
-			if (!this._mapGivenWhenThen[oCombination]) {
+			//	if (!this._mapGivenWhenThen[oCombination]) { --[-] delete - STRY0019584
 				this._mapGivenWhenThen[oCombination] = new Promise(function (fnResolve) {
 					if (oCombination.country) {
 						aFilters.push(new Filter({
@@ -78,7 +78,7 @@ sap.ui.define([
 							fnResolve([]);
 						});
 				}.bind(this));
-			}
+			//}
 			return this._mapGivenWhenThen[oCombination];
 		},
 		/** 
