@@ -1,5 +1,2 @@
-<<<<<<< HEAD
-{"type":"sap.web","builders":{"configs":{}},"runners":{"configs":{}},"attributes":{"sap.watt.common.setting":["{\"hcpdeploy\":{\"account\":\"xlgtvarz5i\",\"name\":\"connectclientitemblockorder\",\"lastVersionWeTriedToDeploy\":\"1.0.29\"},\"projectType\":[\"sap.watt.uitools.ide.web\",\"sap.watt.uitools.ide.fiori\"]}"]},"description":"","mixinTypes":[]}
-=======
-{"type":"sap.web","builders":{"configs":{}},"runners":{"configs":{}},"attributes":{"sap.watt.common.setting":["{\"hcpdeploy\":{\"account\":\"xlgtvarz5i\",\"name\":\"connectclientitemblockorder\",\"lastVersionWeTriedToDeploy\":\"1.0.34\"}}"]},"description":"","mixinTypes":[]}
->>>>>>> refs/remotes/origin/bayu_n
+{"type":"sap.web","builders":{"configs":{}},"runners":{"configs":{}},"attributes":{"sap.watt.common.setting":["{\"hcpdeploy\":{\"account\":\"xlgtvarz5i\",\"name\":\"connectclientitemblockorder\",\"lastVersionWeTriedToDeploy\":\"1.0.34\"},\"projectType\":[\"sap.watt.uitools.ide.web\",\"sap.watt.uitools.ide.fiori\"]}"]},"description":"","mixinTypes":[]}
+

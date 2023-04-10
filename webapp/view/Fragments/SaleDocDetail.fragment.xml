@@ -203,6 +203,10 @@
 				<Column demandPopin="true" minScreenWidth="Desktop" hAlign="Left" visible="{SoItemPersonalizationModel>/item/userPersonaDto/25/status}">
 					<Label design="Bold" text="{i18n>productHierarchyLvl4}" tooltip="{i18n>productHierarchyLvl4ColTooltip}"/>
 				</Column>
+				<!--[+]STRY0020405 remark (comment) column -->
+				<Column demandPopin="true" minScreenWidth="Desktop" hAlign="Left" visible="{SoItemPersonalizationModel>/item/userPersonaDto/26/status}">
+					<Label design="Bold" text="{i18n>commentText}" tooltip="{i18n>commentTooltip}"/>
+				</Column>
 			</columns>
 			<items>
 				<ColumnListItem>
@@ -277,6 +281,8 @@
 						<Text text="{ItemBlockModel>shipToState}" textAlign="Left"/>
 						<Text text="{ItemBlockModel>productHierarchyLvl3}" textAlign="Left"/>
 						<Text text="{ItemBlockModel>productHierarchyLvl4}" textAlign="Left"/>
+						<!--[+]STRY0020405 remark (comment) column -->
+						<Text text="{ItemBlockModel>comments}" textAlign="Left"/>
 					</cells>
 				</ColumnListItem>
 			</items>

@@ -143,7 +143,9 @@ sap.ui.define([
 				aItems.map(function (oItem) {
 					var object = oItem.getBindingContext("ItemBlockModel").getObject();
 					object = this.formatter.controlEditabled.call(this, object, aItems, aItemUsage, oEditConfig);
-					this._oEditableConfig.runGWT(aGiven,object);
+					object.country = oItemModel.country ? oItemModel.country : oItemModel.salesOrg.substring(0,2); //[+] STRY0020091
+					object.orderType = oItemModel.orderType ? oItemModel.orderType : null; //[+] STRY0020091
+					this._oEditableConfig.runGWT(aGiven, object, true); //[+] STRY0020091
 					object.salesUnit = (!object.salesUnit) ? this.getText("UoM").toUpperCase() : object.salesUnit;
 				}.bind(this));
 				// Store initial value model for onSaveEditItem function
@@ -450,53 +452,37 @@ sap.ui.define([
 		//[+] get rejection code setting - STRY0020007
 		_getSetupConfig: function(){
 			this._aRejCode=[];
+			this._aCommCtrl=[]; //[+] add - STRY0019584
 			var oParam = {
-				module:"Fiori",
-				settingName:"itemReleaseOrder",
-				grouping:"rejectCode"
+				module:"Fiori"
 			},
 			fnGetData = function(oRow, i){
-				this._aRejCode.push({
-					country: oRow.country,
-					value: oRow.value
-				});
-			}.bind(this);
-			var oPromise = this._oEditableConfig.getGiven(oParam);
-			oPromise
-			.then(function(aRet){
-				aRet.forEach(function(aRow, iIdx){
-					aRow.then.results.forEach(fnGetData);
-				});	
-			})
-			.finally(function(){
-				this._getCommentCtrl();
-			}.bind(this));
-		}, 
-		//[+] end add - STRY0020007
-		//[+] add - STRY0019584
-		_getCommentCtrl: function(){
-		//	this._valState = sap.ui.core.ValueState;
-			this._aCommCtrl = [];
-			var oParam = {
-				module:"Fiori",
-				settingName:"itemReleaseOrderApv",
-				grouping:"commentControl"
-			},
-			fnGetData = function(oRow, i){
-				this._aCommCtrl.push({
-					country: oRow.country,
-					name: oRow.name,
-					value: oRow.value
-				});
+				if(oRow.settingName === "itemReleaseOrder" &&
+				   oRow.grouping === "rejectCode" && oRow.active === "true" ){
+	   				this._aRejCode.push({
+						country: oRow.country,
+						value: oRow.value
+					});	
+				}
+				//[+] add - STRY0019584
+				else if(oRow.settingName === "itemReleaseOrderApv" &&
+						oRow.grouping === "commentControl" && oRow.active === "true" ){
+	   				this._aCommCtrl.push({
+						country: oRow.country,
+						name: oRow.name,
+						value: oRow.value
+					});	 	
+				}
+				//[+] end add - STRY0019584
 			}.bind(this);
 			var oPromise = this._oEditableConfig.getGiven(oParam);
 			oPromise.then(function(aRet){
 				aRet.forEach(function(aRow, iIdx){
 					aRow.then.results.forEach(fnGetData);
 				});	
-			});			
-		},
-		//[+] end add - STRY0019584
+			});
+		}, 
+		//[+] end add - STRY0020007
 		onRejectPress: function (oEvent, sFragment, oItem, oModel) {
 			var oView = this.getView(),
 				oSource = oEvent.getSource(),
