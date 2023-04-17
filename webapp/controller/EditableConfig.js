@@ -90,6 +90,9 @@ sap.ui.define([
 		runGWT: function (aGiven, oContext, bAll) {
 			aGiven.forEach(function (oGiven, iIndex) {
 				var bWhen = oGiven.when.results.length === 0 || oGiven.when.results.every(function (oWhen) {
+					if (oWhen.active.toString() !== "true") {
+						return true;
+					}
 					if (oContext.hasOwnProperty(oWhen.name)) {
 						return oContext[oWhen.name].toString() === oWhen.value.toString();
 					} else {
@@ -98,18 +101,13 @@ sap.ui.define([
 				});
 				if (bWhen) {
 					oGiven.then.results.forEach(function (oThen) {
-						if (oContext.hasOwnProperty(oThen.name)) {
-							switch (oThen.active.toString()) {
-							case "true":
-							case "false":
-								oContext[oThen.name] = oThen.active.toString() === "true" ? true : false;
-								break;
-							default:
+						if (oThen.active.toString() === "true") {
+							if (oContext.hasOwnProperty(oThen.name)) {
 								oContext[oThen.name] = oThen.value.toString();
 							}
 						}
 					});
-					if(!bAll)
+					if (!bAll)
 						return;
 				}
 			});

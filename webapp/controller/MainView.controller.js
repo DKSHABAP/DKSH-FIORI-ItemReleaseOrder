@@ -142,7 +142,7 @@ sap.ui.define([
 					var object = oItem.getBindingContext("ItemBlockModel").getObject();
 					object = this.formatter.controlEditabled.call(this, object, aItems, aItemUsage, oEditConfig);
 					object.country = oItemModel.country ? oItemModel.country : oItemModel.salesOrg.substring(0,2);
-					this._oEditableConfig.runGWT(aGiven,object);
+					this._oEditableConfig.runGWT(aGiven,object,true);
 					object.salesUnit = (!object.salesUnit) ? this.getText("UoM").toUpperCase() : object.salesUnit;
 				}.bind(this));
 				// Store initial value model for onSaveEditItem function
