@@ -1,6 +1,4 @@
-<mvc:View controllerName="dksh.connectclient.itemblockorder.controller.MainView" xmlns:html="http://www.w3.org/1999/xhtml" height="100%"
-	xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" xmlns:layout="sap.ui.layout" xmlns="sap.m" xmlns:f="sap.f"
-	xmlns:fb="sap.ui.comp.filterbar" xmlns:vm="sap.ui.comp.variants">
+<mvc:View xmlns:html="http://www.w3.org/1999/xhtml" xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" xmlns:layout="sap.ui.layout" xmlns="sap.m" xmlns:f="sap.f" xmlns:fb="sap.ui.comp.filterbar" xmlns:vm="sap.ui.comp.variants" controllerName="dksh.connectclient.itemblockorder.controller.MainView" height="100%">
 	<!--	<f:DynamicPage headerExpanded="{/headerExpanded}" showFooter="true" class="sapUiSizeCompact" busy="{settings/isPageBusy}">
 		<f:header>
 			<f:DynamicPageHeader headerExpanded="false" pinnable="false">
@@ -71,10 +69,9 @@
 				<Button icon="sap-icon://sort" type="Transparent" tooltip="{i18n>Sort}" press="onSortPress($event, 'idList', '/panelSort', 'creationDate')"/>
 				<Button type="Transparent" text="{i18n>ExpandAll}" press="onExpandAll" enabled="{oButtonModel>/expandButtonShow}"/>
 				<Button type="Transparent" text="{i18n>CollapseAll}" press="onCollapseAll" enabled="{oButtonModel>/expandButtonShow}"/>
-				<SearchField width="30%" liveChange="onSearchValueForHeader" search="onSearchValueForHeader" placeholder="{i18n>Search}"></SearchField>
+				<SearchField width="30%" liveChange="onSearchValueForHeader" search="onSearchValueForHeader" placeholder="{i18n>Search}"/>
 				<!--<Button icon="sap-icon://settings" type="Transparent" tooltip="{i18n>ItemPersonalization}" press="onPressPersonalization"/>-->
-				<Button icon="sap-icon://settings" type="Transparent" tooltip="{i18n>ItemPersonalization}"
-					press="onPressPersonalization($event, 'SoItemPersonalization', 'SoItemPersonalizationModel')"></Button>
+				<Button icon="sap-icon://settings" type="Transparent" tooltip="{i18n>ItemPersonalization}" press="onPressPersonalization($event, 'SoItemPersonalization', 'SoItemPersonalizationModel')"/>
 				<Button icon="sap-icon://refresh" type="Emphasized" tooltip="{i18n>Refresh}" press="onPressRefresh"/>
 			</OverflowToolbar>
 			<!--<List id="idList" growing="false" growingScrollToLoad="false" enableBusyIndicator="true"-->
@@ -102,9 +99,7 @@
 			<!--		</CustomListItem>-->
 			<!--	</items>-->
 			<!--</List>-->
-			<List id="idList" growing="true" growingScrollToLoad="true"
-				items="{path: 'ItemBlockModel>/data', templateShareable: false, sorter : [{ path: 'creationDate', descending: true }, { path: 'salesOrderNum', descending: true }] }"
-				noDataText="No pending release found" class="sapUiSizeCompact">
+			<List id="idList" growing="true" growingScrollToLoad="true" items="{path: 'ItemBlockModel>/data', templateShareable: false, sorter : [{ path: 'creationDate', descending: true }, { path: 'salesOrderNum', descending: true }] }" noDataText="No pending release found" class="sapUiSizeCompact">
 				<items>
 					<CustomListItem>
 						<Panel expandable="true" class="hideContent" expanded="{ItemBlockModel>expanded}" expand="onExpand">
@@ -117,9 +112,7 @@
 									<Label text="{i18n>level}"/>
 									<Label text="{ItemBlockModel>levelNum}" design="Bold"/>
 									<ToolbarSpacer/>
-									<Label
-										text="{ path: 'ItemBlockModel>creationDate', type: 'sap.ui.model.type.Date', formatOptions: { strictParsing: true, UTC: false, pattern: 'dd/MM/yyyy' } }"
-										design="Bold"/>
+									<Label text="{ path: 'ItemBlockModel>creationDate', type: 'sap.ui.model.type.Date', formatOptions: { strictParsing: true, UTC: false, pattern: 'dd/MM/yyyy' } }" design="Bold"/>
 								</OverflowToolbar>
 							</headerToolbar>
 							<content><core:Fragment fragmentName="dksh.connectclient.itemblockorder.view.Fragments.SaleDocDetail" type="XML"/></content>
@@ -127,6 +120,16 @@
 					</CustomListItem>
 				</items>
 			</List>
+			<VBox id="idPageNumberDiv" justifyContent="Center" alignItems="Center" class="pageNumberDivClass">
+				<Label id="idCurrentPage" class="pageNumberStyleClass"/>
+				<HBox class="pageLinkClass">
+					<Button id="idPrevButton" icon="sap-icon://navigation-left-arrow" class="navigateButtonClass sapUiSizeCompact" press="onScrollLeft" type="Transparent" enabled="{paginatedModel>/scrollLeftEnabled}"/>
+					<HBox items="{paginatedModel>/pages}">
+						<Link text="{paginatedModel>text}" press="onPageClick" class="paginationNumbers"/>
+					</HBox>
+					<Button id="idNextButton" icon="sap-icon://navigation-right-arrow" class="navigateButtonClass sapUiSizeCompact" press="onScrollRight" type="Transparent" enabled="{paginatedModel>/scrollRightEnabled}"/>
+				</HBox>
+			</VBox>
 		</content>
 	</Page>
 </mvc:View>
