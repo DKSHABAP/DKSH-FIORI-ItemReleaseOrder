@@ -127,9 +127,6 @@ sap.ui.define([
 										oPaginatedData.scrollRightEnabled = false;
 										oPaginatedData.scrollLeftEnabled = false;
 									}
-									this.getView().setBusy(false);
-									oPaginatedModel.refresh();
-									return;
 								} else if (oData.data.length < oPaginatedData.maxCount) {
 									if (oPaginatedData.skipCount > 0) {
 										oPaginatedData.scrollRightEnabled = false;
@@ -147,7 +144,6 @@ sap.ui.define([
 										oPaginatedData.scrollLeftEnabled = false;
 									}
 								}
-								oPaginatedModel.refresh();
 								this.getView().getModel("ItemBlockModel").setProperty("/count", oData.data.length);
 								oData.data.map(function (data) {
 									data.creationDate = new Date(data.salesOrderDateTxt);
