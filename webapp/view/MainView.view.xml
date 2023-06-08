@@ -64,12 +64,13 @@
 		<content>
 			<core:Fragment fragmentName="dksh.connectclient.itemblockorder.view.Fragments.SalesFilterFrag" type="XML"/>
 			<OverflowToolbar id="otb1" class="dkshToolbarStyle customTitle">
-				<Title text="{i18n>pendingRequests} ({=${ItemBlockModel>/count} ? ${ItemBlockModel>/count} : 0})" class="sapUiSmallMarginBegin"/>
+				<!--<Title text="{i18n>pendingRequests} ({=${ItemBlockModel>/count} ? ${ItemBlockModel>/count} : 0})" class="sapUiSmallMarginBegin"/>-->
+				<Title text="{i18n>pendingRequests}" class="sapUiSmallMarginBegin"/>
 				<ToolbarSpacer/>
 				<Button icon="sap-icon://sort" type="Transparent" tooltip="{i18n>Sort}" press="onSortPress($event, 'idList', '/panelSort', 'creationDate')"/>
 				<Button type="Transparent" text="{i18n>ExpandAll}" press="onExpandAll" enabled="{oButtonModel>/expandButtonShow}"/>
 				<Button type="Transparent" text="{i18n>CollapseAll}" press="onCollapseAll" enabled="{oButtonModel>/expandButtonShow}"/>
-				<SearchField width="30%" liveChange="onSearchValueForHeader" search="onSearchValueForHeader" placeholder="{i18n>Search}"/>
+				<SearchField width="30%" liveChange="onSearchValueForHeader" search="onSearchValueForHeader" placeholder="{i18n>Search}" visible="false"/>
 				<!--<Button icon="sap-icon://settings" type="Transparent" tooltip="{i18n>ItemPersonalization}" press="onPressPersonalization"/>-->
 				<Button icon="sap-icon://settings" type="Transparent" tooltip="{i18n>ItemPersonalization}" press="onPressPersonalization($event, 'SoItemPersonalization', 'SoItemPersonalizationModel')"/>
 				<Button icon="sap-icon://refresh" type="Emphasized" tooltip="{i18n>Refresh}" press="onPressRefresh"/>
