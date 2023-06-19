@@ -123,7 +123,7 @@ sap.ui.define([
 									oData.data = oResponse.data.blockData;
 									OData.count = oResponse.data.totalCount;
 								} else {
-									oData.data = oResponse.data;
+									oData.data = oResponse.data || [];
 									oData.count = oResponse.data.length || 0;
 								}
 								oUserMangement = this.getView().getModel("UserManagement");
@@ -132,25 +132,37 @@ sap.ui.define([
 									if (oPaginatedData.skipCount > 0) {
 										oPaginatedData.scrollRightEnabled = false;
 										oPaginatedData.scrollLeftEnabled = true;
+										oPaginatedData.firstPageEnabled = true;
+										oPaginatedData.lastPageEnabled = false;
 									} else {
 										oPaginatedData.scrollRightEnabled = false;
 										oPaginatedData.scrollLeftEnabled = false;
+										oPaginatedData.firstPageEnabled = false;
+										oPaginatedData.lastPageEnabled = false;
 									}
 								} else if (oData.data.length < oPaginatedData.maxCount) {
 									if (oPaginatedData.skipCount > 0) {
 										oPaginatedData.scrollRightEnabled = false;
 										oPaginatedData.scrollLeftEnabled = true;
+										oPaginatedData.firstPageEnabled = true;
+										oPaginatedData.lastPageEnabled = false;
 									} else {
 										oPaginatedData.scrollRightEnabled = false;
 										oPaginatedData.scrollLeftEnabled = false;
+										oPaginatedData.firstPageEnabled = false;
+										oPaginatedData.lastPageEnabled = false;
 									}
 								} else {
 									if (oPaginatedData.skipCount > 0) {
 										oPaginatedData.scrollRightEnabled = true;
 										oPaginatedData.scrollLeftEnabled = true;
+										oPaginatedData.firstPageEnabled = true;
+										oPaginatedData.lastPageEnabled = true;
 									} else {
 										oPaginatedData.scrollRightEnabled = true;
 										oPaginatedData.scrollLeftEnabled = false;
+										oPaginatedData.firstPageEnabled = false;
+										oPaginatedData.lastPageEnabled = true;
 									}
 								}
 								// this.getView().getModel("ItemBlockModel").setProperty("/count", oData.data.length);
