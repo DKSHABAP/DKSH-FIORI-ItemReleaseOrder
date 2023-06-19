@@ -124,11 +124,13 @@
 			<VBox id="idPageNumberDiv" justifyContent="Center" alignItems="Center" class="pageNumberDivClass">
 				<Label id="idCurrentPage" class="pageNumberStyleClass"/>
 				<HBox class="pageLinkClass">
+					<Button id="idFirstPage" class="navigateButtonClass sapUiSizeCompact" press="onFirstPage" type="Transparent" enabled="{paginatedModel>/firstPageEnabled}" icon="sap-icon://close-command-field"/>
 					<Button id="idPrevButton" icon="sap-icon://navigation-left-arrow" class="navigateButtonClass sapUiSizeCompact" press="onScrollLeft" type="Transparent" enabled="{paginatedModel>/scrollLeftEnabled}"/>
 					<HBox items="{paginatedModel>/pages}">
 						<Link text="{paginatedModel>text}" press="onPageClick" class="paginationNumbers"/>
 					</HBox>
 					<Button id="idNextButton" icon="sap-icon://navigation-right-arrow" class="navigateButtonClass sapUiSizeCompact" press="onScrollRight" type="Transparent" enabled="{paginatedModel>/scrollRightEnabled}"/>
+					<Button id="idLastPage" class="navigateButtonClass sapUiSizeCompact" press="onLastPage" type="Transparent" enabled="{paginatedModel>/lastPageEnabled}" icon="sap-icon://open-command-field"/>
 				</HBox>
 			</VBox>
 		</content>
