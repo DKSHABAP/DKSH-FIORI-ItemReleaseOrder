@@ -24,6 +24,8 @@ sap.ui.define([
 				maxCount: 20,
 				scrollLeftEnabled: false,
 				scrollRightEnabled: false,
+				firstPageEnabled: false,
+				lastPageEnabled: false,
 				pages: []
 			}), "paginatedModel");
 			Promise.all([this.formatter.fetchUserInfo.call(this), this.formatter.fetchData.call(this, this.getOwnerComponent().getModel(),
@@ -661,6 +663,29 @@ sap.ui.define([
 			var oPaginatedModel = this.getView().getModel("paginatedModel");
 			var oPaginatedData = oPaginatedModel.getData();
 			oPaginatedData.skipCount = oPaginatedData.skipCount + oPaginatedData.maxCount;
+			this.formatter.fetchSaleOrder.call(this).then(function (oRes) {
+				oPaginatedModel.refresh();
+				this.getView().setBusy(false);
+			}.bind(this));
+		},
+		onFirstPage: function (oEvent) {
+			var oPaginatedModel = this.getView().getModel("paginatedModel");
+			var oPaginatedData = oPaginatedModel.getData();
+			oPaginatedData.skipCount = 0;
+			this.formatter.fetchSaleOrder.call(this).then(function (oRes) {
+				oPaginatedModel.refresh();
+				this.getView().setBusy(false);
+			}.bind(this));
+		},
+		onPageClick: function (oEvent){
+			
+		},
+		onLastPage: function (oEvent) {
+			var oPaginatedModel = this.getView().getModel("paginatedModel");
+			var oPaginatedData = oPaginatedModel.getData();
+			var oViewModel = this.getView().getModel("ItemBlockModel");
+			var oViewData = oViewModel.getData();
+			oPaginatedData.skipCount = oViewData.count === 0 ? 0 : Math.floor(oViewData.count / oPaginatedData.maxCount) + 1;
 			this.formatter.fetchSaleOrder.call(this).then(function (oRes) {
 				oPaginatedModel.refresh();
 				this.getView().setBusy(false);
