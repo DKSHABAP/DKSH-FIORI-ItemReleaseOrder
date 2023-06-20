@@ -121,7 +121,7 @@ sap.ui.define([
 								var oData = this.getView().getModel("ItemBlockModel").getData();
 								if (oResponse.data.hasOwnProperty("blockData")) {
 									oData.data = oResponse.data.blockData;
-									OData.count = oResponse.data.totalCount;
+									oData.count = oResponse.data.totalCount;
 								} else {
 									oData.data = oResponse.data || [];
 									oData.count = oResponse.data.length || 0;
@@ -166,6 +166,56 @@ sap.ui.define([
 									}
 								}
 								// this.getView().getModel("ItemBlockModel").setProperty("/count", oData.data.length);
+								var iNumberOfPages = Math.floor(oData.count / oPaginatedData.maxCount) + (oData.count % oPaginatedData.maxCount ? 1 : 0);
+								var iPageNumber = Math.floor(oPaginatedData.skipCount / oPaginatedData.maxCount) + 1;
+								oPaginatedData.pages = [];
+								if (iNumberOfPages <= 5) {
+									for (var i = 1; i <= iNumberOfPages; i++) {
+										oPaginatedData.pages.push({
+											text: i,
+											emphasized: iPageNumber === i ? true : false,
+											enabled: iPageNumber === i ? false : true
+										});
+									}
+								} else if (iPageNumber < 3) {
+									for (var i = 1; i <= 5; i++) {
+										oPaginatedData.pages.push({
+											text: i,
+											emphasized: iPageNumber === i ? true : false,
+											enabled: iPageNumber === i ? false : true
+										});
+									}
+								} else if (iNumberOfPages - 2 < iPageNumber) {
+									for (var i = 5; i > 0; i--) {
+										oPaginatedData.pages.push({
+											text: iNumberOfPages - i + 1,
+											emphasized: iPageNumber === iNumberOfPages - i + 1 ? true : false,
+											enabled: iPageNumber === iNumberOfPages - i + 1 ? false : true
+										});
+									}
+								} else {
+									oPaginatedData.pages = [{
+										text: iPageNumber - 2,
+										emphasized: false,
+										enabled: true
+									}, {
+										text: iPageNumber - 1,
+										emphasized: false,
+										enabled: true
+									}, {
+										text: iPageNumber,
+										emphasized: true,
+										enabled: false
+									}, {
+										text: iPageNumber + 1,
+										emphasized: false,
+										enabled: true
+									}, {
+										text: iPageNumber + 2,
+										emphasized: false,
+										enabled: true
+									}];
+								}
 								oData.data.map(function (data) {
 									data.creationDate = new Date(data.salesOrderDateTxt);
 									Object.assign(data, {
@@ -177,6 +227,7 @@ sap.ui.define([
 									});
 								}.bind(this));
 								this.getView().getModel("ItemBlockModel").refresh();
+								oPaginatedModel.refresh();
 								resolve(this.getView().getModel("ItemBlockModel"));
 							}.bind(this))
 						.catch(function (oErr) {

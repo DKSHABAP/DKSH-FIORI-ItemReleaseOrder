@@ -645,8 +645,10 @@ sap.ui.define([
 			oTable.getModel().updateBindings(false);
 		},
 		onSearchSalesHeader: function (oEvent, oFilterSaleOrder) {
+			var oPaginatedModel = this.getView().getModel("paginatedModel");
+			var oPaginatedData = oPaginatedModel.getData();
+			oPaginatedData.skipCount = 0;
 			this.formatter.fetchSaleOrder.call(this).then(function (oRes) {
-				this.getView().getModel("paginatedModel").refresh();
 				this.getView().setBusy(false);
 			}.bind(this));
 		},
@@ -678,14 +680,20 @@ sap.ui.define([
 			}.bind(this));
 		},
 		onPageClick: function (oEvent){
-			
+			var oPaginatedModel = this.getView().getModel("paginatedModel");
+			var oPaginatedData = oPaginatedModel.getData();
+			var sText = oEvent.getSource().getProperty("text");
+			oPaginatedData.skipCount = ( parseInt(sText) - 1 ) * oPaginatedData.maxCount;
+			this.formatter.fetchSaleOrder.call(this).then(function (oRes) {
+				this.getView().setBusy(false);
+			}.bind(this));
 		},
 		onLastPage: function (oEvent) {
 			var oPaginatedModel = this.getView().getModel("paginatedModel");
 			var oPaginatedData = oPaginatedModel.getData();
 			var oViewModel = this.getView().getModel("ItemBlockModel");
 			var oViewData = oViewModel.getData();
-			oPaginatedData.skipCount = oViewData.count === 0 ? 0 : Math.floor(oViewData.count / oPaginatedData.maxCount) + 1;
+			oPaginatedData.skipCount = oViewData.count === 0 ? 0 : Math.floor(oViewData.count / oPaginatedData.maxCount) * oPaginatedData.maxCount;
 			this.formatter.fetchSaleOrder.call(this).then(function (oRes) {
 				oPaginatedModel.refresh();
 				this.getView().setBusy(false);

@@ -127,7 +127,7 @@
 					<Button id="idFirstPage" class="navigateButtonClass sapUiSizeCompact" press="onFirstPage" type="Transparent" enabled="{paginatedModel>/firstPageEnabled}" icon="sap-icon://close-command-field"/>
 					<Button id="idPrevButton" icon="sap-icon://navigation-left-arrow" class="navigateButtonClass sapUiSizeCompact" press="onScrollLeft" type="Transparent" enabled="{paginatedModel>/scrollLeftEnabled}"/>
 					<HBox items="{paginatedModel>/pages}">
-						<Link text="{paginatedModel>text}" press="onPageClick" class="paginationNumbers"/>
+						<Link text="{paginatedModel>text}" press="onPageClick" enabled="{paginatedModel>enabled}" emphasized="{paginatedModel>emphasized}" class="paginationNumbers"/>
 					</HBox>
 					<Button id="idNextButton" icon="sap-icon://navigation-right-arrow" class="navigateButtonClass sapUiSizeCompact" press="onScrollRight" type="Transparent" enabled="{paginatedModel>/scrollRightEnabled}"/>
 					<Button id="idLastPage" class="navigateButtonClass sapUiSizeCompact" press="onLastPage" type="Transparent" enabled="{paginatedModel>/lastPageEnabled}" icon="sap-icon://open-command-field"/>
