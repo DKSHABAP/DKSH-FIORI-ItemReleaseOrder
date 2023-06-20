@@ -185,7 +185,7 @@ sap.ui.define([
 											enabled: iPageNumber === i ? false : true
 										});
 									}
-								} else if (iNumberOfPages - 5 <= iPageNumber) {
+								} else if (iNumberOfPages - 2 < iPageNumber) {
 									for (var i = 5; i > 0; i--) {
 										oPaginatedData.pages.push({
 											text: iNumberOfPages - i + 1,
