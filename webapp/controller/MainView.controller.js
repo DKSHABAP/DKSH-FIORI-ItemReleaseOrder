@@ -680,7 +680,13 @@ sap.ui.define([
 			}.bind(this));
 		},
 		onPageClick: function (oEvent){
-			
+			var oPaginatedModel = this.getView().getModel("paginatedModel");
+			var oPaginatedData = oPaginatedModel.getData();
+			var sText = oEvent.getSource().getProperty("text");
+			oPaginatedData.skipCount = parseInt(sText) * oPaginatedData.maxCount;
+			this.formatter.fetchSaleOrder.call(this).then(function (oRes) {
+				this.getView().setBusy(false);
+			}.bind(this));
 		},
 		onLastPage: function (oEvent) {
 			var oPaginatedModel = this.getView().getModel("paginatedModel");
