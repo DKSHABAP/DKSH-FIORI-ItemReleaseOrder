@@ -166,6 +166,34 @@ sap.ui.define([
 									}
 								}
 								// this.getView().getModel("ItemBlockModel").setProperty("/count", oData.data.length);
+								var iNumberOfPages = Math.floor(oData.count / oPaginatedData.maxCount) + (oData.count % oPaginatedData.maxCount ? 1 : 0);
+								var iPageNumber = Math.floor(oPaginatedData.skipCount / oPaginatedData.maxCount) + 1;
+								oPaginatedData.pages = [];
+								if (iNumberOfPages <= 5) {
+									for (var i = 1; i <= iNumberOfPages; i++) {
+										oPaginatedData.pages.push({
+											text: i
+										});
+									}
+								} else if (iNumberOfPages - 5 <= iPageNumber) {
+									for (var i = 5; i > 0; i--) {
+										oPaginatedData.pages.push({
+											text: iNumberOfPages - i + 1
+										});
+									}
+								} else {
+									oPaginatedData.pages = [{
+										text: iPageNumber - 2
+									}, {
+										text: iPageNumber - 1
+									}, {
+										text: iPageNumber
+									}, {
+										text: iPageNumber + 1
+									}, {
+										text: iPageNumber + 2
+									}];
+								}
 								oData.data.map(function (data) {
 									data.creationDate = new Date(data.salesOrderDateTxt);
 									Object.assign(data, {

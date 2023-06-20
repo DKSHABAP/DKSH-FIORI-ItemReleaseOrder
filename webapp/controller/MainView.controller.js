@@ -645,8 +645,10 @@ sap.ui.define([
 			oTable.getModel().updateBindings(false);
 		},
 		onSearchSalesHeader: function (oEvent, oFilterSaleOrder) {
+			var oPaginatedModel = this.getView().getModel("paginatedModel");
+			var oPaginatedData = oPaginatedModel.getData();
+			oPaginatedData.skipCount = 0;
 			this.formatter.fetchSaleOrder.call(this).then(function (oRes) {
-				this.getView().getModel("paginatedModel").refresh();
 				this.getView().setBusy(false);
 			}.bind(this));
 		},
