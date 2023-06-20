@@ -121,7 +121,7 @@ sap.ui.define([
 								var oData = this.getView().getModel("ItemBlockModel").getData();
 								if (oResponse.data.hasOwnProperty("blockData")) {
 									oData.data = oResponse.data.blockData;
-									OData.count = oResponse.data.totalCount;
+									oData.count = oResponse.data.totalCount;
 								} else {
 									oData.data = oResponse.data || [];
 									oData.count = oResponse.data.length || 0;
