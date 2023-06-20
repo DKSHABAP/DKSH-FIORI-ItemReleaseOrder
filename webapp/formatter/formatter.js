@@ -172,26 +172,48 @@ sap.ui.define([
 								if (iNumberOfPages <= 5) {
 									for (var i = 1; i <= iNumberOfPages; i++) {
 										oPaginatedData.pages.push({
-											text: i
+											text: i,
+											emphasized: iPageNumber === i,
+											enabled: iPageNumber !== i
 										});
 									}
 								} else if (iNumberOfPages - 5 <= iPageNumber) {
 									for (var i = 5; i > 0; i--) {
 										oPaginatedData.pages.push({
 											text: iNumberOfPages - i + 1
+											emphasized: iPageNumber === iNumberOfPages - i + 1,
+											enabled: iPageNumber !== iNumberOfPages - i + 1
+										});
+									}
+								} else if (iPageNumber < 3) {
+									for (var i = 1; i <= 5; i++) {
+										oPaginatedData.pages.push({
+											text: i,
+											emphasized: iPageNumber === i,
+											enabled: iPageNumber !== i
 										});
 									}
 								} else {
 									oPaginatedData.pages = [{
-										text: iPageNumber - 2
+										text: iPageNumber - 2,
+										emphasized: false,
+										enabled: true
 									}, {
-										text: iPageNumber - 1
+										text: iPageNumber - 1,
+										emphasized: false,
+										enabled: true
 									}, {
-										text: iPageNumber
+										text: iPageNumber,
+										emphasized: true,
+										enabled: false
 									}, {
-										text: iPageNumber + 1
+										text: iPageNumber + 1,
+										emphasized: false,
+										enabled: true
 									}, {
-										text: iPageNumber + 2
+										text: iPageNumber + 2,
+										emphasized: false,
+										enabled: true
 									}];
 								}
 								oData.data.map(function (data) {
