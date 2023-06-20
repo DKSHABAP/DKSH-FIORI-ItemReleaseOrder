@@ -177,6 +177,7 @@ sap.ui.define([
 									});
 								}.bind(this));
 								this.getView().getModel("ItemBlockModel").refresh();
+								oPaginatedModel.refresh();
 								resolve(this.getView().getModel("ItemBlockModel"));
 							}.bind(this))
 						.catch(function (oErr) {
