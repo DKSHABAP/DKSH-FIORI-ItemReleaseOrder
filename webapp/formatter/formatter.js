@@ -127,47 +127,32 @@ sap.ui.define([
 									oData.count = oResponse.data.length || 0;
 								}
 								oUserMangement = this.getView().getModel("UserManagement");
-								// No data found
-								if (oData.data.length === 0 || !oData) {
-									if (oPaginatedData.skipCount > 0) {
-										oPaginatedData.scrollRightEnabled = false;
-										oPaginatedData.scrollLeftEnabled = true;
-										oPaginatedData.firstPageEnabled = true;
-										oPaginatedData.lastPageEnabled = false;
-									} else {
-										oPaginatedData.scrollRightEnabled = false;
-										oPaginatedData.scrollLeftEnabled = false;
-										oPaginatedData.firstPageEnabled = false;
-										oPaginatedData.lastPageEnabled = false;
-									}
-								} else if (oData.data.length < oPaginatedData.maxCount) {
-									if (oPaginatedData.skipCount > 0) {
-										oPaginatedData.scrollRightEnabled = false;
-										oPaginatedData.scrollLeftEnabled = true;
-										oPaginatedData.firstPageEnabled = true;
-										oPaginatedData.lastPageEnabled = false;
-									} else {
-										oPaginatedData.scrollRightEnabled = false;
-										oPaginatedData.scrollLeftEnabled = false;
-										oPaginatedData.firstPageEnabled = false;
-										oPaginatedData.lastPageEnabled = false;
-									}
+								var iNumberOfPages = Math.floor(oData.count / oPaginatedData.maxCount) + (oData.count % oPaginatedData.maxCount ? 1 : 0);
+								var iPageNumber = Math.floor(oPaginatedData.skipCount / oPaginatedData.maxCount) + 1;
+								if (iNumberOfPages <= 1) {
+									oPaginatedData.scrollRightEnabled = false;
+									oPaginatedData.scrollLeftEnabled = false;
+									oPaginatedData.firstPageEnabled = false;
+									oPaginatedData.lastPageEnabled = false;
 								} else {
-									if (oPaginatedData.skipCount > 0) {
-										oPaginatedData.scrollRightEnabled = true;
-										oPaginatedData.scrollLeftEnabled = true;
-										oPaginatedData.firstPageEnabled = true;
-										oPaginatedData.lastPageEnabled = true;
-									} else {
+									if (iPageNumber <= 1) {
 										oPaginatedData.scrollRightEnabled = true;
 										oPaginatedData.scrollLeftEnabled = false;
 										oPaginatedData.firstPageEnabled = false;
+										oPaginatedData.lastPageEnabled = true;
+									} else if (iPageNumber === iNumberOfPages) {
+										oPaginatedData.scrollRightEnabled = false;
+										oPaginatedData.scrollLeftEnabled = true;
+										oPaginatedData.firstPageEnabled = true;
+										oPaginatedData.lastPageEnabled = false;
+									} else {
+										oPaginatedData.scrollRightEnabled = true;
+										oPaginatedData.scrollLeftEnabled = true;
+										oPaginatedData.firstPageEnabled = true;
 										oPaginatedData.lastPageEnabled = true;
 									}
 								}
 								// this.getView().getModel("ItemBlockModel").setProperty("/count", oData.data.length);
-								var iNumberOfPages = Math.floor(oData.count / oPaginatedData.maxCount) + (oData.count % oPaginatedData.maxCount ? 1 : 0);
-								var iPageNumber = Math.floor(oPaginatedData.skipCount / oPaginatedData.maxCount) + 1;
 								oPaginatedData.pages = [];
 								if (iNumberOfPages <= 5) {
 									for (var i = 1; i <= iNumberOfPages; i++) {
