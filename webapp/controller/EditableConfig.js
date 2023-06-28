@@ -102,7 +102,14 @@ sap.ui.define([
 				if (bWhen) {
 					oGiven.then.results.forEach(function (oThen) {
 						if (oThen.active === "true" && oContext.hasOwnProperty(oThen.name)) {
-							oContext[oThen.name] = oThen.value.toString();
+							switch (oThen.value.toString()) {
+							case "true":
+							case "false":
+								oContext[oThen.name] = oThen.value.toString() === "true" ? true : false;
+								break;
+							default:
+								oContext[oThen.name] = oThen.value.toString();
+							}
 						}
 					});
 					if (!bAll)
