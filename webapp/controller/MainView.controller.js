@@ -105,6 +105,9 @@ sap.ui.define([
 					Object.assign(this.formatter.setNumericAndSort(_oRes[0], ["sequence"]), this._returnPersDefault());
 					this.getView().getModel("SearchHelpPersonalization").refresh();
 					Object.assign(_oRes[1], this._returnPersDefault());
+					if(oQuery){
+						this.onExpandAll(null);
+					}
 					this.getView().setBusy(false);
 				}.bind(this)).catch(function (oErr) {
 					this._displayError(oErr);
