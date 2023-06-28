@@ -91,8 +91,19 @@ sap.ui.define([
 				lastPageEnabled: false,
 				pages: []
 			}), "paginatedModel");
+			var oPaging = new Promise(function (fnResolve) {
+				var oPaginatedModel = this.getView().getModel("paginatedModel");
+				var oPaginatedData = oPaginatedModel.getData();
+				this._oEditableConfig.getGiven({
+					module: "Fiori",
+					settingName: "Item Release Order Pagination"
+				}).then(function (aWhen) {
+					this._oEditableConfig.runGWT(aWhen, oPaginatedData, false);
+					fnResolve(oPaginatedData);
+				}.bind(this))
+			}.bind(this));
 			Promise.all([this.formatter.fetchUserInfo.call(this), this.formatter.fetchData.call(this, this.getOwnerComponent().getModel(),
-				"/GetControlEditableConfigSet")]).then(function (oRes) {
+				"/GetControlEditableConfigSet"), oPaging]).then(function (oRes) {
 				var oUserData = this.getView().getModel("UserInfo").getData();
 				this.getView().setModel(new JSONModel(oRes[1].results), "ControlEditConfig");
 				var fnReturnPayload = function (appId) {
@@ -219,7 +230,7 @@ sap.ui.define([
 					var object = oItem.getBindingContext("ItemBlockModel").getObject();
 					object = this.formatter.controlEditabled.call(this, object, aItems, aItemUsage, oEditConfig);
 					object.country = oItemModel.country ? oItemModel.country : oItemModel.salesOrg.substring(0, 2);
-					this._oEditableConfig.runGWT(aGiven, object);
+					this._oEditableConfig.runGWT(aGiven, object, true);
 					object.salesUnit = (!object.salesUnit) ? this.getText("UoM").toUpperCase() : object.salesUnit;
 				}.bind(this));
 				// Store initial value model for onSaveEditItem function
