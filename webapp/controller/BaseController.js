@@ -300,6 +300,13 @@ sap.ui.define([
 		},
 		_getTable: function (sId) {
 			return this.getView().byId(sId);
+		},
+		/** 
+		 * Convenience function to get router
+		 * @returns Object Router
+		 */
+		getRouter: function () {
+			return this.getOwnerComponent().getRouter();
 		}
 	});
 });

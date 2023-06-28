@@ -15,6 +15,69 @@ sap.ui.define([
 	return BaseController.extend("dksh.connectclient.itemblockorder.controller.MainView", {
 		onInit: function () {
 			this._preSetModel(this.getView());
+			this.getRouter().getRoute("MainView").attachMatched(this._onRouteMatched, this);
+			// this.oResourceBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle();
+			// this.oFragmentList = [];
+			// this._oEditableConfig = new EditableConfig(this.getOwnerComponent().getModel("Setup"));
+			// this.getView().setBusy(true);
+			// Promise.all([this.formatter.fetchUserInfo.call(this), this.formatter.fetchData.call(this, this.getOwnerComponent().getModel(),
+			// 	"/GetControlEditableConfigSet")]).then(function (oRes) {
+			// 	var oUserData = this.getView().getModel("UserInfo").getData();
+			// 	this.getView().setModel(new JSONModel(oRes[1].results), "ControlEditConfig");
+			// 	var fnReturnPayload = function (appId) {
+			// 		return {
+			// 			userId: oUserData.name,
+			// 			appId: appId,
+			// 			runType: "Web",
+			// 			emailId: oUserData.email
+			// 		};
+			// 	};
+			// 	Promise.all([
+			// 		this.formatter.postJavaService.call(this, this.getView().getModel("SearchHelpPersonalization"),
+			// 			this.getText("getVariant"), JSON.stringify(fnReturnPayload("keySearchReleaseBlock")), "POST"),
+			// 		this.formatter.postJavaService.call(this, this.getView().getModel("SoItemPersonalizationModel"),
+			// 			this.getText("getVariantRelease"), JSON.stringify(fnReturnPayload(
+			// 				"keyHeaderReleaseBlock@keyItemReleaseBlock")), "POST"),
+			// 		this.formatter.fetchSaleOrder.call(this)
+			// 	]).then(function (_oRes) {
+			// 		Object.assign(this.formatter.setNumericAndSort(_oRes[0], ["sequence"]), this._returnPersDefault());
+			// 		this.getView().getModel("SearchHelpPersonalization").refresh();
+			// 		Object.assign(_oRes[1], this._returnPersDefault());
+			// 		this.getView().setBusy(false);
+			// 	}.bind(this)).catch(function (oErr) {
+			// 		this._displayError(oErr);
+			// 	}.bind(this));
+			// }.bind(this)).catch(function (oErr) {
+			// 	this._displayError(oErr);
+			// }.bind(this));
+			// // get reject code - STRY0020007
+			// this._getSetupConfig();
+		},
+		/** 
+		 * Routing logic for MainView
+		 * @constructor 
+		 * @param oEvent Event parameter
+		 */
+		_onRouteMatched: function (oEvent) {
+			var oArgument = oEvent.getParameter("arguments");
+			var oQuery = oArgument["?query"];
+			var oFilterModel = this.getView().getModel("filterModel");
+			var oFilterData = oFilterModel.getData();
+			if (oQuery) {
+				if (oQuery.sdna) {
+					oFilterData.salesDocNumInitial = oQuery.sdna;
+				}
+				if (oQuery.sdnz) {
+					oFilterData.salesDocNumEnd = oQuery.sdnz;
+				}
+				if (oQuery.sdda) {
+					oFilterData.initialDate = new Date(oQuery.sdda);
+				}
+				if (oQuery.sddz) {
+					oFilterData.endDate = new Date(oQuery.sddz);
+				}
+			}
+			oFilterModel.refresh();
 			this.oResourceBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle();
 			this.oFragmentList = [];
 			this._oEditableConfig = new EditableConfig(this.getOwnerComponent().getModel("Setup"));

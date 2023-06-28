@@ -139,7 +139,7 @@
 			"routes": [
 				{
 					"name": "MainView",
-					"pattern": "",
+					"pattern": ":?query:",
 					"target": [
 						"MainView"
 					]
