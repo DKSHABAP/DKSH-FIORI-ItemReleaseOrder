@@ -30,54 +30,54 @@ sap.ui.define([
 		getGiven: function (oCombination) {
 			var aFilters = [];
 			//	if (!this._mapGivenWhenThen[oCombination]) { --[-] delete - STRY0019584
-				this._mapGivenWhenThen[oCombination] = new Promise(function (fnResolve) {
-					if (oCombination.country) {
-						aFilters.push(new Filter({
-							path: "country",
-							operator: FilterOperator.EQ,
-							value1: oCombination.country
-						}));
-					}
-					if (oCombination.module) {
-						aFilters.push(new Filter({
-							path: "module",
-							operator: FilterOperator.EQ,
-							value1: oCombination.module
-						}));
-					}
-					if (oCombination.settingName) {
-						aFilters.push(new Filter({
-							path: "settingName",
-							operator: FilterOperator.EQ,
-							value1: oCombination.settingName
-						}));
-					}
-					if (oCombination.grouping) {
-						aFilters.push(new Filter({
-							path: "grouping",
-							operator: FilterOperator.EQ,
-							value1: oCombination.grouping
-						}));
-					}
-					this._oDataModel.metadataLoaded(true).then(
-						function () {
-							this._oDataModel.read("/Given", {
-								urlParameters: {
-									"$expand": "when,then"
-								},
-								filters: aFilters,
-								success: function (oResponse) {
-									fnResolve(oResponse.results);
-								},
-								error: function (oError) {
-									fnResolve([]);
-								}
-							});
-						}.bind(this),
-						function () {
-							fnResolve([]);
+			this._mapGivenWhenThen[oCombination] = new Promise(function (fnResolve) {
+				if (oCombination.country) {
+					aFilters.push(new Filter({
+						path: "country",
+						operator: FilterOperator.EQ,
+						value1: oCombination.country
+					}));
+				}
+				if (oCombination.module) {
+					aFilters.push(new Filter({
+						path: "module",
+						operator: FilterOperator.EQ,
+						value1: oCombination.module
+					}));
+				}
+				if (oCombination.settingName) {
+					aFilters.push(new Filter({
+						path: "settingName",
+						operator: FilterOperator.EQ,
+						value1: oCombination.settingName
+					}));
+				}
+				if (oCombination.grouping) {
+					aFilters.push(new Filter({
+						path: "grouping",
+						operator: FilterOperator.EQ,
+						value1: oCombination.grouping
+					}));
+				}
+				this._oDataModel.metadataLoaded(true).then(
+					function () {
+						this._oDataModel.read("/Given", {
+							urlParameters: {
+								"$expand": "when,then"
+							},
+							filters: aFilters,
+							success: function (oResponse) {
+								fnResolve(oResponse.results);
+							},
+							error: function (oError) {
+								fnResolve([]);
+							}
 						});
-				}.bind(this));
+					}.bind(this),
+					function () {
+						fnResolve([]);
+					});
+			}.bind(this));
 			//}
 			return this._mapGivenWhenThen[oCombination];
 		},
@@ -101,10 +101,8 @@ sap.ui.define([
 				});
 				if (bWhen) {
 					oGiven.then.results.forEach(function (oThen) {
-						if (oThen.active.toString() === "true") {
-							if (oContext.hasOwnProperty(oThen.name)) {
-								oContext[oThen.name] = oThen.value.toString();
-							}
+						if (oThen.active === "true" && oContext.hasOwnProperty(oThen.name)) {
+							oContext[oThen.name] = oThen.value.toString();
 						}
 					});
 					if (!bAll)
