@@ -15,6 +15,69 @@ sap.ui.define([
 	return BaseController.extend("dksh.connectclient.itemblockorder.controller.MainView", {
 		onInit: function () {
 			this._preSetModel(this.getView());
+			this.getRouter().getRoute("MainView").attachMatched(this._onRouteMatched, this);
+			// this.oResourceBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle();
+			// this.oFragmentList = [];
+			// this._oEditableConfig = new EditableConfig(this.getOwnerComponent().getModel("Setup"));
+			// this.getView().setBusy(true);
+			// Promise.all([this.formatter.fetchUserInfo.call(this), this.formatter.fetchData.call(this, this.getOwnerComponent().getModel(),
+			// 	"/GetControlEditableConfigSet")]).then(function (oRes) {
+			// 	var oUserData = this.getView().getModel("UserInfo").getData();
+			// 	this.getView().setModel(new JSONModel(oRes[1].results), "ControlEditConfig");
+			// 	var fnReturnPayload = function (appId) {
+			// 		return {
+			// 			userId: oUserData.name,
+			// 			appId: appId,
+			// 			runType: "Web",
+			// 			emailId: oUserData.email
+			// 		};
+			// 	};
+			// 	Promise.all([
+			// 		this.formatter.postJavaService.call(this, this.getView().getModel("SearchHelpPersonalization"),
+			// 			this.getText("getVariant"), JSON.stringify(fnReturnPayload("keySearchReleaseBlock")), "POST"),
+			// 		this.formatter.postJavaService.call(this, this.getView().getModel("SoItemPersonalizationModel"),
+			// 			this.getText("getVariantRelease"), JSON.stringify(fnReturnPayload(
+			// 				"keyHeaderReleaseBlock@keyItemReleaseBlock")), "POST"),
+			// 		this.formatter.fetchSaleOrder.call(this)
+			// 	]).then(function (_oRes) {
+			// 		Object.assign(this.formatter.setNumericAndSort(_oRes[0], ["sequence"]), this._returnPersDefault());
+			// 		this.getView().getModel("SearchHelpPersonalization").refresh();
+			// 		Object.assign(_oRes[1], this._returnPersDefault());
+			// 		this.getView().setBusy(false);
+			// 	}.bind(this)).catch(function (oErr) {
+			// 		this._displayError(oErr);
+			// 	}.bind(this));
+			// }.bind(this)).catch(function (oErr) {
+			// 	this._displayError(oErr);
+			// }.bind(this));
+			// // get reject code - STRY0020007
+			// this._getSetupConfig();
+		},
+		/** 
+		 * Routing logic for MainView
+		 * @constructor 
+		 * @param oEvent Event parameter
+		 */
+		_onRouteMatched: function (oEvent) {
+			var oArgument = oEvent.getParameter("arguments");
+			var oQuery = oArgument["?query"];
+			var oFilterModel = this.getView().getModel("filterModel");
+			var oFilterData = oFilterModel.getData();
+			if (oQuery) {
+				if (oQuery.sdna) {
+					oFilterData.salesDocNumInitial = oQuery.sdna;
+				}
+				if (oQuery.sdnz) {
+					oFilterData.salesDocNumEnd = oQuery.sdnz;
+				}
+				if (oQuery.sdda) {
+					oFilterData.initialDate = new Date(oQuery.sdda);
+				}
+				if (oQuery.sddz) {
+					oFilterData.endDate = new Date(oQuery.sddz);
+				}
+			}
+			oFilterModel.refresh();
 			this.oResourceBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle();
 			this.oFragmentList = [];
 			this._oEditableConfig = new EditableConfig(this.getOwnerComponent().getModel("Setup"));
@@ -134,7 +197,7 @@ sap.ui.define([
 			oSource.setVisible(false);
 			// Control selected item's properties visibility
 			var oCombination = {
-				country: oItemModel.country ? oItemModel.country : oItemModel.salesOrg.substring(0,2),
+				country: oItemModel.country ? oItemModel.country : oItemModel.salesOrg.substring(0, 2),
 				module: "Fiori",
 				settingName: "Item Release Order Editable"
 			};
@@ -143,8 +206,8 @@ sap.ui.define([
 				aItems.map(function (oItem) {
 					var object = oItem.getBindingContext("ItemBlockModel").getObject();
 					object = this.formatter.controlEditabled.call(this, object, aItems, aItemUsage, oEditConfig);
-					object.country = oItemModel.country ? oItemModel.country : oItemModel.salesOrg.substring(0,2);
-					this._oEditableConfig.runGWT(aGiven,object);
+					object.country = oItemModel.country ? oItemModel.country : oItemModel.salesOrg.substring(0, 2);
+					this._oEditableConfig.runGWT(aGiven, object);
 					object.salesUnit = (!object.salesUnit) ? this.getText("UoM").toUpperCase() : object.salesUnit;
 				}.bind(this));
 				// Store initial value model for onSaveEditItem function
@@ -346,12 +409,12 @@ sap.ui.define([
 					results: []
 				},
 				//[+] add - STRY0019584
-				vCountry = oItem.country ? oItem.country : oItem.salesOrg.substring(0,2),
-				aComCnfg = this._aCommCtrl.filter(function(oCode){
-							if(oCode.country === vCountry)
-								return oCode;
-						});
-				//[+] end add - STRY0019584
+				vCountry = oItem.country ? oItem.country : oItem.salesOrg.substring(0, 2),
+				aComCnfg = this._aCommCtrl.filter(function (oCode) {
+					if (oCode.country === vCountry)
+						return oCode;
+				});
+			//[+] end add - STRY0019584
 			if (oTable.getSelectedItems().length === 0) {
 				MessageToast.show(this.getText("ItemSelectList"));
 				return;
@@ -360,29 +423,30 @@ sap.ui.define([
 			oMessageModel["Title"] = this.oResourceBundle.getText("TitleMessageBox", [oItem.salesOrderNum]);
 			for (var indx in oTable.getSelectedContexts()) {
 				var oSelectedContext = oTable.getSelectedContexts()[indx];
-			//[-] delete - STRY0019584
-			//	var sMessage = (!oSelectedContext.getObject().nextLevel) ? this.oResourceBundle.getText("FinalApprovalMessage", [oSelectedContext.getObject()
-			//		.salesItemOrderNo
-			//	]) : this.oResourceBundle.getText("ApprovalMessage", [oSelectedContext.getObject().salesItemOrderNo]);
-			//	oMessageModel.results.push({
-			//		Message: sMessage
-			//	});
-			//[-] end delete - STRY0019584	
-			//[+] add - STRY0019584
+				//[-] delete - STRY0019584
+				//	var sMessage = (!oSelectedContext.getObject().nextLevel) ? this.oResourceBundle.getText("FinalApprovalMessage", [oSelectedContext.getObject()
+				//		.salesItemOrderNo
+				//	]) : this.oResourceBundle.getText("ApprovalMessage", [oSelectedContext.getObject().salesItemOrderNo]);
+				//	oMessageModel.results.push({
+				//		Message: sMessage
+				//	});
+				//[-] end delete - STRY0019584	
+				//[+] add - STRY0019584
 				oMessageModel["mainText"] = "";
 				var oContext = oSelectedContext.getObject(),
-					sMessage = (!oSelectedContext.getObject().nextLevel) ? this.oResourceBundle.getText("FinalApprovalMessage", [oSelectedContext.getObject().salesItemOrderNo ]) 
-								: this.oResourceBundle.getText("ApprovalMessage", [oSelectedContext.getObject().salesItemOrderNo]),
-					aCheck = aComCnfg.find(function(oComCnfg){
-						if(oContext.materialGroup){
-							if(oComCnfg.name === "materialGroup"){
-								if(oComCnfg.value === oContext.materialGroup)
+					sMessage = (!oSelectedContext.getObject().nextLevel) ? this.oResourceBundle.getText("FinalApprovalMessage", [oSelectedContext.getObject()
+						.salesItemOrderNo
+					]) : this.oResourceBundle.getText("ApprovalMessage", [oSelectedContext.getObject().salesItemOrderNo]),
+					aCheck = aComCnfg.find(function (oComCnfg) {
+						if (oContext.materialGroup) {
+							if (oComCnfg.name === "materialGroup") {
+								if (oComCnfg.value === oContext.materialGroup)
 									return oComCnfg;
 							}
 						}
-						if(oContext.materialGroup4){
-							if(oComCnfg.name === "materialGroup4"){
-								if(oComCnfg.value === oContext.materialGroup4)
+						if (oContext.materialGroup4) {
+							if (oComCnfg.name === "materialGroup4") {
+								if (oComCnfg.value === oContext.materialGroup4)
 									return oComCnfg;
 							}
 						}
@@ -396,35 +460,35 @@ sap.ui.define([
 					placeHolder: (aCheck) ? this.oResourceBundle.getText("requiredComment") : this.oResourceBundle.getText("apvComment"),
 					required: (aCheck) ? true : false
 				});
-			//[+] end add - STRY0019584 - 
+				//[+] end add - STRY0019584 - 
 			}
 			this.getView().setModel(new JSONModel(oMessageModel), "MessageModel");
 			this._loadXMLFragment(this.getText("MainFragmentPath"), "DialogMessageBox", oMessageModel, "MessageModel").bind(this);
 		},
 		//[+] add - STRY0019584
-		onAddApproveComments: function(oEvent, aItems){
+		onAddApproveComments: function (oEvent, aItems) {
 			var oVal = oEvent.getParameter("value");
-			for(var i in aItems){
+			for (var i in aItems) {
 				aItems[i].comments = oVal;
 			}
 		},
 		//[+] end add - STRY0019584
 		onOkMessageBox: function (oEvent, sFragment) {
 			var oTable = this.onApprovePress["Table"],
-		//[+] add - STRY0019584
+				//[+] add - STRY0019584
 				aMsgData = this.getView().getModel("MessageModel").getData().results,
-				aComChk = aMsgData.find(function(oMsg){
-							if(oMsg.required){
-								if(!oMsg.comments)
-									return oMsg;
-							}
-						});
-				
-				if(aComChk){
-					MessageToast.show(this.oResourceBundle.getText("noApprovalComment"));
-					return;
-				}		
-		//[+] end add - STRY0019584 [sPath, "/acceptOrReject"].join("")
+				aComChk = aMsgData.find(function (oMsg) {
+					if (oMsg.required) {
+						if (!oMsg.comments)
+							return oMsg;
+					}
+				});
+
+			if (aComChk) {
+				MessageToast.show(this.oResourceBundle.getText("noApprovalComment"));
+				return;
+			}
+			//[+] end add - STRY0019584 [sPath, "/acceptOrReject"].join("")
 			for (var index in oTable.getSelectedContexts()) {
 				var oSelectedContext = oTable.getSelectedContexts()[index],
 					sPath = oSelectedContext.getPath();
@@ -433,69 +497,69 @@ sap.ui.define([
 				oSelectedContext.getModel().setProperty([sPath, "/itemStagingStatus"].join(""), "Pending Submission");
 				// Set both comment and reject reason text to blank for user action
 				oSelectedContext.getModel().setProperty([sPath, "/reasonForRejectionText"].join(""), "");
-			//[-] delete - STRY0019584
-			// 	oSelectedContext.getModel().setProperty([sPath, "/comments"].join(""), "");
-			//[-] end delete - STRY0019584
-			//[+] add - STRY0019584
+				//[-] delete - STRY0019584
+				// 	oSelectedContext.getModel().setProperty([sPath, "/comments"].join(""), "");
+				//[-] end delete - STRY0019584
+				//[+] add - STRY0019584
 				var vOrdLine = oSelectedContext.getModel().getProperty([sPath, "/salesItemOrderNo"].join("")),
-					oApprove = aMsgData.find(function(oMsg){ 
-								if(oMsg.itemNo === vOrdLine)
-									return oMsg;
-							});
-				oSelectedContext.getModel().setProperty([sPath, "/comments"].join(""), oApprove.comments);		
-			//[+] end add - STRY0019584
+					oApprove = aMsgData.find(function (oMsg) {
+						if (oMsg.itemNo === vOrdLine)
+							return oMsg;
+					});
+				oSelectedContext.getModel().setProperty([sPath, "/comments"].join(""), oApprove.comments);
+				//[+] end add - STRY0019584
 			}
 			oTable.removeSelections();
 			this.handleCloseValueHelp(oEvent, sFragment);
 		},
 		//[+] get rejection code setting - STRY0020007
-		_getSetupConfig: function(){
-			this._aRejCode=[];
+		_getSetupConfig: function () {
+			this._aRejCode = [];
 			var oParam = {
-				module:"Fiori",
-				settingName:"itemReleaseOrder",
-				grouping:"rejectCode"
-			},
-			fnGetData = function(oRow, i){
-				this._aRejCode.push({
-					country: oRow.country,
-					value: oRow.value
-				});
-			}.bind(this);
+					module: "Fiori",
+					settingName: "itemReleaseOrder",
+					grouping: "rejectCode"
+				},
+				fnGetData = function (oRow, i) {
+					this._aRejCode.push({
+						country: oRow.country,
+						value: oRow.value
+					});
+				}.bind(this);
 			var oPromise = this._oEditableConfig.getGiven(oParam);
 			oPromise
-			.then(function(aRet){
-				aRet.forEach(function(aRow, iIdx){
-					aRow.then.results.forEach(fnGetData);
-				});	
-			})
-			.finally(function(){
-				this._getCommentCtrl();
-			}.bind(this));
-		}, 
+				.then(function (aRet) {
+					aRet.forEach(function (aRow, iIdx) {
+						aRow.then.results.forEach(fnGetData);
+					});
+				})
+				.finally(function () {
+					this._getCommentCtrl();
+				}.bind(this));
+		},
 		//[+] end add - STRY0020007
 		//[+] add - STRY0019584
-		_getCommentCtrl: function(){
-		//	this._valState = sap.ui.core.ValueState;
+		_getCommentCtrl: function () {
+			//	this._valState = sap.ui.core.ValueState;
 			this._aCommCtrl = [];
 			var oParam = {
-				module:"Fiori",
-				settingName:"itemReleaseOrderApv",
-				grouping:"commentControl"
-			},
-			fnGetData = function(oRow, i){
-				this._aCommCtrl.push({
-					country: oRow.country,
-					name: oRow.name,
-					value: oRow.value
-				});
-			}.bind(this);
+					module: "Fiori",
+					settingName: "itemReleaseOrderApv",
+					grouping: "commentControl"
+				},
+				fnGetData = function (oRow, i) {
+					this._aCommCtrl.push({
+						country: oRow.country,
+						name: oRow.name,
+						value: oRow.value
+					});
+				}.bind(this);
 			var oPromise = this._oEditableConfig.getGiven(oParam);
-			oPromise.then(function(aRet){
-				aRet.forEach(function(aRow, iIdx){
+			oPromise.then(function (aRet) {
+				aRet.forEach(function (aRow, iIdx) {
 					aRow.then.results.forEach(fnGetData);
-				});	
-			});			
+				});
+			});
 		},
 		//[+] end add - STRY0019584
 		onRejectPress: function (oEvent, sFragment, oItem, oModel) {
@@ -504,18 +568,18 @@ sap.ui.define([
 				sId = oSource.getParent().getParent().getId(),
 				oTable = sap.ui.getCore().byId(sId),
 				aRejectModel = [],
-			//[+] add - STRY0020007
+				//[+] add - STRY0020007
 				oDataModel = oView.getModel(),
-				vCountry = oItem.country ? oItem.country : oItem.salesOrg.substring(0,2), 
-				aReject = this._aRejCode.filter(function(oCode){
-							if(oCode.country === vCountry)
-								return oCode;
-						}),
-				aFilter = aReject ? aReject.map(function(oVal){ 
+				vCountry = oItem.country ? oItem.country : oItem.salesOrg.substring(0, 2),
+				aReject = this._aRejCode.filter(function (oCode) {
+					if (oCode.country === vCountry)
+						return oCode;
+				}),
+				aFilter = aReject ? aReject.map(function (oVal) {
 					return new Filter("RejCode", FilterOperator.EQ, oVal.value);
-				}) : [];		
+				}) : [];
 			//[+] end add - STRY0020007
-			
+
 			if (oTable.getSelectedItems().length === 0) {
 				MessageToast.show(this.getText("ItemSelectList"));
 				return;
@@ -526,19 +590,19 @@ sap.ui.define([
 					sPath: oSelectedContext.getPath()
 				}));
 			}
-		//[+] add - STRY0020007
+			//[+] add - STRY0020007
 			oDataModel.read("/SearchHelp_RejectReasonSet", {
 				async: false,
 				filters: aFilter,
-				sorters: [ new sap.ui.model.Sorter("RejCode", false) ],
+				sorters: [new sap.ui.model.Sorter("RejCode", false)],
 				success: function (oData, oResponse) {
 					oView.setModel(new JSONModel(oData.results), "RejectF4Model");
 				},
 				error: function (error) {
 					MessageToast.show(error);
 				}
-			});		
-		//[+] end add - STRY0020007
+			});
+			//[+] end add - STRY0020007
 			oView.setModel(new JSONModel(aRejectModel), "RejectDataModel");
 			oView.setBusy(true);
 			this.onRejectPress["Table"] = oTable;
@@ -552,7 +616,7 @@ sap.ui.define([
 		onOkRejectPress: function (oEvent, aItems, aSet) {
 			var oView = this.getView(),
 				oItemBlockModel = oView.getModel("ItemBlockModel");
-				
+
 			for (var index in aItems) {
 				var oItem = aItems[index],
 					sRejectText = sap.ui.getCore().byId(oItem.selectedId).getProperty("text");
