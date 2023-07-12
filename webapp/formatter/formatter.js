@@ -109,8 +109,8 @@ sap.ui.define([
 				isForItem: true,
 				skipCount: oPaginatedData.skipCount,
 				maxCount: oPaginatedData.maxCount,
-				orderBy: 'salesOrderNum',
-				orderType: 'DESC'
+				orderBy: oPaginatedData.orderBy,
+				orderType: oPaginatedData.orderType
 			});
 			this.getView().setBusy(true);
 			var sUrl = "/DKSHJavaService/taskSubmit/getSalesBlockOrder/";
