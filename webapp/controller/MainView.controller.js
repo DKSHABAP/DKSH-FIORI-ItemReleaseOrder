@@ -27,8 +27,8 @@ sap.ui.define([
 				firstPageEnabled: false,
 				lastPageEnabled: false,
 				pages: [],
-				orderBy: 'salesOrderNum',
-				orderType: 'DESC'
+				orderBy: null,
+				orderType: null
 			}), "paginatedModel");
 			var oPaging = new Promise(function (fnResolve) {
 				var oPaginatedModel = this.getView().getModel("paginatedModel");
