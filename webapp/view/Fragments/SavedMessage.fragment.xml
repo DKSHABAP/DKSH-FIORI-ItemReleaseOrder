@@ -20,7 +20,7 @@
 			</Table>
 		</VBox>
 		<buttons>
-			<Button text="{i18n>cancel}" press="handleCloseValueHelp($event, 'SavedMessage')"/>
+			<Button text="{i18n>ok}" press="handleCloseValueHelp($event, 'SavedMessage')"/>
 		</buttons>
 	</Dialog>
 </core:FragmentDefinition>
