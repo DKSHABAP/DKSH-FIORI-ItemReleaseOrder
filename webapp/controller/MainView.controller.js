@@ -732,7 +732,7 @@ sap.ui.define([
 		onScrollLeft: function (oEvent) {
 			var oPaginatedModel = this.getView().getModel("paginatedModel");
 			var oPaginatedData = oPaginatedModel.getData();
-			oPaginatedData.skipCount = oPaginatedData.skipCount < oPaginatedData.maxCount ? 0 : oPaginatedData.skipCount - oPaginatedData.maxCount;
+			oPaginatedData.skipCount = parseInt(oPaginatedData.skipCount) < parseInt(oPaginatedData.maxCount) ? 0 : parseInt(oPaginatedData.skipCount) - parseInt(oPaginatedData.maxCount);
 			this.formatter.fetchSaleOrder.call(this).then(function (oRes) {
 				oPaginatedModel.refresh();
 				this.getView().setBusy(false);
@@ -741,7 +741,7 @@ sap.ui.define([
 		onScrollRight: function (oEvent) {
 			var oPaginatedModel = this.getView().getModel("paginatedModel");
 			var oPaginatedData = oPaginatedModel.getData();
-			oPaginatedData.skipCount = oPaginatedData.skipCount + oPaginatedData.maxCount;
+			oPaginatedData.skipCount = parseInt(oPaginatedData.skipCount) + parseInt(oPaginatedData.maxCount);
 			this.formatter.fetchSaleOrder.call(this).then(function (oRes) {
 				oPaginatedModel.refresh();
 				this.getView().setBusy(false);
@@ -760,7 +760,7 @@ sap.ui.define([
 			var oPaginatedModel = this.getView().getModel("paginatedModel");
 			var oPaginatedData = oPaginatedModel.getData();
 			var sText = oEvent.getSource().getProperty("text");
-			oPaginatedData.skipCount = (parseInt(sText) - 1) * oPaginatedData.maxCount;
+			oPaginatedData.skipCount = (parseInt(sText) - 1) * parseInt(oPaginatedData.maxCount);
 			this.formatter.fetchSaleOrder.call(this).then(function (oRes) {
 				this.getView().setBusy(false);
 			}.bind(this));
@@ -770,8 +770,8 @@ sap.ui.define([
 			var oPaginatedData = oPaginatedModel.getData();
 			var oViewModel = this.getView().getModel("ItemBlockModel");
 			var oViewData = oViewModel.getData();
-			oPaginatedData.skipCount = (Math.floor(oViewData.count / oPaginatedData.maxCount) - 1 + (oViewData.count % oPaginatedData.maxCount ?
-				1 : 0)) * oPaginatedData.maxCount;
+			oPaginatedData.skipCount = (Math.floor(oViewData.count / parseInt(oPaginatedData.maxCount)) - 1 + (oViewData.count % parseInt(oPaginatedData.maxCount) ?
+				1 : 0)) * parseInt(oPaginatedData.maxCount);
 			this.formatter.fetchSaleOrder.call(this).then(function (oRes) {
 				oPaginatedModel.refresh();
 				this.getView().setBusy(false);
